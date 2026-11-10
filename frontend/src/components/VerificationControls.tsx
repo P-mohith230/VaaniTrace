@@ -154,6 +154,15 @@ export const VerificationControls: React.FC<VerificationControlsProps> = ({
               <Download size={14} /> Excel (.xlsx)
             </a>
             <a
+              href={api.getExportUrl(savedRecordId, 'tally')}
+              download
+              className="btn btn-secondary btn-sm"
+              style={{ borderColor: 'var(--color-border)', color: 'var(--color-soft-white)' }}
+              title="Download TallyPrime / Tally ERP 9 XML Voucher"
+            >
+              <Download size={14} /> Tally XML
+            </a>
+            <a
               href={api.getExportUrl(savedRecordId, 'csv')}
               download
               className="btn btn-secondary btn-sm"

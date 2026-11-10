@@ -235,6 +235,9 @@ def export_record_file(
     if fmt in ("xlsx", "excel"):
         content, filename = export_service.export_excel(record)
         media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    elif fmt in ("tally", "xml"):
+        content, filename = export_service.export_tally_xml(record)
+        media_type = "application/xml; charset=utf-8"
     elif fmt == "csv":
         content, filename = export_service.export_csv(record)
         media_type = "text/csv; charset=utf-8"

@@ -157,7 +157,7 @@ class ApiClient {
     });
   }
 
-  getExportUrl(recordId: string, format: 'json' | 'csv' | 'xlsx' = 'json'): string {
+  getExportUrl(recordId: string, format: 'json' | 'csv' | 'xlsx' | 'tally' = 'json'): string {
     return `${API_BASE}/records/${encodeURIComponent(recordId)}/export?format=${format}`;
   }
 }
