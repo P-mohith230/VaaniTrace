@@ -1,0 +1,13 @@
+{
+  "name": "vaanitrace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VaaniTrace — Multilingual Voice-to-Action Intelligence Platform Powered by Gnani AI",
+  "scripts": {
+    "install:all": "pip install -r requirements.txt && cd frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "start": "python -m app.main",
+    "test": "python -m pytest tests/ -v",
+    "dev": "python -m app.main"
+  }
+}
