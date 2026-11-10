@@ -37,6 +37,7 @@ class GnaniPrismaService:
         return {
             "X-API-Key-ID": key,
             "X-API-Key": key,
+            "token": key,
         }
 
     async def transcribe(

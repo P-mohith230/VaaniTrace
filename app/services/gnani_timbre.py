@@ -38,6 +38,7 @@ class GnaniTimbreService:
         return {
             "X-API-Key-ID": key,
             "X-API-Key": key,
+            "token": key,
             "Content-Type": "application/json",
         }
 
