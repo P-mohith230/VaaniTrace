@@ -206,3 +206,4 @@ erDiagram
 5. **Interactive UI State:**
    - Active highlight ID synchronizes transcript spans and extraction cards.
    - User edits update `current_value`, switch `evidence_type` to `manual`, but retain `original_value` and evidence spans for full auditability.
+

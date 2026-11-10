@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mic2, Activity, CheckCircle2, AlertTriangle, FileText, Settings as SettingsIcon, LayoutDashboard } from 'lucide-react';
+import { Mic2, Activity, CheckCircle2, AlertTriangle, FileText, Settings as SettingsIcon, LayoutDashboard, Home } from 'lucide-react';
 import { SystemHealth, GnaniHealth } from '../types';
 
 interface HeaderProps {
@@ -21,13 +21,13 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="app-header">
       <div className="header-inner">
-        <div className="brand-section" onClick={() => onTabChange('dashboard')}>
-          <div className="brand-logo">
-            <Mic2 size={22} />
+        <div className="brand-section" onClick={() => onTabChange('home')}>
+          <div className="brand-logo-mark">
+            <Mic2 size={20} />
           </div>
           <div>
-            <span className="brand-name">VaaniTrace</span>
-            <span className="brand-tagline">Voice-to-Action Intelligence • Powered by Gnani AI</span>
+            <span className="brand-title">VaaniTrace</span>
+            <span className="brand-tagline-sub">Beyond Transcription. Into Action.</span>
           </div>
         </div>
 
@@ -35,11 +35,11 @@ export const Header: React.FC<HeaderProps> = ({
           <ul className="nav-links">
             <li>
               <button
-                className={`nav-item ${currentTab === 'dashboard' ? 'active' : ''}`}
-                onClick={() => onTabChange('dashboard')}
+                className={`nav-item ${currentTab === 'home' ? 'active' : ''}`}
+                onClick={() => onTabChange('home')}
               >
-                <LayoutDashboard size={16} />
-                <span>Dashboard</span>
+                <Home size={15} />
+                <span>Home</span>
               </button>
             </li>
             <li>
@@ -47,8 +47,17 @@ export const Header: React.FC<HeaderProps> = ({
                 className={`nav-item ${currentTab === 'workspace' ? 'active' : ''}`}
                 onClick={() => onTabChange('workspace')}
               >
-                <Mic2 size={16} />
+                <Mic2 size={15} />
                 <span>Workspace</span>
+              </button>
+            </li>
+            <li>
+              <button
+                className={`nav-item ${currentTab === 'dashboard' ? 'active' : ''}`}
+                onClick={() => onTabChange('dashboard')}
+              >
+                <LayoutDashboard size={15} />
+                <span>Dashboard</span>
               </button>
             </li>
             <li>
@@ -56,7 +65,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className={`nav-item ${currentTab === 'records' ? 'active' : ''}`}
                 onClick={() => onTabChange('records')}
               >
-                <FileText size={16} />
+                <FileText size={15} />
                 <span>Records</span>
               </button>
             </li>
@@ -65,21 +74,22 @@ export const Header: React.FC<HeaderProps> = ({
                 className={`nav-item ${currentTab === 'settings' ? 'active' : ''}`}
                 onClick={() => onTabChange('settings')}
               >
-                <SettingsIcon size={16} />
+                <SettingsIcon size={15} />
                 <span>Settings</span>
               </button>
             </li>
           </ul>
         </nav>
 
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <div className={`header-status-badge ${isHealthy ? 'status-online' : 'status-offline'}`}>
-            <Activity size={13} />
-            <span>{isHealthy ? 'Backend Online' : 'Backend Degraded'}</span>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <div className="header-status-badge" title={`Server: ${systemHealth?.backend || 'Offline'}`}>
+            <span className={isHealthy ? 'status-dot-active' : 'status-dot-accent'} />
+            <span style={{ fontSize: '12px' }}>{isHealthy ? 'Backend 8000' : 'Backend Degraded'}</span>
           </div>
-          <div className={`header-status-badge ${isGnaniReady ? 'status-online' : 'status-offline'}`}>
-            {isGnaniReady ? <CheckCircle2 size={13} /> : <AlertTriangle size={13} />}
-            <span>{isGnaniReady ? 'Gnani AI' : 'Gnani Unconfigured'}</span>
+
+          <div className="header-status-badge" title={`Gnani AI: ${gnaniHealth?.model_stt || 'Prisma v2.5'}`}>
+            <span className={isGnaniReady ? 'status-dot-accent' : 'status-dot-active'} />
+            <span style={{ fontSize: '12px' }}>{isGnaniReady ? 'Prisma v2.5' : 'Gnani API'}</span>
           </div>
         </div>
       </div>

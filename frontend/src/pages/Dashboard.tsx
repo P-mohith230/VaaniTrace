@@ -43,34 +43,35 @@ export const Dashboard: React.FC<DashboardProps> = ({
     <div>
       {/* Hero Welcome Banner */}
       <div style={{
-        background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.15), rgba(6, 182, 212, 0.05))',
-        border: '1px solid rgba(2, 132, 199, 0.3)',
+        background: 'linear-gradient(145deg, #18090d 0%, #0d0608 100%)',
+        border: '1px solid var(--accent-wine)',
         borderRadius: 'var(--radius-lg)',
-        padding: '32px',
-        marginBottom: '28px',
+        padding: '36px',
+        marginBottom: '32px',
         display: 'flex',
         flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '20px',
+        gap: '24px',
+        boxShadow: '0 16px 40px rgba(74, 16, 27, 0.25)',
       }}>
-        <div style={{ maxWidth: '650px' }}>
+        <div style={{ maxWidth: '680px' }}>
           <span style={{
             fontSize: '11px',
             textTransform: 'uppercase',
-            letterSpacing: '0.08em',
+            letterSpacing: '0.12em',
             fontWeight: 700,
-            color: 'var(--accent-cyan)',
+            color: 'var(--accent-crimson)',
             display: 'block',
-            marginBottom: '6px',
+            marginBottom: '8px',
           }}>
-            Multilingual Voice-to-Action Platform
+            VOICE-TO-ACTION INTELLIGENCE PLATFORM
           </span>
-          <h2 style={{ fontSize: '26px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>
-            Transform Spoken Words into Verified Business Action
+          <h2 style={{ fontSize: '28px', fontWeight: 800, color: '#fff', marginBottom: '10px', letterSpacing: '-0.02em' }}>
+            Beyond Transcription. Into Action.
           </h2>
-          <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-            VaaniTrace listens to voice orders, site debriefs, and customer conversations, structuring them into action items with unbreakable evidence links back to the original transcript.
+          <p style={{ fontSize: '14px', color: 'var(--color-muted-grey)', lineHeight: 1.65 }}>
+            VaaniTrace structures everyday multilingual conversations into verified records where every item, price, deadline, and task is cross-linked to exact transcript evidence.
           </p>
         </div>
 
@@ -88,8 +89,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* KPI Stats Grid */}
       <div className="stats-grid">
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(2, 132, 199, 0.15)', color: 'var(--accent-cyan)' }}>
-            <Layers size={22} />
+          <div className="stat-icon">
+            <Layers size={22} color="var(--color-white)" />
           </div>
           <div>
             <div className="stat-value">{totalRecords}</div>
@@ -98,8 +99,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-success)' }}>
-            <FileCheck size={22} />
+          <div className="stat-icon" style={{ borderColor: 'var(--accent-wine)', background: 'var(--accent-burgundy)' }}>
+            <FileCheck size={22} color="#fff" />
           </div>
           <div>
             <div className="stat-value">{verifiedRecords}</div>
@@ -108,8 +109,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(245, 158, 11, 0.15)', color: 'var(--accent-warning)' }}>
-            <Clock size={22} />
+          <div className="stat-icon">
+            <Clock size={22} color="var(--accent-crimson)" />
           </div>
           <div>
             <div className="stat-value">{pendingRecords}</div>
@@ -118,12 +119,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(139, 92, 246, 0.15)', color: 'var(--accent-purple)' }}>
-            <ShieldCheck size={22} />
+          <div className="stat-icon">
+            <ShieldCheck size={22} color="var(--color-white)" />
           </div>
           <div>
-            <div className="stat-value" style={{ fontSize: '18px', color: gnaniHealth?.configured ? '#34d399' : '#f87171' }}>
-              {gnaniHealth?.configured ? 'Prisma v2.5' : 'Unconfigured'}
+            <div className="stat-value" style={{ fontSize: '18px', color: '#fff' }}>
+              {gnaniHealth?.model_stt || 'Prisma v2.5'}
             </div>
             <div className="stat-label">Gnani Speech Engine</div>
           </div>
@@ -132,7 +133,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Recent Records Section */}
       <div className="card">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
           <div>
             <h3 className="card-title" style={{ margin: 0 }}>Recent Voice Sessions</h3>
             <p className="card-subtitle" style={{ margin: '4px 0 0' }}>Your latest transcribed and extracted conversations</p>
@@ -144,20 +145,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         {isLoading ? (
-          <p style={{ color: 'var(--text-muted)', fontSize: '14px', padding: '20px 0' }}>Loading records...</p>
+          <p style={{ color: 'var(--color-muted-grey)', fontSize: '14px', padding: '24px 0' }}>Loading records...</p>
         ) : records.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
-            <Mic size={36} style={{ margin: '0 auto 12px', opacity: 0.4 }} />
-            <h4 style={{ fontSize: '15px', color: '#fff', marginBottom: '6px' }}>No Voice Records Stored Yet</h4>
-            <p style={{ fontSize: '13px', maxWidth: '400px', margin: '0 auto 16px' }}>
-              Record or upload an audio conversation to see structured extraction and evidence mapping in action.
+          <div style={{ textAlign: 'center', padding: '48px 20px', color: 'var(--color-muted-grey)' }}>
+            <Mic size={40} style={{ margin: '0 auto 14px', opacity: 0.3 }} />
+            <h4 style={{ fontSize: '16px', color: '#fff', marginBottom: '8px' }}>No Voice Records Stored Yet</h4>
+            <p style={{ fontSize: '13px', maxWidth: '420px', margin: '0 auto 20px', lineHeight: 1.6 }}>
+              Record or upload an audio conversation in the Workspace to see structured extraction and evidence mapping in action.
             </p>
             <button onClick={onNavigateToWorkspace} className="btn btn-primary btn-sm">
               Start Your First Session
             </button>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '18px' }}>
             {records.slice(0, 6).map((rec) => (
               <RecordCard
                 key={rec.id}

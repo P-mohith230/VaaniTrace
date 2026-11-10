@@ -36,3 +36,4 @@ VaaniTrace distinguishes sharply between:
 - **FAIL:** The test was executed and threw an assertion error or unexpected exception.
 - **NOT TESTED:** The test suite or step was not executed.
 - **BLOCKED:** The test could not run because a mandatory dependency, system permission, or valid external API credential was unavailable.
+

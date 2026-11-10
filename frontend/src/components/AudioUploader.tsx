@@ -35,7 +35,6 @@ export const AudioUploader: React.FC<AudioUploaderProps> = ({
       return;
     }
 
-    // Clean up previous preview object URL
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
     }
@@ -91,12 +90,12 @@ export const AudioUploader: React.FC<AudioUploaderProps> = ({
           onDrop={handleDrop}
           onClick={() => !disabled && fileInputRef.current?.click()}
           style={{
-            border: `2px dashed ${isDragging ? 'var(--accent-primary)' : 'var(--border-color)'}`,
+            border: `2px dashed ${isDragging ? 'var(--accent-crimson)' : 'var(--color-border)'}`,
             borderRadius: 'var(--radius-md)',
-            padding: '32px 20px',
+            padding: '36px 20px',
             textAlign: 'center',
             cursor: disabled ? 'not-allowed' : 'pointer',
-            background: isDragging ? 'rgba(2, 132, 199, 0.08)' : 'rgba(15, 23, 42, 0.6)',
+            background: isDragging ? 'rgba(74, 16, 27, 0.25)' : 'var(--color-rich-black)',
             transition: 'all 0.2s ease',
           }}
         >
@@ -104,46 +103,48 @@ export const AudioUploader: React.FC<AudioUploaderProps> = ({
             width: '48px',
             height: '48px',
             margin: '0 auto 12px',
-            background: 'rgba(2, 132, 199, 0.15)',
+            background: 'var(--color-charcoal)',
+            border: '1px solid var(--color-border)',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'var(--accent-cyan)',
+            color: 'var(--color-white)',
           }}>
-            <Upload size={24} />
+            <Upload size={22} />
           </div>
-          <h4 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '6px' }}>
+          <h4 style={{ fontSize: '15px', fontWeight: 600, color: '#fff', marginBottom: '6px' }}>
             Choose an audio file or drag & drop here
           </h4>
-          <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+          <p style={{ fontSize: '12px', color: 'var(--color-muted-grey)' }}>
             Supports WAV, MP3, OGG, WebM, FLAC, M4A up to 25MB
           </p>
         </div>
       ) : (
         <div style={{
-          background: 'rgba(15, 23, 42, 0.8)',
-          border: '1px solid var(--border-color)',
+          background: 'var(--color-rich-black)',
+          border: '1px solid var(--color-border)',
           borderRadius: 'var(--radius-md)',
-          padding: '16px',
+          padding: '18px',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div style={{
-                width: '36px',
-                height: '36px',
-                background: 'rgba(16, 185, 129, 0.15)',
+                width: '38px',
+                height: '38px',
+                background: 'var(--accent-burgundy)',
+                border: '1px solid var(--accent-wine)',
                 borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--accent-success)',
+                color: '#fff',
               }}>
                 <Music size={18} />
               </div>
               <div>
                 <p style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>{selectedFile.name}</p>
-                <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                <p style={{ fontSize: '12px', color: 'var(--color-muted-grey)' }}>
                   {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • {selectedFile.type || 'audio file'}
                 </p>
               </div>
@@ -160,13 +161,15 @@ export const AudioUploader: React.FC<AudioUploaderProps> = ({
           </div>
 
           {previewUrl && (
-            <audio controls src={previewUrl} style={{ width: '100%', height: '36px' }} />
+            <div className="audio-player-container">
+              <audio controls src={previewUrl} />
+            </div>
           )}
         </div>
       )}
 
       {error && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-danger)', fontSize: '13px', marginTop: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-crimson)', fontSize: '13px', marginTop: '10px' }}>
           <AlertCircle size={15} />
           <span>{error}</span>
         </div>

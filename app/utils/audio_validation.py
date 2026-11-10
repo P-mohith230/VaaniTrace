@@ -105,3 +105,4 @@ async def validate_audio_file(file: UploadFile) -> bytes:
     # Reset file pointer for future reads if needed
     await file.seek(0)
     return content
+

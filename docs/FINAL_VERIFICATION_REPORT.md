@@ -112,3 +112,4 @@
 - **MediaStream Hardware Leaks:** Prevented. Microphone tracks in `AudioRecorder` are stopped on recording completion and component unmount.
 - **Server-Side Leaks:** Prevented. Audio uploads are spooled to temporary files and cleaned up in `finally` blocks, with startup orphan sweep.
 - **Unhandled Exceptions:** All route handlers return structured Pydantic schemas with sanitized `HTTPException` error codes (400, 401, 404, 413, 415, 429, 502, 503, 504).
+

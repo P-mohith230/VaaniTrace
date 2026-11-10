@@ -74,3 +74,4 @@ VaaniTrace is configured to run as an integrated single application unit:
    - Object URLs generated in the browser for audio previews are cleanly revoked via `URL.revokeObjectURL()`.
 3. **Database Concurrency:**
    - SQLite is initialized with `PRAGMA journal_mode=WAL;` and `PRAGMA synchronous=NORMAL;` for multi-read concurrency.
+

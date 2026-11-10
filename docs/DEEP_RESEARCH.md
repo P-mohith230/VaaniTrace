@@ -169,3 +169,4 @@ To prevent operational overhead, dual-port CORS conflicts, and mismatched deploy
 2. **Temporary File Life Cycle:** Audio uploaded for transcription is written to a secured temporary path, validated for magic bytes / container type, processed via streaming HTTP to Gnani, and cleaned up promptly.
 3. **Non-Blocking Execution:** External HTTP calls utilize asynchronous HTTPX with strict connection and read timeouts (30s) to prevent thread exhaustion.
 4. **Safe Error Masking:** Stack traces and internal server details are logged server-side and masked behind user-friendly JSON error schemas.
+

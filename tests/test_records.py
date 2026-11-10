@@ -120,3 +120,4 @@ async def test_record_crud_lifecycle(client):
     # Confirm deletion
     get_after_del = await client.get(f"/api/records/{record_id}")
     assert get_after_del.status_code == 404
+

@@ -87,3 +87,4 @@ VaaniTrace requires an architecture that is:
 | **Frontend Build Tool** | Vite |
 | **Styling** | Modern responsive design with custom CSS variables, clean typography, and Lucide icons |
 | **Testing** | Pytest + HTTPX TestClient (Backend), Vitest/Testing Library (Frontend) |
+

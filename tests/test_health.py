@@ -25,3 +25,4 @@ async def test_gnani_health(client):
     assert "connectivity" in data
     assert "model_stt" in data
     assert "model_tts" in data
+

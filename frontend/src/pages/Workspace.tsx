@@ -46,6 +46,49 @@ const RECORD_TYPES = [
   { id: 'general_conversation', label: 'General Conversation' },
 ];
 
+const DEMO_SAMPLES = [
+  {
+    id: 'sample_order',
+    title: 'B2B Medical Wholesale Order',
+    record_type: 'business_order',
+    language: 'en-IN',
+    label: 'Demo 1: Wholesale Medical Order (English)',
+    transcript: 'Hello Rajesh, this is Suresh speaking. I need 20 boxes of surgical gloves at 1200 rupees each. Please deliver them by Friday to our central warehouse.',
+  },
+  {
+    id: 'sample_meeting',
+    title: 'Weekly Engineering Sprint Sync',
+    record_type: 'meeting_action_items',
+    language: 'en-IN',
+    label: 'Demo 2: Meeting Tasks & Deadlines (English)',
+    transcript: 'In today\'s sync, Priya will prepare the slide deck by Friday. Rahul to review the client contract. Ankit will deploy the security patch before EOD.',
+  },
+  {
+    id: 'sample_field',
+    title: 'Site Inspection - Sector 4 Solar Facility',
+    record_type: 'field_report',
+    language: 'en-IN',
+    label: 'Demo 3: Site Inspection Debrief (English)',
+    transcript: 'Site inspection at Warehouse 4 completed. We identified a critical water leakage in the northern corridor near Inverter B. Immediate repair is required.',
+  },
+  {
+    id: 'sample_complaint',
+    title: 'Enterprise Fiber Outage Grievance',
+    record_type: 'customer_complaint',
+    language: 'en-IN',
+    label: 'Demo 4: Customer Grievance & Escalation (English)',
+    transcript: 'This is urgent! My broadband service has been disconnected since yesterday and no one is responding to my tickets. We are losing business operations.',
+  },
+  {
+    id: 'sample_hindi',
+    title: 'हिंदी व्यापार आदेश (Hindi Wholesale Order)',
+    record_type: 'business_order',
+    language: 'hi-IN',
+    label: 'Demo 5: आम का थोक व्यापार (Hindi)',
+    transcript: 'नमस्ते रमेश भाई। मुझे 50 कार्टन आम चाहिए। 600 रुपये प्रति कार्टन का भाव तय हुआ था। कल शाम तक दुकान पर भेज देना।',
+  },
+];
+
 export const Workspace: React.FC = () => {
   // Capture State
   const [captureMode, setCaptureMode] = useState<'upload' | 'record'>('upload');
@@ -81,6 +124,53 @@ export const Workspace: React.FC = () => {
   const handleAudioSelected = (file: File) => {
     setAudioFile(file);
     setErrorMessage(null);
+  };
+
+  // Handle Demo Scenario Loading
+  const handleLoadDemo = async (demoId: string) => {
+    const demo = DEMO_SAMPLES.find((d) => d.id === demoId);
+    if (!demo) return;
+
+    setIsLoading(true);
+    setLoadingMessage(`Extracting structured intelligence from ${demo.title}...`);
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    setSavedRecordId(null);
+    setSelectedRecordType(demo.record_type);
+    setSelectedLanguage(demo.language);
+    setDetectedLanguage(demo.language);
+    setSessionTitle(demo.title);
+    setTranscript(demo.transcript);
+
+    try {
+      const extractRes = await api.extractInformation(demo.transcript, demo.record_type);
+      setSummary(extractRes.summary || '');
+      setFields(extractRes.fields || []);
+      setActionItems(extractRes.action_items || []);
+      setUncertainFields(extractRes.uncertain_fields || []);
+
+      // derive segments
+      let charOffset = 0;
+      const rawMatches = demo.transcript.split(/(?<=[.?!।\n]+)/);
+      const segs = rawMatches.filter((s) => s.trim().length > 0).map((t, idx) => {
+        const clean = t.trim();
+        const start = demo.transcript.indexOf(clean, charOffset);
+        const end = start + clean.length;
+        charOffset = end;
+        return {
+          id: idx,
+          text: clean,
+          start_char: start,
+          end_char: end,
+        };
+      });
+      setSegments(segs);
+      setSuccessMessage(`Loaded "${demo.title}". Structured fields, calculations, and evidence mapping are ready.`);
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Failed to extract demo scenario.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Run Transcription & Structured Extraction
@@ -255,7 +345,7 @@ export const Workspace: React.FC = () => {
       {/* Top Configuration & Audio Input Card */}
       <div className="card">
         <h3 className="card-title">
-          <Mic size={20} color="var(--accent-primary)" />
+          <Mic size={20} color="var(--accent-wine)" />
           <span>New Voice-to-Action Session</span>
         </h3>
         <p className="card-subtitle">
@@ -270,6 +360,44 @@ export const Workspace: React.FC = () => {
             <span>{successMessage}</span>
           </div>
         )}
+
+        {/* Quick Demo Preloads */}
+        <div style={{
+          background: 'var(--accent-burgundy-subtle)',
+          border: '1px solid var(--accent-wine)',
+          borderRadius: 'var(--radius-md)',
+          padding: '12px 16px',
+          marginBottom: '20px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '12px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Sparkles size={16} color="var(--accent-crimson)" />
+            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-white)' }}>Try Sample Conversational Scenarios:</span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {DEMO_SAMPLES.map((demo) => (
+              <button
+                key={demo.id}
+                type="button"
+                onClick={() => handleLoadDemo(demo.id)}
+                className="btn btn-secondary btn-sm"
+                style={{ fontSize: '12px', padding: '4px 10px' }}
+                disabled={isLoading}
+              >
+                {demo.id === 'sample_order' && 'Wholesale Order'}
+                {demo.id === 'sample_meeting' && 'Sprint Sync'}
+                {demo.id === 'sample_field' && 'Site Inspection'}
+                {demo.id === 'sample_complaint' && 'Customer Grievance'}
+                {demo.id === 'sample_hindi' && 'हिंदी आदेश'}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Input Mode Selector */}
         <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
@@ -363,8 +491,8 @@ export const Workspace: React.FC = () => {
         <div style={{ marginTop: '28px' }}>
           {/* Session Title Bar */}
           <div style={{
-            background: 'var(--bg-secondary)',
-            border: '1px solid var(--border-color)',
+            background: 'var(--color-charcoal)',
+            border: '1px solid var(--color-border)',
             borderRadius: 'var(--radius-md)',
             padding: '16px 20px',
             marginBottom: '20px',

@@ -579,3 +579,4 @@ class InformationExtractor:
 
 
 information_extractor = InformationExtractor()
+

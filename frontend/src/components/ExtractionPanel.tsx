@@ -41,7 +41,7 @@ export const ExtractionPanel: React.FC<ExtractionPanelProps> = ({
       current_value: editValue,
       is_edited: isNowEdited,
       evidence_type: isNowEdited ? 'manual' : originalField.evidence_type,
-      verification_status: 'verified', // Mark verified upon human check
+      verification_status: 'verified',
     };
 
     onFieldUpdate(index, updated);
@@ -58,24 +58,24 @@ export const ExtractionPanel: React.FC<ExtractionPanelProps> = ({
       {/* Summary Card */}
       {summary && (
         <div style={{
-          background: 'rgba(2, 132, 199, 0.08)',
-          border: '1px solid rgba(2, 132, 199, 0.3)',
+          background: 'rgba(74, 16, 27, 0.25)',
+          border: '1px solid var(--accent-wine)',
           borderRadius: 'var(--radius-md)',
-          padding: '16px',
-          marginBottom: '20px',
+          padding: '18px',
+          marginBottom: '22px',
         }}>
-          <h4 style={{ fontSize: '13px', textTransform: 'uppercase', color: 'var(--accent-cyan)', fontWeight: 700, marginBottom: '6px', letterSpacing: '0.05em' }}>
+          <h4 style={{ fontSize: '12px', textTransform: 'uppercase', color: 'var(--accent-crimson)', fontWeight: 700, marginBottom: '6px', letterSpacing: '0.08em' }}>
             Structured Summary
           </h4>
-          <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#f1f5f9' }}>{summary}</p>
+          <p style={{ fontSize: '14px', lineHeight: 1.65, color: '#f5f3f1' }}>{summary}</p>
         </div>
       )}
 
       {/* Action Items Section */}
       {actionItems.length > 0 && (
-        <div style={{ marginBottom: '24px' }}>
-          <h4 style={{ fontSize: '14px', fontWeight: 600, color: '#fff', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <CheckCircle2 size={16} color="var(--accent-success)" />
+        <div style={{ marginBottom: '26px' }}>
+          <h4 style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, color: 'var(--color-muted-grey)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <CheckCircle2 size={15} color="var(--accent-crimson)" />
             <span>Action Items & Commitments ({actionItems.length})</span>
           </h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -83,10 +83,10 @@ export const ExtractionPanel: React.FC<ExtractionPanelProps> = ({
               <div
                 key={item.id || idx}
                 style={{
-                  background: '#0b1120',
-                  border: '1px solid var(--border-color)',
+                  background: 'var(--color-rich-black)',
+                  border: '1px solid var(--color-border)',
                   borderRadius: 'var(--radius-sm)',
-                  padding: '12px 14px',
+                  padding: '14px 16px',
                   display: 'flex',
                   alignItems: 'flex-start',
                   justifyContent: 'space-between',
@@ -94,8 +94,8 @@ export const ExtractionPanel: React.FC<ExtractionPanelProps> = ({
                 }}
               >
                 <div>
-                  <p style={{ fontSize: '14px', fontWeight: 500, color: '#fff' }}>{item.description}</p>
-                  <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                  <p style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>{item.description}</p>
+                  <p style={{ fontSize: '12px', color: 'var(--color-muted-grey)', marginTop: '4px' }}>
                     {item.assignee ? `Assignee: ${item.assignee}` : 'Assignee: Team'} • {item.deadline ? `Due: ${item.deadline}` : 'Due: None'}
                   </p>
                 </div>
@@ -107,14 +107,14 @@ export const ExtractionPanel: React.FC<ExtractionPanelProps> = ({
       )}
 
       {/* Extracted Business Fields */}
-      <div style={{ marginBottom: '24px' }}>
-        <h4 style={{ fontSize: '14px', fontWeight: 600, color: '#fff', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Sparkles size={16} color="var(--accent-primary)" />
+      <div style={{ marginBottom: '26px' }}>
+        <h4 style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, color: 'var(--color-muted-grey)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Sparkles size={15} color="var(--accent-crimson)" />
           <span>Extracted Business Facts & Evidence ({fields.length})</span>
         </h4>
 
         {fields.length === 0 ? (
-          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>No structured fields extracted yet.</p>
+          <p style={{ fontSize: '13px', color: 'var(--color-muted-grey)' }}>No structured fields extracted yet.</p>
         ) : (
           <div className="fields-container">
             {fields.map((field, idx) => {
@@ -142,19 +142,19 @@ export const ExtractionPanel: React.FC<ExtractionPanelProps> = ({
                   </div>
 
                   {isEditing ? (
-                    <div style={{ marginTop: '8px' }} onClick={(e) => e.stopPropagation()}>
+                    <div style={{ marginTop: '10px' }} onClick={(e) => e.stopPropagation()}>
                       <input
                         type="text"
                         value={editValue}
                         onChange={(e) => setEditValue(e.target.value)}
                         className="form-control"
-                        style={{ marginBottom: '8px' }}
+                        style={{ marginBottom: '10px' }}
                         autoFocus
                       />
                       <div style={{ display: 'flex', gap: '8px' }}>
                         <button
                           type="button"
-                          className="btn btn-success btn-sm"
+                          className="btn btn-primary btn-sm"
                           onClick={() => saveEdit(idx)}
                         >
                           <Check size={13} /> Save Value
@@ -172,7 +172,7 @@ export const ExtractionPanel: React.FC<ExtractionPanelProps> = ({
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <p className="field-value">
-                          {field.current_value || <span style={{ color: 'var(--text-muted)' }}>null</span>}
+                          {field.current_value || <span style={{ color: 'var(--color-muted-grey)' }}>null</span>}
                         </p>
                         <div style={{ display: 'flex', gap: '6px' }} onClick={(e) => e.stopPropagation()}>
                           <button
@@ -197,7 +197,7 @@ export const ExtractionPanel: React.FC<ExtractionPanelProps> = ({
                       </div>
 
                       {field.is_edited && (
-                        <p style={{ fontSize: '11px', color: '#a78bfa', marginTop: '2px' }}>
+                        <p style={{ fontSize: '11px', color: '#ffb3bd', marginTop: '2px' }}>
                           ✎ Manually modified (Original: "{field.original_value}")
                         </p>
                       )}
@@ -223,16 +223,16 @@ export const ExtractionPanel: React.FC<ExtractionPanelProps> = ({
       {/* Uncertain Fields Warning */}
       {uncertainFields.length > 0 && (
         <div style={{
-          background: 'rgba(245, 158, 11, 0.08)',
-          border: '1px solid rgba(245, 158, 11, 0.3)',
+          background: 'rgba(74, 16, 27, 0.25)',
+          border: '1px solid var(--accent-wine)',
           borderRadius: 'var(--radius-md)',
-          padding: '14px 16px',
+          padding: '16px',
         }}>
-          <h5 style={{ fontSize: '13px', fontWeight: 600, color: 'var(--accent-warning)', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+          <h5 style={{ fontSize: '13px', fontWeight: 600, color: 'var(--accent-crimson)', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
             <AlertTriangle size={14} />
             <span>Uncertain Information Flagged for Review ({uncertainFields.length})</span>
           </h5>
-          <ul style={{ listStyle: 'none', paddingLeft: 0, fontSize: '12px', color: '#fef3c7' }}>
+          <ul style={{ listStyle: 'none', paddingLeft: 0, fontSize: '12px', color: '#f5f3f1' }}>
             {uncertainFields.map((u, i) => (
               <li key={i} style={{ marginBottom: '4px' }}>
                 • <strong>{u.field_name}:</strong> {u.reason}

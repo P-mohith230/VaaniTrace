@@ -38,3 +38,4 @@ async def synthesize_speech(
         speed=request.speed or 1.0,
     )
     return SpeechResponse(**result)
+

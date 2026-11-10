@@ -64,3 +64,4 @@ async def test_validate_valid_wav():
     valid_upload = create_mock_upload(wav_content, "sample.wav", "audio/wav")
     validated_bytes = await validate_audio_file(valid_upload)
     assert len(validated_bytes) == len(wav_content)
+

@@ -31,3 +31,4 @@
    - SQLite with WAL mode handles hundreds of concurrent reads and serialized writes cleanly on a single node. For distributed multi-server horizontal autoscaling, PostgreSQL is recommended.
 2. **Temporary Storage:**
    - Uploaded audio files are spooled to `data/uploads/` and deleted immediately following transcription. Raw audio is not retained indefinitely to respect privacy and storage boundaries.
+

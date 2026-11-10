@@ -231,3 +231,4 @@ Synthesizes a spoken summary with Gnani Timbre.
 - `PUT /api/records/{id}`: Updates field values, verification status, and manual edits.
 - `DELETE /api/records/{id}`: Permanently deletes a record.
 - `GET /api/records/{id}/export?format=json|csv`: Downloads structured export file.
+

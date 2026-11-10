@@ -77,3 +77,4 @@ async def test_extract_api_endpoint(client):
     data = response.json()
     assert data["record_type"] == "business_order"
     assert len(data["fields"]) > 0
+

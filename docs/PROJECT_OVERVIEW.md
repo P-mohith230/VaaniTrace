@@ -50,3 +50,4 @@ In conversational workflows such as wholesale distributor order calls, site insp
    - One integrated repository.
    - One FastAPI application server serving both REST API endpoints and the built single-page web UI.
    - Zero CORS complications in production and single-command startup.
+

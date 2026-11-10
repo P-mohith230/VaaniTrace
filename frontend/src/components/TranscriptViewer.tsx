@@ -22,31 +22,32 @@ export const TranscriptViewer: React.FC<TranscriptViewerProps> = ({
   if (!transcript || transcript.trim().length === 0) {
     return (
       <div style={{
-        background: '#0b1120',
-        border: '1px solid var(--border-color)',
+        background: 'var(--color-rich-black)',
+        border: '1px solid var(--color-border)',
         borderRadius: 'var(--radius-md)',
-        padding: '36px 20px',
+        padding: '48px 24px',
         textAlign: 'center',
-        color: 'var(--text-muted)',
+        color: 'var(--color-muted-grey)',
       }}>
-        <MessageSquare size={32} style={{ margin: '0 auto 12px', opacity: 0.5 }} />
-        <p style={{ fontSize: '14px' }}>No transcript yet. Record audio or upload a sound file to transcribe.</p>
+        <MessageSquare size={36} style={{ margin: '0 auto 14px', opacity: 0.4 }} />
+        <h4 style={{ fontSize: '15px', color: '#fff', marginBottom: '6px' }}>No Transcript Loaded</h4>
+        <p style={{ fontSize: '13px' }}>Record audio, upload a file, or click a demo scenario to inspect spoken words.</p>
       </div>
     );
   }
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <MessageSquare size={16} color="var(--accent-cyan)" />
+          <MessageSquare size={16} color="var(--accent-crimson)" />
           <span style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>Spoken Transcript</span>
-          <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>({segments.length} segments)</span>
+          <span style={{ fontSize: '12px', color: 'var(--color-muted-grey)' }}>({segments.length} segments)</span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--color-muted-grey)' }}>
           <Globe size={13} />
-          <span>Language: <strong>{detectedLanguage}</strong></span>
+          <span>Language: <strong style={{ color: '#fff' }}>{detectedLanguage}</strong></span>
         </div>
       </div>
 
@@ -64,7 +65,7 @@ export const TranscriptViewer: React.FC<TranscriptViewerProps> = ({
                 key={seg.id}
                 onClick={() => onSegmentClick && onSegmentClick(seg)}
                 className={`segment-span ${isActive ? 'active' : ''}`}
-                title={`Segment #${seg.id + 1} (${seg.start_char}-${seg.end_char}) • Click to filter linked extractions`}
+                title={`Segment #${seg.id + 1} (${seg.start_char}-${seg.end_char}) • Click to highlight linked facts`}
               >
                 {seg.text}{' '}
               </span>
@@ -75,9 +76,9 @@ export const TranscriptViewer: React.FC<TranscriptViewerProps> = ({
         )}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '10px', fontSize: '12px', color: 'var(--text-secondary)' }}>
-        <Sparkles size={13} color="var(--accent-primary)" />
-        <span>Click any sentence segment to pinpoint the extracted business facts linked to it.</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '12px', fontSize: '12px', color: 'var(--color-muted-grey)' }}>
+        <Sparkles size={13} color="var(--accent-crimson)" />
+        <span>Click any sentence segment above to filter and illuminate its extracted business facts.</span>
       </div>
     </div>
   );

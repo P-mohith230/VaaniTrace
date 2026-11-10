@@ -301,3 +301,4 @@ def _build_record_detail(record: Record) -> RecordDetail:
         fields=fields_list,
         action_items=actions_list,
     )
+

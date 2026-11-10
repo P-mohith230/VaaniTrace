@@ -61,16 +61,16 @@ export const VerificationControls: React.FC<VerificationControlsProps> = ({
 
       {/* Spoken Summary Section (Timbre TTS) */}
       <div style={{
-        background: '#0b1120',
-        border: '1px solid var(--border-color)',
+        background: 'var(--color-rich-black)',
+        border: '1px solid var(--color-border)',
         borderRadius: 'var(--radius-md)',
         padding: '16px',
         marginBottom: '20px',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Volume2 size={16} color="var(--accent-purple)" />
-            <span style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>Spoken Audio Summary (Gnani Timbre)</span>
+            <Volume2 size={16} color="var(--accent-crimson)" />
+            <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-white)' }}>Spoken Audio Summary (Gnani Timbre)</span>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -115,7 +115,7 @@ export const VerificationControls: React.FC<VerificationControlsProps> = ({
         )}
 
         {synthError && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-warning)', fontSize: '12px', marginTop: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-crimson)', fontSize: '12px', marginTop: '8px' }}>
             <AlertCircle size={14} />
             <span>{synthError}</span>
           </div>
@@ -164,3 +164,4 @@ export const VerificationControls: React.FC<VerificationControlsProps> = ({
     </div>
   );
 };
+

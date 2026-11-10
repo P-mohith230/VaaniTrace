@@ -58,3 +58,4 @@ async def transcribe_audio(
         processing_time=res.get("processing_time"),
         segments=segments,
     )
+

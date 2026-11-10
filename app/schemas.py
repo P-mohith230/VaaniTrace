@@ -222,3 +222,4 @@ class RecordDetail(BaseModel):
     action_items: List[ActionItemSchema] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
+

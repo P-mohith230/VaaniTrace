@@ -30,6 +30,7 @@ Standard AI summarization tools often introduce ungrounded assertions or drop cr
 - **Spoken Summary Synthesis:** High-fidelity voice briefing generated using **Gnani Timbre v2.5** (voices: *Nalini* or *Avinash*).
 - **Persistent Storage & Portable Export:** Embedded SQLite database with persistent storage and one-click export to **JSON** and tabular **CSV**.
 - **Single-Deployment Architecture:** One integrated application server (FastAPI) serving both the REST API and the production-built React frontend from a single port (`8000`).
+- **Premium Monochromatic & Wine-Red Homepage:** Bespoke high-craft landing experience with 11 custom sections, live animated waveform simulations, Indic code-mixing showcase, interactive 3D flipping use-case cards, and strict adherence to a Pure Black (`#000000`), Rich Black (`#0A0A0A`), Charcoal (`#141414`), White (`#FFFFFF`), and Wine Red (`#722F37`) design system.
 
 ---
 
@@ -171,7 +172,13 @@ cd ..
 ```
 *(This compiles React into `static/dist/`, which FastAPI will serve).*
 
-### 4. Run Application Server (Single Command)
+### 4. Seed Demonstration Records (Optional but Recommended)
+```bash
+python -m data.seed_demo_records
+```
+*(Pre-populates SQLite with sample verified records and character-accurate evidence references for B2B Wholesale and Field Inspection scenarios).*
+
+### 5. Run Application Server (Single Command)
 ```bash
 python -m app.main
 ```
@@ -260,4 +267,6 @@ python verify_e2e.py
 - [`docs/DEPLOYMENT_STRATEGY.md`](docs/DEPLOYMENT_STRATEGY.md) — Single-deployment operational guide.
 - [`docs/DEPLOYMENT_VERIFICATION.md`](docs/DEPLOYMENT_VERIFICATION.md) — Single-server deployment test evidence.
 - [`docs/FINAL_VERIFICATION_REPORT.md`](docs/FINAL_VERIFICATION_REPORT.md) — Complete audit and test execution matrix.
+- [`docs/HOMEPAGE_IMPLEMENTATION_REPORT.md`](docs/HOMEPAGE_IMPLEMENTATION_REPORT.md) — Comprehensive visual identity, color audit, 3D card flipping, and homepage implementation report.
 - [`docs/KNOWN_LIMITATIONS.md`](docs/KNOWN_LIMITATIONS.md) — Technical constraints and operational boundaries.
+

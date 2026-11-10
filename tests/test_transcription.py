@@ -70,3 +70,4 @@ async def test_transcribe_missing_key_handling(client, monkeypatch):
     response = await client.post("/api/transcribe", files=files)
     assert response.status_code == 503
     assert "not configured" in response.json()["detail"].lower()
+

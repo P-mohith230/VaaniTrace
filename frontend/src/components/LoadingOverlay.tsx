@@ -19,30 +19,30 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(15, 23, 42, 0.8)',
-      backdropFilter: 'blur(4px)',
+      background: 'rgba(0, 0, 0, 0.85)',
+      backdropFilter: 'blur(8px)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 9999,
-      color: '#fff',
+      color: 'var(--color-white)',
     }}>
       <div style={{
-        background: '#1e293b',
-        border: '1px solid #334155',
-        borderRadius: '16px',
+        background: 'var(--color-rich-black)',
+        border: '1px solid var(--accent-wine)',
+        borderRadius: 'var(--radius-lg)',
         padding: '36px 48px',
         textAlign: 'center',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)',
+        boxShadow: 'var(--shadow-wine)',
       }}>
         <Loader2
           size={42}
-          color="#0284c7"
+          color="var(--accent-crimson)"
           style={{ animation: 'spin 1s linear infinite', margin: '0 auto 16px' }}
         />
-        <h4 style={{ fontSize: '17px', fontWeight: 600, marginBottom: '6px' }}>{message}</h4>
-        <p style={{ fontSize: '13px', color: '#94a3b8' }}>Please wait while communicating with Gnani AI engine.</p>
+        <h4 style={{ fontSize: '17px', fontWeight: 600, marginBottom: '6px', color: 'var(--color-white)' }}>{message}</h4>
+        <p style={{ fontSize: '13px', color: 'var(--color-muted-grey)' }}>Please wait while communicating with Gnani AI engine.</p>
       </div>
 
       <style>{`
@@ -54,3 +54,4 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
     </div>
   );
 };
+

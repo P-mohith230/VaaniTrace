@@ -47,3 +47,4 @@ async def get_gnani_health():
             "timeout_seconds": settings.GNANI_TIMEOUT_SECONDS,
         },
     )
+

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
+import { Homepage } from './pages/Homepage';
 import { Dashboard } from './pages/Dashboard';
 import { Workspace } from './pages/Workspace';
 import { RecordsList } from './pages/RecordsList';
@@ -9,7 +10,7 @@ import { SystemHealth, GnaniHealth } from './types';
 import { api } from './services/api';
 
 export const App: React.FC = () => {
-  const [currentTab, setCurrentTab] = useState<string>('dashboard');
+  const [currentTab, setCurrentTab] = useState<string>('home');
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
   const [systemHealth, setSystemHealth] = useState<SystemHealth | null>(null);
   const [gnaniHealth, setGnaniHealth] = useState<GnaniHealth | null>(null);
@@ -61,12 +62,22 @@ export const App: React.FC = () => {
         onTabChange={(tab) => {
           setSelectedRecordId(null);
           setCurrentTab(tab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         systemHealth={systemHealth}
         gnaniHealth={gnaniHealth}
       />
 
-      <main className="main-content">
+      <main className={`main-content ${currentTab === 'home' ? 'homepage-mode' : ''}`}>
+        {currentTab === 'home' && (
+          <Homepage
+            onNavigateToWorkspace={() => setCurrentTab('workspace')}
+            onNavigateTab={(tab) => setCurrentTab(tab)}
+          />
+        )}
+
+        {currentTab === 'workspace' && <Workspace />}
+
         {currentTab === 'dashboard' && (
           <Dashboard
             onNavigateToWorkspace={() => setCurrentTab('workspace')}
@@ -75,8 +86,6 @@ export const App: React.FC = () => {
             gnaniHealth={gnaniHealth}
           />
         )}
-
-        {currentTab === 'workspace' && <Workspace />}
 
         {currentTab === 'records' && (
           <RecordsList
@@ -101,15 +110,18 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      <footer style={{
-        borderTop: '1px solid var(--border-color)',
-        padding: '20px',
-        textAlign: 'center',
-        fontSize: '12px',
-        color: 'var(--text-muted)',
-      }}>
-        VaaniTrace Platform • Powered by Gnani Prisma v2.5 STT & Timbre v2.5 TTS • Single-Deployment Unified Architecture
-      </footer>
+      {currentTab !== 'home' && (
+        <footer style={{
+          borderTop: '1px solid var(--color-border)',
+          padding: '24px',
+          textAlign: 'center',
+          fontSize: '12px',
+          color: 'var(--color-muted-grey)',
+          background: 'var(--color-rich-black)',
+        }}>
+          VaaniTrace • Beyond Transcription. Into Action. • Powered by Gnani AI • Single-Deployment Architecture
+        </footer>
+      )}
     </div>
   );
 };

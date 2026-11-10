@@ -48,7 +48,6 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
-      // Select supported mime type
       const mimeTypes = [
         'audio/webm;codecs=opus',
         'audio/webm',
@@ -82,7 +81,7 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
         stopTracks();
       };
 
-      recorder.start(250); // Slice chunks every 250ms
+      recorder.start(250);
       setIsRecording(true);
       setRecordSeconds(0);
 
@@ -92,9 +91,9 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
     } catch (err: any) {
       console.error('Error starting audio recording:', err);
       if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-        setError('Microphone permission was denied. Please allow microphone access in your browser settings.');
+        setError('Microphone permission was denied. Please allow microphone access in browser settings.');
       } else if (err.name === 'NotFoundError') {
-        setError('No microphone found on your system.');
+        setError('No microphone hardware detected.');
       } else {
         setError(`Unable to record audio: ${err.message || 'Unknown error'}`);
       }
@@ -139,10 +138,10 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
 
   return (
     <div style={{
-      background: 'rgba(15, 23, 42, 0.6)',
-      border: '1px solid var(--border-color)',
+      background: 'var(--color-rich-black)',
+      border: '1px solid var(--color-border)',
       borderRadius: 'var(--radius-md)',
-      padding: '20px',
+      padding: '24px',
       textAlign: 'center',
       marginBottom: '16px',
     }}>
@@ -153,12 +152,12 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
             onClick={startRecording}
             disabled={disabled}
             className="btn btn-primary"
-            style={{ padding: '12px 24px', fontSize: '15px' }}
+            style={{ padding: '13px 26px', fontSize: '15px' }}
           >
             <Mic size={18} /> Record from Microphone
           </button>
-          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '8px' }}>
-            Click to start recording your voice note or live phone conversation
+          <p style={{ fontSize: '12px', color: 'var(--color-muted-grey)', marginTop: '10px' }}>
+            Click to capture live multilingual speech via browser audio
           </p>
         </div>
       )}
@@ -169,14 +168,14 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
             display: 'inline-flex',
             alignItems: 'center',
             gap: '10px',
-            background: 'rgba(239, 68, 68, 0.15)',
-            border: '1px solid rgba(239, 68, 68, 0.4)',
-            padding: '8px 18px',
-            borderRadius: '9999px',
-            color: '#f87171',
+            background: 'rgba(74, 16, 27, 0.4)',
+            border: '1px solid var(--accent-wine)',
+            padding: '8px 20px',
+            borderRadius: 'var(--radius-full)',
+            color: '#fff',
             fontSize: '15px',
             fontWeight: 600,
-            marginBottom: '16px',
+            marginBottom: '18px',
           }}>
             <div
               className="recording-pulse"
@@ -184,7 +183,7 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
                 width: '12px',
                 height: '12px',
                 borderRadius: '50%',
-                background: '#ef4444',
+                background: 'var(--accent-crimson)',
               }}
             />
             <span>Recording Live: {formatTime(recordSeconds)}</span>
@@ -194,8 +193,8 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
             <button
               type="button"
               onClick={stopRecording}
-              className="btn btn-danger"
-              style={{ padding: '10px 20px' }}
+              className="btn btn-burgundy-outline"
+              style={{ padding: '10px 22px' }}
             >
               <Square size={16} /> Stop Recording
             </button>
@@ -205,16 +204,18 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
 
       {recordedBlob && previewUrl && !isRecording && (
         <div>
-          <h4 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '8px', color: '#fff' }}>
+          <h4 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '10px', color: '#fff' }}>
             Recording Ready ({formatTime(recordSeconds)})
           </h4>
-          <audio controls src={previewUrl} style={{ width: '100%', maxWidth: '400px', height: '36px', marginBottom: '16px' }} />
+          <div className="audio-player-container" style={{ maxWidth: '420px', margin: '0 auto 16px' }}>
+            <audio controls src={previewUrl} />
+          </div>
 
           <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
             <button
               type="button"
               onClick={handleUseRecording}
-              className="btn btn-success"
+              className="btn btn-primary"
               disabled={disabled}
             >
               <Check size={16} /> Use This Recording
@@ -237,9 +238,9 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
           alignItems: 'center',
           justifyContent: 'center',
           gap: '8px',
-          color: 'var(--accent-danger)',
+          color: 'var(--accent-crimson)',
           fontSize: '13px',
-          marginTop: '12px',
+          marginTop: '14px',
         }}>
           <AlertCircle size={15} />
           <span>{error}</span>

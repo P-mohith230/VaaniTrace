@@ -1,0 +1,37 @@
+{
+  "business_order": {
+    "title": "B2B Medical Wholesale Order",
+    "language": "en-IN",
+    "record_type": "business_order",
+    "transcript": "Hello Rajesh, this is Suresh speaking. I need 20 boxes of surgical gloves at 1200 rupees each. Please deliver them by Friday to our central warehouse.",
+    "description": "Wholesale surgical equipment purchase order with quantity, unit price, calculated total, and delivery deadline."
+  },
+  "meeting_action_items": {
+    "title": "Weekly Product Engineering Sync",
+    "language": "en-IN",
+    "record_type": "meeting_action_items",
+    "transcript": "In today's sync, Priya will prepare the slide deck by Friday. Rahul to review the client contract. Ankit will deploy the security patch before EOD.",
+    "description": "Team project review with task assignments and hard deadlines."
+  },
+  "field_report": {
+    "title": "Site Inspection - Sector 4 Solar Facility",
+    "language": "en-IN",
+    "record_type": "field_report",
+    "transcript": "Site inspection at Warehouse 4 completed. We identified a critical water leakage in the northern corridor near Inverter B. Immediate repair is required.",
+    "description": "Field debrief reporting equipment condition and required follow-up."
+  },
+  "customer_complaint": {
+    "title": "Enterprise Fiber Outage Grievance",
+    "language": "en-IN",
+    "record_type": "customer_complaint",
+    "transcript": "This is urgent! My broadband service has been disconnected since yesterday and no one is responding to my tickets. We are losing business operations.",
+    "description": "High-urgency customer grievance regarding connectivity outage."
+  },
+  "hindi_business_order": {
+    "title": "हिंदी व्यापार आदेश (Hindi Wholesale Order)",
+    "language": "hi-IN",
+    "record_type": "business_order",
+    "transcript": "नमस्ते रमेश भाई। मुझे 50 कार्टन आम चाहिए। 600 रुपये प्रति कार्टन का भाव तय हुआ था। कल शाम तक दुकान पर भेज देना।",
+    "description": "Hindi wholesale order for mangoes with unit price and delivery deadline."
+  }
+}

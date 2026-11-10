@@ -20,8 +20,8 @@ export const RecordCard: React.FC<RecordCardProps> = ({ record, onOpen, onDelete
 
   return (
     <div style={{
-      background: 'var(--bg-secondary)',
-      border: '1px solid var(--border-color)',
+      background: 'var(--color-charcoal)',
+      border: '1px solid var(--color-border)',
       borderRadius: 'var(--radius-md)',
       padding: '18px',
       display: 'flex',
@@ -32,7 +32,7 @@ export const RecordCard: React.FC<RecordCardProps> = ({ record, onOpen, onDelete
     }}>
       <div>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px', marginBottom: '8px' }}>
-          <h4 style={{ fontSize: '15px', fontWeight: 600, color: '#fff', lineHeight: 1.3 }}>
+          <h4 style={{ fontSize: '15px', fontWeight: 600, color: 'var(--color-white)', lineHeight: 1.3 }}>
             {record.title}
           </h4>
           <span className={`badge badge-${record.verification_status}`}>
@@ -42,10 +42,11 @@ export const RecordCard: React.FC<RecordCardProps> = ({ record, onOpen, onDelete
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', fontSize: '12px', color: 'var(--text-secondary)' }}>
           <span style={{
-            background: 'rgba(255, 255, 255, 0.06)',
+            background: 'var(--color-graphite)',
             padding: '2px 8px',
             borderRadius: '4px',
             textTransform: 'capitalize',
+            border: '1px solid var(--color-border-subtle)',
           }}>
             {record.record_type.replace(/_/g, ' ')}
           </span>
@@ -56,11 +57,11 @@ export const RecordCard: React.FC<RecordCardProps> = ({ record, onOpen, onDelete
         </div>
 
         <div style={{ marginTop: '12px', fontSize: '12px', color: 'var(--text-muted)' }}>
-          <strong>{record.field_count}</strong> extracted fields • <strong>{record.action_item_count}</strong> action items
+          <strong style={{ color: 'var(--color-white)' }}>{record.field_count}</strong> extracted fields • <strong style={{ color: 'var(--color-white)' }}>{record.action_item_count}</strong> action items
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid var(--border-color)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid var(--color-border)' }}>
         <button
           type="button"
           onClick={() => onOpen(record.id)}
@@ -92,7 +93,7 @@ export const RecordCard: React.FC<RecordCardProps> = ({ record, onOpen, onDelete
               type="button"
               onClick={() => onDelete(record.id)}
               className="btn btn-secondary btn-sm"
-              style={{ color: 'var(--accent-danger)' }}
+              style={{ color: 'var(--accent-crimson)' }}
               title="Delete record"
             >
               <Trash2 size={13} />
@@ -103,3 +104,4 @@ export const RecordCard: React.FC<RecordCardProps> = ({ record, onOpen, onDelete
     </div>
   );
 };
+

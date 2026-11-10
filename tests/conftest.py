@@ -57,3 +57,4 @@ async def client(db_session):
     async with AsyncClient(transport=transport, base_url="http://testserver") as ac:
         yield ac
     app.dependency_overrides.clear()
+

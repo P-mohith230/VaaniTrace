@@ -58,3 +58,4 @@ async def test_speech_missing_key_graceful(client, monkeypatch):
     response = await client.post("/api/speech", json=payload)
     assert response.status_code == 503
     assert "not configured" in response.json()["detail"].lower()
+

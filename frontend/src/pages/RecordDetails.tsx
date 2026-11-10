@@ -205,7 +205,7 @@ export const RecordDetails: React.FC<RecordDetailsProps> = ({ recordId, onBack }
             <span style={{
               fontSize: '11px',
               textTransform: 'uppercase',
-              color: 'var(--accent-cyan)',
+              color: 'var(--accent-crimson)',
               fontWeight: 700,
               letterSpacing: '0.05em',
             }}>
