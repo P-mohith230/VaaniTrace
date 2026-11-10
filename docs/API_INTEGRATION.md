@@ -23,18 +23,28 @@ This document specifies the exact request and response contracts for the externa
   - `audio_file`: Binary file upload.
   - `model`: `"prisma-v2.5"` (default) or `"prisma-v3.0"`.
   - `language_code`: `"indic-auto"` (for auto-detection) or BCP-47 locale (`"en-IN"`, `"hi-IN"`, `"ta-IN"`, `"te-IN"`, `"kn-IN"`, etc.).
+  - `multi_lang_codes`: Comma-separated locales (e.g. `"en-IN,hi-IN,ta-IN,te-IN,kn-IN"`) required by Gnani whenever `language_code="indic-auto"`.
   - `output_format`: `"transcribe"` (standard normalized), `"verbatim"`, or `"code-mix"`.
-- **Response Format:**
+- **Response Format (Verified Live):**
   ```json
   {
     "success": true,
-    "request_id": "019fd17d-1106-7265-88ab-3ed12d029292",
-    "transcript": "नमस्ते, मुझे बीस बॉक्स मंगवाने हैं कल तक।",
+    "request_id": "01a1c4a0-5cb6-714e-b5f7-41ec2768565a",
+    "detected_language_code": "en-IN",
     "model": "prisma-v2.5",
-    "detected_language_code": "hi-IN",
-    "processing_time": 0.58
+    "processing_time": 0.207,
+    "end_to_end_latency": 0.401,
+    "translations": {
+      "en-IN": "hello rajesh this is suresh speaking i need twenty five boxes of surgical gloves at one thousand two hundred rupees each please deliver them by friday to our central warehouse"
+    },
+    "output": {
+      "literal": {
+        "en-IN": "hello rajesh this is suresh speaking i need twenty five boxes of surgical gloves at one thousand two hundred rupees each please deliver them by friday to our central warehouse"
+      }
+    }
   }
   ```
+  *(Note: VaaniTrace inspects `translations`, `output.literal`, and standard keys `transcript`/`text` to guarantee robust cross-version compatibility).*
 - **Error Behavior:**
   - Status 401: Unauthorized API key.
   - Status 400: Malformed audio or unsupported container.
@@ -230,5 +240,5 @@ Synthesizes a spoken summary with Gnani Timbre.
 - `GET /api/records/{id}`: Returns complete record with fields and evidence.
 - `PUT /api/records/{id}`: Updates field values, verification status, and manual edits.
 - `DELETE /api/records/{id}`: Permanently deletes a record.
-- `GET /api/records/{id}/export?format=json|csv`: Downloads structured export file.
+- `GET /api/records/{id}/export?format=json|csv|xlsx`: Downloads structured export file (JSON, UTF-8 BOM CSV for Excel compatibility, or styled native Excel `.xlsx` workbook).
 
