@@ -40,6 +40,34 @@ class GnaniPrismaService:
             "token": key,
         }
 
+    def _extract_transcript(self, result: Any) -> str:
+        """Resiliently extract transcript text from any Gnani response envelope."""
+        if not isinstance(result, dict):
+            return str(result or "").strip()
+        
+        # Direct key matches
+        for key in ("transcript", "transcription", "text", "asr_output", "speech_text"):
+            val = result.get(key)
+            if isinstance(val, str) and val.strip():
+                return val.strip()
+
+        # Check nested structures
+        for container_key in ("data", "result", "payload", "output", "response"):
+            nested = result.get(container_key)
+            if isinstance(nested, dict):
+                sub = self._extract_transcript(nested)
+                if sub:
+                    return sub
+            elif isinstance(nested, list) and len(nested) > 0:
+                if isinstance(nested[0], dict):
+                    sub = self._extract_transcript(nested[0])
+                    if sub:
+                        return sub
+                elif isinstance(nested[0], str):
+                    return " ".join(nested).strip()
+
+        return ""
+
     async def transcribe(
         self,
         audio_bytes: bytes,
@@ -67,7 +95,12 @@ class GnaniPrismaService:
             "language_code": language_code,
         }
 
-        logger.info(f"Submitting transcription request to {endpoint} (model={chosen_model}, lang={language_code})")
+        # Gnani API requirement: indic-auto requires multi_lang_codes
+        if language_code in ("indic-auto", "auto", "indic") or not language_code:
+            data["language_code"] = "indic-auto"
+            data["multi_lang_codes"] = "en-IN,hi-IN,ta-IN,te-IN,kn-IN,mr-IN,bn-IN,gu-IN"
+
+        logger.info(f"Submitting transcription request to {endpoint} (model={chosen_model}, lang={data['language_code']})")
 
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
@@ -76,12 +109,16 @@ class GnaniPrismaService:
             if response.status_code == 200:
                 result = response.json()
                 logger.info(f"Gnani Prisma transcription success (request_id={result.get('request_id')})")
+                
+                # Robust extraction across different Gnani envelope formats
+                transcript_text = self._extract_transcript(result)
+
                 return {
-                    "request_id": result.get("request_id") or "req-direct",
-                    "transcript": result.get("transcript", "").strip(),
-                    "detected_language": result.get("detected_language_code") or language_code,
+                    "request_id": str(result.get("request_id") or result.get("id") or "req-direct"),
+                    "transcript": transcript_text,
+                    "detected_language": result.get("detected_language_code") or result.get("language") or language_code,
                     "model": result.get("model") or chosen_model,
-                    "processing_time": result.get("processing_time"),
+                    "processing_time": result.get("processing_time") or result.get("duration"),
                 }
 
             # Handle known status codes
