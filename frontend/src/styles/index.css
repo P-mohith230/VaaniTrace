@@ -672,6 +672,10 @@ body {
   width: 100%;
 }
 
+.col-12, .col-8, .col-7, .col-6, .col-5, .col-4, .col-3 {
+  min-width: 0;
+}
+
 .col-12 { grid-column: span 12; }
 .col-8 { grid-column: span 8; }
 .col-7 { grid-column: span 7; }

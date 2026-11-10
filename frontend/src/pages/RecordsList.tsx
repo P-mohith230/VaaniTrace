@@ -129,14 +129,18 @@ export const RecordsList: React.FC<RecordsListProps> = ({
           <p style={{ fontSize: '14px' }}>Loading records from SQLite database...</p>
         </div>
       ) : records.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)' }}>
-          <FileText size={40} style={{ margin: '0 auto 16px', opacity: 0.4 }} />
-          <h4 style={{ fontSize: '16px', color: '#fff', marginBottom: '8px' }}>No Matching Records Found</h4>
-          <p style={{ fontSize: '13px', maxWidth: '420px', margin: '0 auto 16px' }}>
-            Try adjusting your search query or create a new voice transcription in the workspace.
+        <div className="card" style={{ textAlign: 'center', padding: '64px 24px', color: 'var(--text-muted)' }}>
+          <FileText size={44} style={{ margin: '0 auto 16px', opacity: 0.4 }} />
+          <h4 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>
+            {search || recordType || statusFilter ? 'No Matching Records Found' : 'No Voice Records Stored Yet'}
+          </h4>
+          <p style={{ fontSize: '13px', maxWidth: '460px', margin: '0 auto 20px', lineHeight: 1.6, color: 'var(--color-muted-grey)' }}>
+            {search || recordType || statusFilter
+              ? 'Try clearing your search query or reset the filters to see all records.'
+              : 'Your workspace database is in a clean, production-ready state. Start a new session using your microphone or an audio file to extract structured, evidence-linked data.'}
           </p>
-          <button onClick={onNavigateToWorkspace} className="btn btn-primary btn-sm">
-            Create First Record
+          <button onClick={onNavigateToWorkspace} className="btn btn-primary" style={{ padding: '12px 24px' }}>
+            <FileText size={16} /> Start Voice Session
           </button>
         </div>
       ) : (

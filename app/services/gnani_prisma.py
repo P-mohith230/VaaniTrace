@@ -13,9 +13,13 @@ class GnaniPrismaService:
     """Service client for official Gnani Prisma speech recognition."""
 
     def __init__(self):
-        self.base_url = settings.GNANI_BASE_URL.rstrip("/")
         self.default_model = settings.GNANI_STT_MODEL or "prisma-v2.5"
         self.timeout = settings.GNANI_TIMEOUT_SECONDS
+
+    @property
+    def base_url(self) -> str:
+        """Dynamically fetch current base URL from settings."""
+        return (settings.GNANI_BASE_URL or "https://api.vachana.ai").rstrip("/")
 
     @property
     def api_key(self) -> str:
@@ -29,8 +33,10 @@ class GnaniPrismaService:
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                 detail="Gnani AI API key is not configured. Please set GNANI_API_KEY in your environment or .env file.",
             )
+        key = self.api_key.strip()
         return {
-            "X-API-Key-ID": self.api_key.strip(),
+            "X-API-Key-ID": key,
+            "X-API-Key": key,
         }
 
     async def transcribe(
@@ -45,8 +51,12 @@ class GnaniPrismaService:
         headers = self._get_headers()
         chosen_model = model or self.default_model
 
-        # Endpoint as documented: https://api.vachana.ai/stt/v3
-        endpoint = f"{self.base_url}/stt/v3"
+        # Flexible endpoint resolution: support both base URL and direct endpoint URL
+        url = self.base_url
+        if url.endswith("/stt/v3") or "/stt/" in url:
+            endpoint = url
+        else:
+            endpoint = f"{url}/stt/v3"
 
         files = {
             "audio_file": (filename, audio_bytes, content_type),

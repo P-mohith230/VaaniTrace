@@ -146,3 +146,4 @@ Every animation reinforces structural clarity without slowing down comprehension
    Hard-edge neo-brutalist button states: default `box-shadow: 4px 4px 0px var(--accent-wine)`, hover transforms by `translate(-2px, -2px)` with expanded shadow `6px 6px 0px var(--accent-wine)`, active depress `translate(2px, 2px)` with shadow `0px 0px 0px`.
 6. **Predefined Motion Safeguard:**
    Full support for `@media (prefers-reduced-motion: reduce)` which disables all translations and provides instantaneous opacity changes.
+

@@ -14,9 +14,13 @@ class GnaniTimbreService:
     """Service client for official Gnani Timbre speech synthesis."""
 
     def __init__(self):
-        self.base_url = settings.GNANI_BASE_URL.rstrip("/")
         self.default_model = settings.GNANI_TTS_MODEL or "timbre-v2.5"
         self.timeout = settings.GNANI_TIMEOUT_SECONDS
+
+    @property
+    def base_url(self) -> str:
+        """Dynamically fetch current base URL from settings."""
+        return (settings.GNANI_BASE_URL or "https://api.vachana.ai").rstrip("/")
 
     @property
     def api_key(self) -> str:
@@ -30,8 +34,10 @@ class GnaniTimbreService:
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                 detail="Gnani AI API key is not configured for speech synthesis.",
             )
+        key = self.api_key.strip()
         return {
-            "X-API-Key-ID": self.api_key.strip(),
+            "X-API-Key-ID": key,
+            "X-API-Key": key,
             "Content-Type": "application/json",
         }
 
@@ -46,7 +52,13 @@ class GnaniTimbreService:
         """Synthesize spoken audio from text and return raw WAV bytes."""
         headers = self._get_headers()
         chosen_model = model or self.default_model
-        endpoint = f"{self.base_url}/api/v1/tts/inference"
+
+        # Flexible endpoint resolution: support both base URL and direct endpoint URL
+        url = self.base_url
+        if "/tts" in url:
+            endpoint = url
+        else:
+            endpoint = f"{url}/api/v1/tts/inference"
 
         payload = {
             "text": text,

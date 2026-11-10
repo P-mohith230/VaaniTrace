@@ -52,3 +52,4 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
 
   return { ref, isRevealed };
 }
+

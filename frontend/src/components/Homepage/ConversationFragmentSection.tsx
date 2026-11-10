@@ -92,12 +92,12 @@ export const ConversationFragmentSection: React.FC = () => {
               <span>TAP FRAGMENTS TO TRACE DATA</span>
             </div>
 
-            {/* The Big Spoken Sentence with Interactive Fragment Callouts */}
+            {/* The Big Spoken Sentence with Swiss Citation Superscripts */}
             <blockquote style={{
               margin: 0,
-              fontSize: 'clamp(1.8rem, 3.8vw, 3.6rem)',
+              fontSize: 'clamp(1.6rem, 3.2vw, 3rem)',
               fontWeight: 700,
-              lineHeight: 1.35,
+              lineHeight: 1.85,
               color: 'var(--color-soft-white)',
               letterSpacing: '-0.02em',
             }}>
@@ -106,105 +106,120 @@ export const ConversationFragmentSection: React.FC = () => {
                 onMouseEnter={() => setActiveToken('time')}
                 onClick={() => setActiveToken('time')}
                 style={{
-                  background: activeToken === 'time' ? 'var(--accent-burgundy)' : 'transparent',
-                  borderBottom: `3px solid ${activeToken === 'time' ? 'var(--accent-crimson)' : 'var(--color-border)'}`,
-                  padding: '2px 6px',
+                  display: 'inline-flex',
+                  alignItems: 'baseline',
+                  whiteSpace: 'nowrap',
+                  background: activeToken === 'time' ? 'var(--accent-wine)' : 'var(--color-charcoal)',
+                  border: `1px solid ${activeToken === 'time' ? '#FFFFFF' : 'var(--color-border)'}`,
+                  boxShadow: activeToken === 'time' ? '3px 3px 0px var(--accent-wine)' : 'none',
+                  padding: '2px 8px',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
-                  position: 'relative',
+                  color: activeToken === 'time' ? '#FFFFFF' : 'var(--color-soft-white)',
+                  margin: '0 4px',
                 }}
               >
                 Tomorrow morning
-                <span style={{
-                  position: 'absolute',
-                  top: '-18px',
-                  left: '0',
+                <sup style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '10px',
-                  color: 'var(--accent-crimson)',
-                  fontWeight: 700,
+                  fontSize: '0.48em',
+                  verticalAlign: 'super',
+                  marginLeft: '4px',
+                  color: activeToken === 'time' ? '#FFFFFF' : 'var(--accent-crimson)',
+                  fontWeight: 800,
                 }}>
                   [01]
-                </span>
-              </span>{' '}
-              send{' '}
+                </sup>
+              </span>
+              {' '}send{' '}
               <span
                 onMouseEnter={() => setActiveToken('qty-product')}
                 onClick={() => setActiveToken('qty-product')}
                 style={{
-                  background: activeToken === 'qty-product' ? 'var(--accent-burgundy)' : 'transparent',
-                  borderBottom: `3px solid ${activeToken === 'qty-product' ? 'var(--accent-crimson)' : 'var(--color-border)'}`,
-                  padding: '2px 6px',
+                  display: 'inline-flex',
+                  alignItems: 'baseline',
+                  whiteSpace: 'nowrap',
+                  background: activeToken === 'qty-product' ? 'var(--accent-wine)' : 'var(--color-charcoal)',
+                  border: `1px solid ${activeToken === 'qty-product' ? '#FFFFFF' : 'var(--color-border)'}`,
+                  boxShadow: activeToken === 'qty-product' ? '3px 3px 0px var(--accent-wine)' : 'none',
+                  padding: '2px 8px',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
-                  position: 'relative',
+                  color: activeToken === 'qty-product' ? '#FFFFFF' : 'var(--color-soft-white)',
+                  margin: '0 4px',
                 }}
               >
                 20 rice bags
-                <span style={{
-                  position: 'absolute',
-                  top: '-18px',
-                  left: '0',
+                <sup style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '10px',
-                  color: 'var(--accent-crimson)',
-                  fontWeight: 700,
+                  fontSize: '0.48em',
+                  verticalAlign: 'super',
+                  marginLeft: '4px',
+                  color: activeToken === 'qty-product' ? '#FFFFFF' : 'var(--accent-crimson)',
+                  fontWeight: 800,
                 }}>
                   [02]
-                </span>
-              </span>{' '}
-              to{' '}
+                </sup>
+              </span>
+              {' '}to{' '}
               <span
                 onMouseEnter={() => setActiveToken('customer')}
                 onClick={() => setActiveToken('customer')}
                 style={{
-                  background: activeToken === 'customer' ? 'var(--accent-burgundy)' : 'transparent',
-                  borderBottom: `3px solid ${activeToken === 'customer' ? 'var(--accent-crimson)' : 'var(--color-border)'}`,
-                  padding: '2px 6px',
+                  display: 'inline-flex',
+                  alignItems: 'baseline',
+                  whiteSpace: 'nowrap',
+                  background: activeToken === 'customer' ? 'var(--accent-wine)' : 'var(--color-charcoal)',
+                  border: `1px solid ${activeToken === 'customer' ? '#FFFFFF' : 'var(--color-border)'}`,
+                  boxShadow: activeToken === 'customer' ? '3px 3px 0px var(--accent-wine)' : 'none',
+                  padding: '2px 8px',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
-                  position: 'relative',
+                  color: activeToken === 'customer' ? '#FFFFFF' : 'var(--color-soft-white)',
+                  margin: '0 4px',
                 }}
               >
                 Ramesh
-                <span style={{
-                  position: 'absolute',
-                  top: '-18px',
-                  left: '0',
+                <sup style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '10px',
-                  color: 'var(--accent-crimson)',
-                  fontWeight: 700,
+                  fontSize: '0.48em',
+                  verticalAlign: 'super',
+                  marginLeft: '4px',
+                  color: activeToken === 'customer' ? '#FFFFFF' : 'var(--accent-crimson)',
+                  fontWeight: 800,
                 }}>
                   [03]
-                </span>
+                </sup>
               </span>
-              .{' '}
-              Each bag costs{' '}
+              .{' '}Each bag costs{' '}
               <span
                 onMouseEnter={() => setActiveToken('price')}
                 onClick={() => setActiveToken('price')}
                 style={{
-                  background: activeToken === 'price' ? 'var(--accent-burgundy)' : 'transparent',
-                  borderBottom: `3px solid ${activeToken === 'price' ? 'var(--accent-crimson)' : 'var(--color-border)'}`,
-                  padding: '2px 6px',
+                  display: 'inline-flex',
+                  alignItems: 'baseline',
+                  whiteSpace: 'nowrap',
+                  background: activeToken === 'price' ? 'var(--accent-wine)' : 'var(--color-charcoal)',
+                  border: `1px solid ${activeToken === 'price' ? '#FFFFFF' : 'var(--color-border)'}`,
+                  boxShadow: activeToken === 'price' ? '3px 3px 0px var(--accent-wine)' : 'none',
+                  padding: '2px 8px',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
-                  position: 'relative',
+                  color: activeToken === 'price' ? '#FFFFFF' : 'var(--color-soft-white)',
+                  margin: '0 4px',
                 }}
               >
                 1,200 rupees
-                <span style={{
-                  position: 'absolute',
-                  top: '-18px',
-                  left: '0',
+                <sup style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '10px',
-                  color: 'var(--accent-crimson)',
-                  fontWeight: 700,
+                  fontSize: '0.48em',
+                  verticalAlign: 'super',
+                  marginLeft: '4px',
+                  color: activeToken === 'price' ? '#FFFFFF' : 'var(--accent-crimson)',
+                  fontWeight: 800,
                 }}>
                   [04]
-                </span>
+                </sup>
               </span>
               .”
             </blockquote>
@@ -411,3 +426,4 @@ export const ConversationFragmentSection: React.FC = () => {
     </section>
   );
 };
+

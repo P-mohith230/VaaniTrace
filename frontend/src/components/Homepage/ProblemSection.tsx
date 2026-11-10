@@ -30,9 +30,9 @@ export const ProblemSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Massive Inverted Editorial Statement (Left 5 Columns) */}
-        <div className="col-5" style={{ marginBottom: '40px' }}>
-          <div style={{ position: 'sticky', top: '100px' }}>
+        {/* Section Headline Across Full 12 Cols — NO OVERFLOW, NO COLLISION */}
+        <div className="col-12" style={{ marginBottom: 'clamp(32px, 5vw, 56px)' }}>
+          <div style={{ maxWidth: '1000px' }}>
             <span style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '11px',
@@ -41,69 +41,89 @@ export const ProblemSection: React.FC = () => {
               textTransform: 'uppercase',
               color: 'var(--accent-wine)',
               display: 'block',
-              marginBottom: '16px',
+              marginBottom: '14px',
             }}>
-              THESIS STATEMENT //
+              THESIS STATEMENT // INFORMATION EVAPORATION
             </span>
 
             <h2
               style={{
                 fontFamily: 'var(--font-sans)',
-                fontSize: 'clamp(2.6rem, 5.2vw, 5.4rem)',
+                fontSize: 'clamp(2.4rem, 5vw, 4.8rem)',
                 fontWeight: 900,
-                lineHeight: 0.96,
+                lineHeight: 1.02,
                 letterSpacing: '-0.04em',
                 textTransform: 'uppercase',
                 color: '#000000',
                 margin: 0,
-                marginBottom: '28px',
+                marginBottom: '20px',
               }}
             >
-              CONVERSATIONS<br />
-              ARE FULL OF<br />
-              INFORMATION.<br />
+              CONVERSATIONS ARE FULL OF INFORMATION.<br />
               <span style={{
                 color: 'var(--accent-wine)',
                 borderBottom: '4px solid var(--accent-wine)',
                 paddingBottom: '2px',
               }}>
-                MOST OF IT
-              </span><br />
-              GETS LOST.
+                MOST OF IT GETS LOST.
+              </span>
             </h2>
 
             <p style={{
-              fontSize: 'clamp(15px, 1.1vw, 17px)',
+              fontSize: 'clamp(15px, 1.15vw, 18px)',
               lineHeight: 1.6,
               color: '#333333',
               fontWeight: 500,
-              maxWidth: '420px',
+              maxWidth: '720px',
+              margin: 0,
             }}>
               Human memory is not an auditable database. Spoken instructions, prices, and quantities exchanged in Indian languages vanish within minutes of a phone call ending.
             </p>
+          </div>
+        </div>
 
+        {/* Left 4 Cols: Audit Metric & Thesis Summary */}
+        <div className="col-4" style={{ marginBottom: '32px' }}>
+          <div style={{
+            position: 'sticky',
+            top: '100px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px',
+          }}>
             <div style={{
-              marginTop: '32px',
-              padding: '16px',
+              padding: '24px',
               border: '2px solid #000000',
               background: '#FFFFFF',
               boxShadow: '4px 4px 0px #000000',
             }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, color: '#000000', marginBottom: '4px' }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, color: '#000000', marginBottom: '6px' }}>
                 AUDIT FAILURE RATE
               </div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '28px', fontWeight: 900, color: 'var(--accent-wine)' }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(36px, 4vw, 48px)', fontWeight: 900, color: 'var(--accent-wine)', lineHeight: 1 }}>
                 64.2%
               </div>
-              <div style={{ fontSize: '11px', color: '#555555' }}>
-                of verbal commitments lack written provenance across B2B phone calls.
+              <div style={{ fontSize: '12px', color: '#555555', marginTop: '10px', lineHeight: 1.5 }}>
+                of verbal commitments lack written provenance across B2B wholesale calls.
               </div>
+            </div>
+
+            <div style={{
+              padding: '20px',
+              border: '1px solid #C4C0BE',
+              background: '#FFFFFF',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
+              color: '#444444',
+              lineHeight: 1.6,
+            }}>
+              <strong style={{ color: '#000000' }}>DIAGNOSTIC SUMMARY:</strong> Unstructured voice notes and quick phone agreements lead to invoicing discrepancies, lost quantities, and unfulfilled commitments across sectors.
             </div>
           </div>
         </div>
 
-        {/* Staggered Asymmetrical Sector Breakdowns (Right 7 Columns) */}
-        <div className="col-7">
+        {/* Staggered Asymmetrical Sector Breakdowns (Right 8 Columns) */}
+        <div className="col-8">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* Sector 1: Agriculture */}
             <div style={{
