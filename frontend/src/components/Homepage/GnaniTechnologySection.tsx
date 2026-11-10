@@ -1,179 +1,195 @@
 import React from 'react';
-import { Cpu, Volume2, ArrowRight, ShieldCheck, Database, Layers } from 'lucide-react';
-
-const ARCH_STEPS = [
-  { id: '1', name: 'Audio Input', sub: 'WAV / MP3 / Mic' },
-  { id: '2', name: 'Gnani Prisma v2.5', sub: 'Indic Telephony STT' },
-  { id: '3', name: 'Segmented Transcript', sub: 'Clause Offsets' },
-  { id: '4', name: 'Information Extraction', sub: 'Domain Schemas' },
-  { id: '5', name: 'Evidence Mapping', sub: 'Audit Offsets' },
-  { id: '6', name: 'Human Verification', sub: 'Operator Review' },
-  { id: '7', name: 'Gnani Timbre v2.5', sub: 'Voice Synthesis' },
-  { id: '8', name: 'Structured Record', sub: 'SQLite / JSON / CSV' },
-];
+import { Cpu, Radio, Shield, Link, Info, KeyRound, Terminal } from 'lucide-react';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 
 export const GnaniTechnologySection: React.FC = () => {
+  const { ref, isRevealed } = useScrollReveal({ threshold: 0.1 });
+
   return (
-    <section className="home-section" id="technology">
-      <div style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto 60px' }}>
-        <span className="section-tag">ENGINEERING INTEGRATION ARCHITECTURE</span>
-        <h2 className="section-heading">
-          Powered by Gnani AI Speech Intelligence.
-        </h2>
-        <p className="section-subheading" style={{ margin: '0 auto' }}>
-          VaaniTrace orchestrates enterprise India-first speech AI models to bridge natural spoken dialogue with high-integrity database persistence.
-        </p>
-      </div>
-
-      {/* Dual Technology Spotlight Cards */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-        gap: '24px',
-        marginBottom: '54px',
-      }}>
-        {/* Gnani Prisma Card */}
-        <div style={{
-          background: 'var(--color-charcoal)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '36px 32px',
-          position: 'relative',
-          overflow: 'hidden',
-        }}>
-          <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: 'var(--radius-md)',
-            background: 'var(--color-graphite)',
-            border: '1px solid var(--color-border)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#fff',
-            marginBottom: '20px',
-          }}>
-            <Cpu size={24} color="var(--accent-crimson)" />
+    <section
+      id="technology"
+      ref={ref}
+      className={`editorial-section ${isRevealed ? 'revealed' : ''}`}
+      style={{
+        background: 'var(--color-black)',
+        borderBottom: '2px solid var(--color-border)',
+      }}
+    >
+      <div className="swiss-grid">
+        {/* Header */}
+        <div className="col-12">
+          <div className="editorial-header-row">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <span className="editorial-stamp">SECTION [ 08 ]</span>
+              <span>INFRASTRUCTURE ARCHITECTURE // GNANI AI SPEECH MODELS</span>
+            </div>
+            <div>
+              <span>INTEGRATION SPEC: REST V2.5 / V3.0</span>
+            </div>
           </div>
+        </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--accent-crimson)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              SPEECH-TO-TEXT ENGINE
+        {/* Section Headline */}
+        <div className="col-12" style={{ marginBottom: 'clamp(36px, 5vw, 64px)' }}>
+          <div style={{ maxWidth: '880px' }}>
+            <span style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'var(--accent-crimson)',
+              display: 'block',
+              marginBottom: '12px',
+            }}>
+              TECHNICAL SPECIFICATIONS //
             </span>
+            <h2 style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: 'clamp(2.4rem, 4.8vw, 5rem)',
+              fontWeight: 900,
+              lineHeight: 1.0,
+              letterSpacing: '-0.04em',
+              textTransform: 'uppercase',
+              color: 'var(--color-white)',
+              margin: 0,
+              marginBottom: '16px',
+            }}>
+              INDIAN SPEECH INTELLIGENCE MEETS ACTIONABLE STRUCTURE.
+            </h2>
+            <p style={{
+              fontSize: 'clamp(15px, 1.1vw, 18px)',
+              lineHeight: 1.6,
+              color: 'var(--color-muted-grey)',
+              margin: 0,
+            }}>
+              Speech recognition models transcribe what was said. VaaniTrace builds the complete verifiable intelligence layer around them—extracting structured fields, validating numbers, and linking every fact back to its source.
+            </p>
           </div>
-
-          <h3 style={{ fontSize: '24px', fontWeight: 700, color: '#fff', marginBottom: '14px' }}>
-            Gnani Prisma v2.5
-          </h3>
-
-          <p style={{ fontSize: '14px', color: 'var(--color-muted-grey)', lineHeight: 1.65, marginBottom: '20px' }}>
-            Engineered specifically for telephony-grade audio (8kHz PSTN/VoIP) and noisy field environments. Prisma handles complex Indian accents, regional phonetics, and code-mixed Indian-English conversations without acoustic breakdown.
-          </p>
-
-          <ul style={{ listStyle: 'none', paddingLeft: 0, fontSize: '13px', color: '#ccc', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <li>• <strong>Automatic Language Identification (Auto-LID):</strong> Detects spoken languages dynamically.</li>
-            <li>• <strong>Telephony Optimized:</strong> Native support for 8kHz / 16kHz PSTN and VoIP streams.</li>
-            <li>• <strong>Inverse Text Normalization:</strong> Formats currency, dates, and numbers accurately.</li>
-          </ul>
         </div>
 
-        {/* Gnani Timbre Card */}
-        <div style={{
-          background: 'var(--color-charcoal)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '36px 32px',
-          position: 'relative',
-          overflow: 'hidden',
-        }}>
+        {/* Three Asymmetric Columns */}
+        <div className="col-4" style={{ marginBottom: '24px' }}>
           <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: 'var(--radius-md)',
-            background: 'var(--color-graphite)',
-            border: '1px solid var(--color-border)',
+            background: 'var(--color-charcoal)',
+            border: '2px solid var(--color-border)',
+            padding: '28px',
+            height: '100%',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#fff',
-            marginBottom: '20px',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
           }}>
-            <Volume2 size={24} color="var(--accent-crimson)" />
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--accent-crimson)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              TEXT-TO-SPEECH SYNTHESIS
-            </span>
-          </div>
-
-          <h3 style={{ fontSize: '24px', fontWeight: 700, color: '#fff', marginBottom: '14px' }}>
-            Gnani Timbre v2.5
-          </h3>
-
-          <p style={{ fontSize: '14px', color: 'var(--color-muted-grey)', lineHeight: 1.65, marginBottom: '20px' }}>
-            Low-latency text-to-speech synthesis generating natural-sounding, expressive spoken briefings. Delivers spoken summary confirmations back to operators, drivers, and field workers in their native regional cadence.
-          </p>
-
-          <ul style={{ listStyle: 'none', paddingLeft: 0, fontSize: '13px', color: '#ccc', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <li>• <strong>Multi-Voice Catalog:</strong> Natural voices including <em>Nalini</em> (Female) and <em>Avinash</em> (Male).</li>
-            <li>• <strong>Regional Cadence:</strong> Preserves natural intonation and rhythmic cadence across Indian languages.</li>
-            <li>• <strong>Instant Audio Playback:</strong> Delivers raw WAV binary and streaming data URIs for immediate browser playback.</li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Monochromatic Technical Pipeline Diagram */}
-      <div style={{
-        background: 'var(--color-rich-black)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '36px 28px',
-        overflowX: 'auto',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-          <span style={{ fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-muted-grey)' }}>
-            System Architecture & Data Flow Pipeline
-          </span>
-          <span className="badge badge-verified">Single Server • FastAPI + SQLite</span>
-        </div>
-
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          minWidth: '980px',
-          padding: '10px 0',
-        }}>
-          {ARCH_STEPS.map((s, idx) => (
-            <React.Fragment key={s.id}>
-              <div style={{
-                flex: 1,
-                background: s.id === '2' || s.id === '7' ? 'rgba(74, 16, 27, 0.5)' : 'var(--color-charcoal)',
-                border: `1px solid ${s.id === '2' || s.id === '7' ? 'var(--accent-wine)' : 'var(--color-border)'}`,
-                borderRadius: 'var(--radius-md)',
-                padding: '16px 14px',
-                textAlign: 'center',
-                boxShadow: s.id === '2' || s.id === '7' ? '0 0 16px var(--accent-wine-glow)' : 'none',
-              }}>
-                <span style={{ fontSize: '10px', color: 'var(--accent-crimson)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
-                  0{s.id}
-                </span>
-                <p style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginTop: '4px', lineHeight: 1.3 }}>
-                  {s.name}
-                </p>
-                <span style={{ fontSize: '11px', color: 'var(--color-muted-grey)', marginTop: '4px', display: 'block' }}>
-                  {s.sub}
-                </span>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <span className="editorial-stamp">STT // ASR</span>
+                <Radio size={16} color="var(--accent-crimson)" />
               </div>
 
-              {idx < ARCH_STEPS.length - 1 && (
-                <div style={{ color: 'var(--accent-wine)', flexShrink: 0 }}>
-                  <ArrowRight size={16} />
-                </div>
-              )}
-            </React.Fragment>
-          ))}
+              <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#fff', textTransform: 'uppercase', margin: '0 0 10px' }}>
+                GNANI PRISMA v2.5
+              </h3>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--accent-crimson)', marginBottom: '14px' }}>
+                SPEECH-TO-TEXT ENGINE
+              </div>
+
+              <p style={{ fontSize: '13px', lineHeight: 1.6, color: 'var(--color-soft-white)', margin: 0 }}>
+                High-accuracy acoustic models tailored for Indian English, Hindi, and regional Indic phonetics. Low-latency streaming ASR ensures conversations are captured accurately even amidst background mandi noise, vehicle horns, and multi-speaker interruptions.
+              </p>
+            </div>
+
+            <div style={{ marginTop: '24px', paddingTop: '12px', borderTop: '1px solid var(--color-border-subtle)', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-muted-grey)' }}>
+              ENDPOINT: /stt/v3 • PROTOCOL: HTTPS
+            </div>
+          </div>
+        </div>
+
+        <div className="col-4" style={{ marginBottom: '24px' }}>
+          <div style={{
+            background: 'var(--color-charcoal)',
+            border: '2px solid var(--color-border)',
+            padding: '28px',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <span className="editorial-stamp">TTS // SYNTHESIS</span>
+                <Cpu size={16} color="var(--accent-crimson)" />
+              </div>
+
+              <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#fff', textTransform: 'uppercase', margin: '0 0 10px' }}>
+                GNANI TIMBRE v2.5
+              </h3>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--accent-crimson)', marginBottom: '14px' }}>
+                TEXT-TO-SPEECH BRIEFING
+              </div>
+
+              <p style={{ fontSize: '13px', lineHeight: 1.6, color: 'var(--color-soft-white)', margin: 0 }}>
+                High-naturalness voice synthesis reproducing authentic Indian prosody and bilingual cadence. Generates spoken executive briefings of finalized records with voice options (Nalini / Avinash), subject to provider endpoint availability and beta credentials.
+              </p>
+            </div>
+
+            <div style={{ marginTop: '24px', paddingTop: '12px', borderTop: '1px solid var(--color-border-subtle)', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-muted-grey)' }}>
+              ENDPOINT: /api/v1/tts/inference • WAV
+            </div>
+          </div>
+        </div>
+
+        <div className="col-4" style={{ marginBottom: '24px' }}>
+          <div style={{
+            background: 'var(--color-charcoal)',
+            border: '2px solid var(--accent-wine)',
+            boxShadow: '4px 4px 0px var(--accent-wine)',
+            padding: '28px',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <span className="editorial-stamp wine">VAANITRACE // LAYER</span>
+                <Shield size={16} color="#FFFFFF" />
+              </div>
+
+              <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#fff', textTransform: 'uppercase', margin: '0 0 10px' }}>
+                THE ACTION LAYER
+              </h3>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-white)', marginBottom: '14px' }}>
+                STRUCTURE + PROVENANCE + AUDIT
+              </div>
+
+              <p style={{ fontSize: '13px', lineHeight: 1.6, color: 'var(--color-soft-white)', margin: 0 }}>
+                Raw transcripts cannot order products or file incidents. VaaniTrace layers on domain schemas, extracts quantities, derives mathematical totals, links character-level evidence, and provides an operator verification workbench with SQLite export.
+              </p>
+            </div>
+
+            <div style={{ marginTop: '24px', paddingTop: '12px', borderTop: '1px solid var(--color-border-subtle)', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-white)' }}>
+              ZERO EXPOSURE: 100% BACKEND KEY ISOLATION
+            </div>
+          </div>
+        </div>
+
+        {/* Builder Notice & Independence Disclaimer (Full 12 cols) */}
+        <div className="col-12">
+          <div style={{
+            background: 'var(--color-rich-black)',
+            border: '1px solid var(--color-border)',
+            padding: '16px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '11px',
+            color: 'var(--color-muted-grey)',
+            lineHeight: 1.5,
+          }}>
+            <Info size={16} color="var(--color-white)" style={{ flexShrink: 0 }} />
+            <div>
+              <strong style={{ color: 'var(--color-white)' }}>INDEPENDENT INTEGRATION NOTICE:</strong> VaaniTrace is an independently developed application engineered around the Gnani AI developer API ecosystem. VaaniTrace is not officially endorsed, sponsored, or certified by Gnani AI.
+            </div>
+          </div>
         </div>
       </div>
     </section>

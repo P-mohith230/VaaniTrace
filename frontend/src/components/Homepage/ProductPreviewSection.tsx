@@ -186,3 +186,4 @@ export const ProductPreviewSection: React.FC<ProductPreviewProps> = ({ onOpenWor
     </section>
   );
 };
+

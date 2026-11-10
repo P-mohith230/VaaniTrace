@@ -1,182 +1,243 @@
 import React from 'react';
-import { Languages, Globe, ArrowRight, Check } from 'lucide-react';
+import { Languages, Globe, ArrowRight, CornerDownRight } from 'lucide-react';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 
-const CODE_MIX_EXAMPLES = [
+const CODE_MIX_SAMPLES = [
   {
-    languagePair: 'Telugu + English (Tenglish)',
-    spoken: '"Tomorrow morning order ready cheyyandi. 50 packets Dispatch department ki deliver avvali."',
-    parsed: [
-      { key: 'Order Status', value: 'Ready by tomorrow morning' },
-      { key: 'Quantity', value: '50 Packets' },
-      { key: 'Destination', value: 'Dispatch Department' },
-    ],
+    type: 'TENGLISH',
+    pair: 'TELUGU + ENGLISH',
+    quote: '“Tomorrow morning order ready cheyyandi.”',
+    meaning: 'Please get the order ready by tomorrow morning.',
+    lid: 'te-IN + en-IN',
+    code: '01',
   },
   {
-    languagePair: 'Hindi + English (Hinglish)',
-    spoken: '"Ramesh bhai, 20 boxes surgical gloves urgently bhej dena Friday tak. Rate wahi 1200 rupees rahega."',
-    parsed: [
-      { key: 'Recipient', value: 'Ramesh' },
-      { key: 'Item & Qty', value: '20 Boxes (Surgical Gloves)' },
-      { key: 'Total Quoted', value: '₹24,000.00 (20 × ₹1,200)' },
-      { key: 'Deadline', value: 'Friday' },
-    ],
+    type: 'HINGLISH',
+    pair: 'HINDI + ENGLISH',
+    quote: '“Billing GST ke saath generate kardo aur WhatsApp par bhej do.”',
+    meaning: 'Generate the bill with GST included and dispatch it over WhatsApp.',
+    lid: 'hi-IN + en-IN',
+    code: '02',
   },
   {
-    languagePair: 'Tamil + English (Tanglish)',
-    spoken: '"Customer ki invoice confirm pannunga. Balance payment next week Monday kulla settle aaganum."',
-    parsed: [
-      { key: 'Action', value: 'Confirm customer invoice' },
-      { key: 'Financial Term', value: 'Balance payment settlement' },
-      { key: 'Deadline', value: 'Next week Monday' },
-    ],
+    type: 'TANGLISH',
+    pair: 'TAMIL + ENGLISH',
+    quote: '“Warehouse inspection mudinjadhu, water leakage irukku immediate repair pannunga.”',
+    meaning: 'Warehouse inspection is complete, there is a leak, repair it immediately.',
+    lid: 'ta-IN + en-IN',
+    code: '03',
+  },
+  {
+    type: 'INDIAN ENGLISH',
+    pair: 'PROFESSIONAL ENGLISH',
+    quote: '“Please send the site progress report before today\'s evening sync.”',
+    meaning: 'Operational task deadline assigned for current day closing.',
+    lid: 'en-IN',
+    code: '04',
+  },
+  {
+    type: 'SHUDDH HINDI',
+    pair: 'COMMERCE HINDI',
+    quote: '“नमस्ते रमेश भाई, 50 कार्टन आम कल शाम तक दुकान पर भेज देना।”',
+    meaning: 'Wholesale order for 50 cartons of mangoes requested by tomorrow evening.',
+    lid: 'hi-IN',
+    code: '05',
   },
 ];
 
-const SUPPORTED_INDIC = [
-  { name: 'Hindi', script: 'हिन्दी' },
-  { name: 'Indian English', script: 'English' },
-  { name: 'Telugu', script: 'తెలుగు' },
-  { name: 'Tamil', script: 'தமிழ்' },
-  { name: 'Kannada', script: 'ಕನ್ನಡ' },
-  { name: 'Marathi', script: 'मराठी' },
-  { name: 'Bengali', script: 'বাংলা' },
-  { name: 'Gujarati', script: 'ગુજરાતી' },
-  { name: 'Punjabi', script: 'ਪੰਜਾਬੀ' },
-  { name: 'Malayalam', script: 'മലയാളം' },
+const INDIC_SCRIPTS = [
+  { script: 'हिन्दी', lang: 'Hindi (hi-IN)' },
+  { script: 'தமிழ்', lang: 'Tamil (ta-IN)' },
+  { script: 'తెలుగు', lang: 'Telugu (te-IN)' },
+  { script: 'ಕನ್ನಡ', lang: 'Kannada (kn-IN)' },
+  { script: 'मराठी', lang: 'Marathi (mr-IN)' },
+  { script: 'বাংলা', lang: 'Bengali (bn-IN)' },
+  { script: 'ગુજરાતી', lang: 'Gujarati (gu-IN)' },
+  { script: 'ਪੰਜਾਬੀ', lang: 'Punjabi (pa-IN)' },
+  { script: 'മലയാളം', lang: 'Malayalam (ml-IN)' },
+  { script: 'English (India)', lang: 'English (en-IN)' },
 ];
 
 export const MultilingualSection: React.FC = () => {
+  const { ref, isRevealed } = useScrollReveal({ threshold: 0.1 });
+
   return (
-    <section className="home-section" id="multilingual">
-      <div style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto 60px' }}>
-        <span className="section-tag">CODE-MIXED NATIVE RECOGNITION</span>
-        <h2 className="section-heading">
-          Speak Naturally. <br />
-          Don't Change Your Language.
-        </h2>
-        <p className="section-subheading" style={{ margin: '0 auto' }}>
-          Real conversations across India rarely stick to a single textbook language. People intuitively switch between regional languages and English mid-sentence. VaaniTrace parses mixed speech without forcing speakers to adopt foreign speech habits.
-        </p>
-      </div>
-
-      {/* Code-Mixed Dialogue Transformation Demo */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-        gap: '24px',
-        marginBottom: '54px',
-      }}>
-        {CODE_MIX_EXAMPLES.map((ex, idx) => (
-          <div
-            key={idx}
-            style={{
-              background: 'var(--color-charcoal)',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-lg)',
-              padding: '28px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}
-          >
+    <section
+      ref={ref}
+      className={`editorial-section ${isRevealed ? 'revealed' : ''}`}
+      style={{
+        background: 'var(--color-black)',
+        borderBottom: '2px solid var(--color-border)',
+      }}
+    >
+      <div className="swiss-grid">
+        {/* Header */}
+        <div className="col-12">
+          <div className="editorial-header-row">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <span className="editorial-stamp">SECTION [ 06 ]</span>
+              <span>LINGUISTIC REALITY // INDIC CODE-MIXING</span>
+            </div>
             <div>
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '11px',
-                fontWeight: 600,
-                color: 'var(--accent-crimson)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                marginBottom: '16px',
-              }}>
-                <Globe size={13} />
-                <span>{ex.languagePair}</span>
-              </div>
-
-              {/* Spoken Speech Bubble */}
-              <div style={{
-                background: 'var(--color-rich-black)',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-sm)',
-                padding: '16px',
-                fontSize: '14px',
-                lineHeight: 1.7,
-                color: '#fff',
-                fontStyle: 'italic',
-                marginBottom: '20px',
-                position: 'relative',
-              }}>
-                {ex.spoken}
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', color: 'var(--color-muted-grey)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                <ArrowRight size={13} color="var(--accent-wine)" />
-                <span>Parsed Into Structured Action</span>
-              </div>
-
-              {/* Resulting Structured Fact */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {ex.parsed.map((p, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '12px',
-                      background: '#0d0d0d',
-                      padding: '8px 12px',
-                      borderRadius: '4px',
-                      border: '1px solid #222',
-                    }}
-                  >
-                    <span style={{ color: 'var(--color-muted-grey)' }}>{p.key}</span>
-                    <span style={{ color: '#fff', fontWeight: 600 }}>{p.value}</span>
-                  </div>
-                ))}
-              </div>
+              <span>SUPPORTED: 10 INDIAN REGIONAL LANGUAGES + MIXED-LID</span>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
 
-      {/* Supported Languages Grid */}
-      <div style={{
-        background: 'var(--color-rich-black)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '32px',
-        textAlign: 'center',
-      }}>
-        <h4 style={{ fontSize: '14px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-muted-grey)', marginBottom: '20px' }}>
-          Gnani Prisma Officially Supported Indic Dialects
-        </h4>
+        {/* Section Headline */}
+        <div className="col-12" style={{ marginBottom: 'clamp(36px, 5vw, 64px)' }}>
+          <div style={{ maxWidth: '920px' }}>
+            <span style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'var(--accent-crimson)',
+              display: 'block',
+              marginBottom: '12px',
+            }}>
+              MULTILINGUAL SPEECH INGESTION //
+            </span>
+            <h2 style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: 'clamp(2.6rem, 5.4vw, 5.8rem)',
+              fontWeight: 900,
+              lineHeight: 0.98,
+              letterSpacing: '-0.04em',
+              textTransform: 'uppercase',
+              color: 'var(--color-white)',
+              margin: 0,
+              marginBottom: '16px',
+            }}>
+              PEOPLE DON'T SPEAK<br />
+              IN ONE LANGUAGE.
+            </h2>
+            <p style={{
+              fontSize: 'clamp(15px, 1.1vw, 18px)',
+              lineHeight: 1.6,
+              color: 'var(--color-muted-grey)',
+              margin: 0,
+            }}>
+              Everyday Indian commerce operates through spontaneous code-switching. A conversation starting in Hindi switches to English for numbers and ends in a regional idiom. VaaniTrace handles mixed-language streams without demanding single-language purity.
+            </p>
+          </div>
+        </div>
 
-        <div style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '12px',
-          justifyContent: 'center',
-        }}>
-          {SUPPORTED_INDIC.map((lang) => (
-            <div
-              key={lang.name}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                background: 'var(--color-charcoal)',
-                border: '1px solid var(--color-border)',
-                padding: '8px 16px',
-                borderRadius: 'var(--radius-full)',
-                fontSize: '13px',
-              }}
-            >
-              <span style={{ color: '#fff', fontWeight: 500 }}>{lang.name}</span>
-              <span style={{ color: 'var(--accent-crimson)', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>({lang.script})</span>
+        {/* Staggered Code-Mixing Conversation Cards */}
+        <div className="col-12" style={{ marginBottom: 'clamp(32px, 4vw, 56px)' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '16px',
+          }}>
+            {CODE_MIX_SAMPLES.map((sample) => (
+              <div
+                key={sample.code}
+                style={{
+                  background: 'var(--color-charcoal)',
+                  border: '1px solid var(--color-border)',
+                  padding: '24px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  boxShadow: '4px 4px 0px #000000',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                    <span className="editorial-stamp wine" style={{ fontSize: '9px' }}>
+                      {sample.type}
+                    </span>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-muted-grey)' }}>
+                      {sample.lid}
+                    </span>
+                  </div>
+
+                  <blockquote style={{
+                    margin: '0 0 14px',
+                    fontSize: '17px',
+                    fontWeight: 700,
+                    lineHeight: 1.4,
+                    color: 'var(--color-white)',
+                  }}>
+                    {sample.quote}
+                  </blockquote>
+
+                  <p style={{
+                    fontSize: '12px',
+                    lineHeight: 1.5,
+                    color: 'var(--color-soft-white)',
+                    margin: 0,
+                    fontStyle: 'italic',
+                  }}>
+                    "{sample.meaning}"
+                  </p>
+                </div>
+
+                <div style={{
+                  marginTop: '18px',
+                  paddingTop: '10px',
+                  borderTop: '1px solid var(--color-border-subtle)',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '10px',
+                  color: 'var(--color-muted-grey)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}>
+                  <span>PAIR: {sample.pair}</span>
+                  <span style={{ color: 'var(--accent-crimson)' }}>AUTO-IDENTIFIED</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Supported Indic Scripts Ticker (Full Width Swiss Block) */}
+        <div className="col-12">
+          <div style={{
+            background: 'var(--color-rich-black)',
+            border: '2px solid var(--color-white)',
+            padding: '20px 24px',
+          }}>
+            <div style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '10px',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'var(--accent-crimson)',
+              marginBottom: '14px',
+            }}>
+              VERIFIED SUPPORTED INDIC SCRIPTS // GNANI PRISMA ASR GATEWAY
             </div>
-          ))}
+
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '10px',
+            }}>
+              {INDIC_SCRIPTS.map((item, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: 'var(--color-charcoal)',
+                    border: '1px solid var(--color-border)',
+                    padding: '8px 14px',
+                  }}
+                >
+                  <span style={{ fontSize: '16px', fontWeight: 700, color: '#fff' }}>
+                    {item.script}
+                  </span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-muted-grey)' }}>
+                    {item.lang}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

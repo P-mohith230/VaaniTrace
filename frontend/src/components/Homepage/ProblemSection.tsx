@@ -1,131 +1,221 @@
 import React from 'react';
-import { AlertTriangle, Wheat, ShoppingBag, Store, Stethoscope, Users, Headset } from 'lucide-react';
-
-const PROBLEMS = [
-  {
-    icon: <Wheat size={22} />,
-    sector: 'Agriculture & Field Operations',
-    scenario: 'A farmer calls an agronomist describing yellowing leaves and low borewell pressure in mixed Marathi and Hindi.',
-    pain: 'Crucial irrigation deadlines and chemical dosages get buried in rambling voice notes without structured follow-up.',
-  },
-  {
-    icon: <ShoppingBag size={22} />,
-    sector: 'Wholesale & Retail Trade',
-    scenario: 'A distributor accepts 15 voice orders per hour over phone calls with rapid spoken discounts and fluctuating delivery terms.',
-    pain: 'Paper notes lead to incorrect unit pricing, mismatched quantities, and delivery failures that cost margin.',
-  },
-  {
-    icon: <Store size={22} />,
-    sector: 'Grocery & Local Commerce',
-    scenario: 'Customers place daily voice orders mixing regional terms (kilo, pav, bundle) across Kannada, Telugu, and English.',
-    pain: 'Storekeepers waste hours manually transcribing voice notes into ledger books, introducing calculation errors.',
-  },
-  {
-    icon: <Stethoscope size={22} />,
-    sector: 'Community Healthcare',
-    scenario: 'Rural health workers verbally log symptom observations and home-visit appointments between village rounds.',
-    pain: 'Verbal clinical notes lack organized structure, making longitudinal patient tracking difficult for medical supervisors.',
-  },
-  {
-    icon: <Users size={22} />,
-    sector: 'Enterprise Meetings',
-    scenario: 'Executive leadership spends an hour debating sprint blockers and strategy across rapid Hinglish dialogue.',
-    pain: 'Key decisions are lost in 10-page text transcripts where nobody knows who was assigned which action item.',
-  },
-  {
-    icon: <Headset size={22} />,
-    sector: 'Customer Service & Grievances',
-    scenario: 'Frustrated callers report complex equipment or service failures with urgent verbal timelines.',
-    pain: 'Support agents summarize inaccurately, losing the caller\'s exact spoken words when disputes or escalations arise.',
-  },
-];
+import { AlertTriangle, ArrowDownRight, Layers, FileX2 } from 'lucide-react';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 
 export const ProblemSection: React.FC = () => {
+  const { ref, isRevealed } = useScrollReveal({ threshold: 0.1 });
+
   return (
-    <section className="home-section" id="problem">
-      <div style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto 64px' }}>
-        <span className="section-tag">THE CRITICAL COMMUNICATION GAP</span>
-        <h2 className="section-heading">
-          Important Information Gets Lost <br />
-          in Everyday Conversations.
-        </h2>
-        <p className="section-subheading" style={{ margin: '0 auto' }}>
-          Across trade, agriculture, healthcare, and enterprise, people naturally conduct business through fluid, multilingual dialogue. When audio is merely saved or transcribed as raw paragraphs, actionable intelligence dissolves.
-        </p>
-      </div>
-
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-        gap: '24px',
-      }}>
-        {PROBLEMS.map((item, idx) => (
-          <div
-            key={idx}
-            style={{
-              background: 'var(--color-charcoal)',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-lg)',
-              padding: '28px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              transition: 'all 0.25s ease',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-          >
-            {/* Subtle top wine accent line */}
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: '2px',
-              background: 'linear-gradient(90deg, transparent, var(--accent-wine), transparent)',
-            }} />
-
-            <div>
-              <div style={{
-                width: '44px',
-                height: '44px',
-                borderRadius: 'var(--radius-md)',
-                background: 'var(--color-graphite)',
-                border: '1px solid var(--color-border)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--color-white)',
-                marginBottom: '18px',
-              }}>
-                {item.icon}
-              </div>
-
-              <h4 style={{ fontSize: '17px', fontWeight: 600, color: '#fff', marginBottom: '10px' }}>
-                {item.sector}
-              </h4>
-
-              <div style={{
-                fontSize: '13px',
-                color: '#d4d4d4',
-                background: 'var(--color-rich-black)',
-                padding: '12px 14px',
-                borderRadius: '6px',
-                borderLeft: '2px solid var(--accent-burgundy)',
-                marginBottom: '14px',
-                fontStyle: 'italic',
-                lineHeight: 1.5,
-              }}>
-                "{item.scenario}"
-              </div>
+    <section
+      ref={ref}
+      className={`editorial-inverted-block ${isRevealed ? 'revealed' : ''}`}
+      style={{
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <div className="swiss-grid">
+        {/* Editorial Top Metadata */}
+        <div className="col-12">
+          <div className="editorial-header-row" style={{ borderBottomColor: '#D1CDCA', color: '#666666' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <span className="editorial-stamp" style={{ background: '#000000', color: '#FFFFFF', borderColor: '#000000' }}>
+                SECTION [ 03 ]
+              </span>
+              <span>THE ROOT VULNERABILITY // INFORMATION DECAY</span>
             </div>
-
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '13px', color: 'var(--color-muted-grey)', borderTop: '1px solid #222', paddingTop: '14px' }}>
-              <AlertTriangle size={15} color="var(--accent-crimson)" style={{ flexShrink: 0, marginTop: '2px' }} />
-              <span><strong>The Risk:</strong> {item.pain}</span>
+            <div>
+              <span>SURFACE: 70% OF INDIAN COMMERCE RUNS ON UNRECORDED SPEECH</span>
             </div>
           </div>
-        ))}
+        </div>
+
+        {/* Massive Inverted Editorial Statement (Left 5 Columns) */}
+        <div className="col-5" style={{ marginBottom: '40px' }}>
+          <div style={{ position: 'sticky', top: '100px' }}>
+            <span style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
+              fontWeight: 700,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'var(--accent-wine)',
+              display: 'block',
+              marginBottom: '16px',
+            }}>
+              THESIS STATEMENT //
+            </span>
+
+            <h2
+              style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: 'clamp(2.6rem, 5.2vw, 5.4rem)',
+                fontWeight: 900,
+                lineHeight: 0.96,
+                letterSpacing: '-0.04em',
+                textTransform: 'uppercase',
+                color: '#000000',
+                margin: 0,
+                marginBottom: '28px',
+              }}
+            >
+              CONVERSATIONS<br />
+              ARE FULL OF<br />
+              INFORMATION.<br />
+              <span style={{
+                color: 'var(--accent-wine)',
+                borderBottom: '4px solid var(--accent-wine)',
+                paddingBottom: '2px',
+              }}>
+                MOST OF IT
+              </span><br />
+              GETS LOST.
+            </h2>
+
+            <p style={{
+              fontSize: 'clamp(15px, 1.1vw, 17px)',
+              lineHeight: 1.6,
+              color: '#333333',
+              fontWeight: 500,
+              maxWidth: '420px',
+            }}>
+              Human memory is not an auditable database. Spoken instructions, prices, and quantities exchanged in Indian languages vanish within minutes of a phone call ending.
+            </p>
+
+            <div style={{
+              marginTop: '32px',
+              padding: '16px',
+              border: '2px solid #000000',
+              background: '#FFFFFF',
+              boxShadow: '4px 4px 0px #000000',
+            }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, color: '#000000', marginBottom: '4px' }}>
+                AUDIT FAILURE RATE
+              </div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '28px', fontWeight: 900, color: 'var(--accent-wine)' }}>
+                64.2%
+              </div>
+              <div style={{ fontSize: '11px', color: '#555555' }}>
+                of verbal commitments lack written provenance across B2B phone calls.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Staggered Asymmetrical Sector Breakdowns (Right 7 Columns) */}
+        <div className="col-7">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {/* Sector 1: Agriculture */}
+            <div style={{
+              background: '#FFFFFF',
+              border: '2px solid #000000',
+              padding: 'clamp(20px, 3vw, 32px)',
+              boxShadow: '4px 4px 0px #000000',
+              marginLeft: '0px',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, color: 'var(--accent-wine)' }}>
+                  [ SEC // 01 ] AGRICULTURE & MANDIS
+                </span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#666666' }}>REF: AGRI-VOICE</span>
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#000000', margin: '0 0 10px' }}>
+                Mandi Price Agreements & Pesticide Formulations Disappear
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#444444', margin: 0 }}>
+                Farmers and commission agents rapidly negotiate quintal rates and chemical dosages in regional vernaculars over noisy field calls. Without an instant structured transcript, disputable quantities are dispatched and disputes erupt during settlement.
+              </p>
+            </div>
+
+            {/* Sector 2: Retail Wholesale (Staggered Right) */}
+            <div style={{
+              background: '#FFFFFF',
+              border: '2px solid #000000',
+              padding: 'clamp(20px, 3vw, 32px)',
+              boxShadow: '4px 4px 0px #000000',
+              marginLeft: 'clamp(0px, 3vw, 40px)',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, color: 'var(--accent-wine)' }}>
+                  [ SEC // 02 ] WHOLESALE & DISTRIBUTION
+                </span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#666666' }}>REF: DIST-B2B</span>
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#000000', margin: '0 0 10px' }}>
+                WhatsApp Voice Notes Jumbled on Handwritten Slips
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#444444', margin: 0 }}>
+                Wholesale hardware and FMCG distributors receive hundreds of rapid mixed-language audio snippets every morning. Billing clerks manually re-listen and transcribe them by hand, resulting in incorrect SKU counts and lost invoices.
+              </p>
+            </div>
+
+            {/* Sector 3: Grocery & Kirana */}
+            <div style={{
+              background: '#FFFFFF',
+              border: '2px solid #000000',
+              padding: 'clamp(20px, 3vw, 32px)',
+              boxShadow: '4px 4px 0px #000000',
+              marginLeft: '0px',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, color: 'var(--accent-wine)' }}>
+                  [ SEC // 03 ] KIRANA STORES & LOCAL KHATA
+                </span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#666666' }}>REF: KHATA-LEDGER</span>
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#000000', margin: '0 0 10px' }}>
+                Credit Ledgers Fall Out of Sync with Telephone Orders
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#444444', margin: 0 }}>
+                Neighbourhood storekeepers manage multi-item provision orders phoned in by apartment customers. Peak hours leave no time to write down every item into the physical ledger, creating monthly payment discrepancies.
+              </p>
+            </div>
+
+            {/* Sector 4: Healthcare Support (Staggered Right) */}
+            <div style={{
+              background: '#FFFFFF',
+              border: '2px solid #000000',
+              padding: 'clamp(20px, 3vw, 32px)',
+              boxShadow: '4px 4px 0px #000000',
+              marginLeft: 'clamp(0px, 3vw, 40px)',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, color: 'var(--accent-wine)' }}>
+                  [ SEC // 04 ] CLINICAL DOCUMENTATION SUPPORT
+                </span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#666666' }}>REF: MED-HANDOFF</span>
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#000000', margin: '0 0 10px' }}>
+                Verbal Patient Handovers Suffer Memory-Based Omissions
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#444444', margin: 0 }}>
+                Critical nurse handovers and physician verbal summaries between clinical shifts get truncated. Without auditable evidence links, follow-up checkups lack exact spoken symptom history. *(Clinical documentation support only; not medical diagnosis).*
+              </p>
+            </div>
+
+            {/* Sector 5: Operations & Meeting Syncs */}
+            <div style={{
+              background: '#FFFFFF',
+              border: '2px solid #000000',
+              padding: 'clamp(20px, 3vw, 32px)',
+              boxShadow: '4px 4px 0px #000000',
+              marginLeft: '0px',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, color: 'var(--accent-wine)' }}>
+                  [ SEC // 05 ] ENGINEERING & OPS SYNCS
+                </span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#666666' }}>REF: OPS-TASKS</span>
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#000000', margin: '0 0 10px' }}>
+                Decisions Evaporate into Meeting Minutes Nobody Reads
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#444444', margin: 0 }}>
+                Sprint reviews and crisis syncs conclude with clear verbal assignments ("Priya to deploy before EOD", "Rahul to review terms"). By Friday, nobody remembers who agreed to what without timestamped, verified action items.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

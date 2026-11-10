@@ -1,133 +1,243 @@
 import React, { useState } from 'react';
-import { Mic, Cpu, BrainCircuit, Link2, CheckSquare, Volume2, ArrowRight } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ChevronRight, Terminal, Cpu, FileSpreadsheet, Headphones } from 'lucide-react';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 
 const STAGES = [
   {
-    step: '01',
-    name: 'Capture',
-    icon: <Mic size={22} />,
-    title: 'Record or Ingest Audio',
-    detail: 'Record high-clarity voice notes directly via browser microphone or upload pre-recorded telephony calls (WAV, MP3, OGG, WebM, FLAC).',
+    num: '01',
+    name: 'CAPTURE',
+    tagline: 'Record or upload audio',
+    detail: 'Direct in-browser microphone capture (16kHz PCM WebM) or drag-and-drop audio files (WAV, MP3, FLAC, M4A up to 25MB). Pre-flight magic byte inspection rejects invalid payloads.',
+    spec: 'INPUT: RAW AUDIO STREAM',
+    badge: 'MIC + UPLOAD',
   },
   {
-    step: '02',
-    name: 'Transcribe',
-    icon: <Cpu size={22} />,
-    title: 'Gnani Prisma v2.5 Speech Recognition',
-    detail: 'Enterprise speech-to-text tuned for Indian accents, regional telephony acoustics, and natural code-mixed vernacular (Hinglish, Kanglish).',
+    num: '02',
+    name: 'TRANSCRIBE',
+    tagline: 'Convert speech into text using Gnani Prisma v2.5',
+    detail: 'Secure in-flight streaming to official Gnani Prisma v2.5 ASR gateway. Resilient against background mandi noise, street ambient, and Indian linguistic dialect variations.',
+    spec: 'ENGINE: GNANI PRISMA V2.5',
+    badge: 'STT PIPELINE',
   },
   {
-    step: '03',
-    name: 'Understand',
-    icon: <BrainCircuit size={22} />,
-    title: 'Structured Information Extraction',
-    detail: 'Intelligent schema engines identify products, quantities, dates, currency amounts, grievance severities, and assignees without hallucination.',
+    num: '03',
+    name: 'UNDERSTAND',
+    tagline: 'Extract structured information',
+    detail: 'Syntactic and domain parsing extracts discrete commercial entities: counterparties, products, counts, unit prices, deadlines, and mathematical calculations without ungrounded hallucinations.',
+    spec: 'SCHEMA: 5 DOMAIN EXTRACTORS',
+    badge: 'ENTITY PARSER',
   },
   {
-    step: '04',
-    name: 'Trace',
-    icon: <Link2 size={22} />,
-    title: 'Verifiable Evidence Alignment',
-    detail: 'Every extracted attribute connects with character offsets to its supporting transcript phrase. Calculations preserve formulas.',
+    num: '04',
+    name: 'TRACE',
+    tagline: 'Connect extracted fields to supporting transcript evidence',
+    detail: 'Core differentiator: Every single extracted field binds directly to its exact transcript character boundary (start_char to end_char). Zero detached assertions.',
+    spec: 'ALIGNMENT: CHAR-OFFSET LEVEL',
+    badge: 'PROVENANCE BIND',
   },
   {
-    step: '05',
-    name: 'Verify',
-    icon: <CheckSquare size={22} />,
-    title: 'Human Review & Verification',
-    detail: 'Operators review facts, modify quantities if necessary, and approve. Manual edits preserve the original spoken extraction for auditability.',
+    num: '05',
+    name: 'VERIFY',
+    tagline: 'Allow users to review and correct extracted information',
+    detail: 'Human-in-the-loop review interface. Operators can edit values in place, inspect arithmetic derivations, and toggle record verification status (verified, unverified, needs_review).',
+    spec: 'AUDIT: DUAL HISTORICAL VALUES',
+    badge: 'HUMAN-IN-LOOP',
   },
   {
-    step: '06',
-    name: 'Confirm',
-    icon: <Volume2 size={22} />,
-    title: 'Gnani Timbre Briefing & Export',
-    detail: 'Generate a synthetic voice confirmation readout via Gnani Timbre v2.5 and export verified records instantly to clean JSON or CSV.',
+    num: '06',
+    name: 'EXPORT',
+    tagline: 'Save or export verified information',
+    detail: 'Permanent SQLite persistence with WAL mode. One-click export to structured UTF-8 JSON or tabular CSV, alongside optional high-naturalness audio briefings via Gnani Timbre v2.5.',
+    spec: 'OUTPUT: JSON / CSV / TIMBRE TTS',
+    badge: 'DATA PORTABILITY',
   },
 ];
 
 export const HowItWorksSection: React.FC = () => {
-  const [activeStep, setActiveStep] = useState<number>(0);
+  const { ref, isRevealed } = useScrollReveal({ threshold: 0.1 });
+  const [activeStage, setActiveStage] = useState(0);
 
   return (
-    <section className="home-section" id="how-it-works">
-      <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 60px' }}>
-        <span className="section-tag">SIX-STAGE END-TO-END PIPELINE</span>
-        <h2 className="section-heading">
-          From Voice to Verified Action.
-        </h2>
-        <p className="section-subheading" style={{ margin: '0 auto' }}>
-          Every voice session traverses a deterministic, verifiable sequence from raw audio waveform to audit-ready structured action records.
-        </p>
-      </div>
-
-      {/* Interactive Horizontal Track on Desktop / Vertical on Mobile */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '20px',
-        position: 'relative',
-      }}>
-        {STAGES.map((stage, idx) => {
-          const isSelected = activeStep === idx;
-          return (
-            <div
-              key={stage.step}
-              onClick={() => setActiveStep(idx)}
-              style={{
-                background: isSelected ? 'linear-gradient(160deg, #181013 0%, #12090b 100%)' : 'var(--color-charcoal)',
-                border: `1px solid ${isSelected ? 'var(--accent-wine)' : 'var(--color-border)'}`,
-                borderRadius: 'var(--radius-lg)',
-                padding: '28px 24px',
-                cursor: 'pointer',
-                transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                boxShadow: isSelected ? '0 12px 32px rgba(74, 16, 27, 0.3)' : 'var(--shadow-sm)',
-                position: 'relative',
-                overflow: 'hidden',
-              }}
-            >
-              {/* Step indicator pill */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                <span style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  color: isSelected ? 'var(--accent-crimson)' : 'var(--color-muted-grey)',
-                  letterSpacing: '0.05em',
-                }}>
-                  PHASE {stage.step}
-                </span>
-
-                <div style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: 'var(--radius-md)',
-                  background: isSelected ? 'var(--accent-burgundy)' : 'var(--color-graphite)',
-                  border: `1px solid ${isSelected ? 'var(--accent-wine)' : '#333'}`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: isSelected ? '#fff' : 'var(--color-soft-white)',
-                  transition: 'all 0.25s ease',
-                }}>
-                  {stage.icon}
-                </div>
-              </div>
-
-              <h4 style={{ fontSize: '18px', fontWeight: 600, color: '#fff', marginBottom: '8px', letterSpacing: '-0.01em' }}>
-                {stage.name}
-              </h4>
-
-              <p style={{ fontSize: '13px', fontWeight: 500, color: isSelected ? '#ffb3bd' : 'var(--color-soft-white)', marginBottom: '10px' }}>
-                {stage.title}
-              </p>
-
-              <p style={{ fontSize: '12px', color: 'var(--color-muted-grey)', lineHeight: 1.6 }}>
-                {stage.detail}
-              </p>
+    <section
+      id="how-it-works"
+      ref={ref}
+      className={`editorial-section ${isRevealed ? 'revealed' : ''}`}
+      style={{
+        background: 'var(--color-black)',
+        borderBottom: '2px solid var(--color-border)',
+      }}
+    >
+      <div className="swiss-grid">
+        {/* Top Header */}
+        <div className="col-12">
+          <div className="editorial-header-row">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <span className="editorial-stamp">SECTION [ 04 ]</span>
+              <span>OPERATIONAL METHODOLOGY & SYSTEM ARCHITECTURE</span>
             </div>
-          );
-        })}
+            <div>
+              <span>EXECUTION: 6 DETERMINISTIC STAGES</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Section Heading */}
+        <div className="col-12" style={{ marginBottom: 'clamp(32px, 5vw, 64px)' }}>
+          <div style={{ maxWidth: '820px' }}>
+            <span style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'var(--accent-crimson)',
+              display: 'block',
+              marginBottom: '12px',
+            }}>
+              PIPELINE ARCHITECTURE //
+            </span>
+            <h2 style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: 'clamp(2.4rem, 4.8vw, 5rem)',
+              fontWeight: 900,
+              lineHeight: 1.0,
+              letterSpacing: '-0.04em',
+              textTransform: 'uppercase',
+              color: 'var(--color-white)',
+              margin: 0,
+              marginBottom: '16px',
+            }}>
+              FROM SPOKEN AUDIO TO VERIFIED AUDIT RECORD.
+            </h2>
+            <p style={{
+              fontSize: 'clamp(15px, 1.1vw, 18px)',
+              lineHeight: 1.6,
+              color: 'var(--color-muted-grey)',
+              margin: 0,
+            }}>
+              VaaniTrace does not treat speech as a black-box prompt. It runs a deterministic, 6-stage evidence pipeline where every step is auditable, editable, and preserved.
+            </p>
+          </div>
+        </div>
+
+        {/* Process Diagram: Asymmetric Interactive Grid */}
+        <div className="col-12">
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '1px',
+            background: 'var(--color-border)',
+            border: '2px solid var(--color-border)',
+          }}>
+            {STAGES.map((stage, idx) => {
+              const isActive = activeStage === idx;
+              return (
+                <div
+                  key={stage.num}
+                  onMouseEnter={() => setActiveStage(idx)}
+                  onClick={() => setActiveStage(idx)}
+                  style={{
+                    background: isActive ? 'var(--color-rich-black)' : 'var(--color-charcoal)',
+                    padding: 'clamp(24px, 3vw, 36px)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    minHeight: '290px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {/* Active Indicator Top Bar */}
+                  {isActive && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: '4px',
+                      background: 'var(--accent-wine)',
+                    }} />
+                  )}
+
+                  <div>
+                    {/* Stage Header */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: '18px',
+                    }}>
+                      <span style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 'clamp(28px, 3.5vw, 42px)',
+                        fontWeight: 900,
+                        color: isActive ? 'var(--accent-crimson)' : 'var(--color-muted-grey)',
+                        lineHeight: 1,
+                      }}>
+                        {stage.num}
+                      </span>
+                      <span className={`editorial-stamp ${isActive ? 'wine' : ''}`} style={{ fontSize: '10px' }}>
+                        {stage.badge}
+                      </span>
+                    </div>
+
+                    {/* Stage Name */}
+                    <h3 style={{
+                      fontFamily: 'var(--font-sans)',
+                      fontSize: '20px',
+                      fontWeight: 800,
+                      letterSpacing: '-0.02em',
+                      textTransform: 'uppercase',
+                      color: 'var(--color-white)',
+                      margin: 0,
+                      marginBottom: '6px',
+                    }}>
+                      {stage.name}
+                    </h3>
+
+                    {/* Tagline */}
+                    <div style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '12px',
+                      color: isActive ? 'var(--color-white)' : 'var(--color-muted-grey)',
+                      marginBottom: '16px',
+                      fontWeight: 600,
+                    }}>
+                      {stage.tagline}
+                    </div>
+
+                    {/* Details */}
+                    <p style={{
+                      fontSize: '13px',
+                      lineHeight: 1.6,
+                      color: 'var(--color-soft-white)',
+                      margin: 0,
+                    }}>
+                      {stage.detail}
+                    </p>
+                  </div>
+
+                  {/* Spec Bar */}
+                  <div style={{
+                    marginTop: '24px',
+                    paddingTop: '14px',
+                    borderTop: '1px solid var(--color-border-subtle)',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '10px',
+                    color: 'var(--color-muted-grey)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                    <span>{stage.spec}</span>
+                    <ChevronRight size={13} color={isActive ? 'var(--accent-crimson)' : 'var(--color-muted-grey)'} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </section>
   );

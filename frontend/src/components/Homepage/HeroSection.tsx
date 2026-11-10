@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Mic, ArrowRight, Sparkles, CheckCircle2, ChevronRight, Play, Volume2 } from 'lucide-react';
+import { ArrowRight, CornerDownRight, Activity, Terminal, ShieldCheck } from 'lucide-react';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 
 interface HeroSectionProps {
   onExplore: () => void;
@@ -7,226 +8,301 @@ interface HeroSectionProps {
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onExplore, onSeeHowItWorks }) => {
-  const [activeStep, setActiveStep] = useState<number>(0);
+  const { ref, isRevealed } = useScrollReveal({ threshold: 0.1 });
+  const [pulseCount, setPulseCount] = useState(0);
 
-  // Progressive product workflow animation in the hero visual
   useEffect(() => {
     const timer = setInterval(() => {
-      setActiveStep((prev) => (prev + 1) % 4);
-    }, 3200);
+      setPulseCount((prev) => (prev + 1) % 24);
+    }, 180);
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <section className="hero-container">
-      {/* Background ambient subtle burgundy glow */}
-      <div style={{
-        position: 'absolute',
-        top: '15%',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '600px',
-        height: '350px',
-        background: 'radial-gradient(circle, rgba(114, 47, 55, 0.18) 0%, rgba(0, 0, 0, 0) 70%)',
-        pointerEvents: 'none',
-        zIndex: 0,
-      }} />
+    <section
+      ref={ref}
+      className={`editorial-section ${isRevealed ? 'revealed' : ''}`}
+      style={{
+        paddingTop: 'clamp(40px, 6vw, 80px)',
+        paddingBottom: 'clamp(80px, 10vw, 140px)',
+        background: 'var(--color-black)',
+        borderBottom: '2px solid var(--color-border)',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Background Kinetic Watermark */}
+      <div
+        className="watermark-kinetic"
+        style={{
+          top: '10%',
+          right: '-2%',
+          opacity: 0.45,
+        }}
+      >
+        VOICE.
+      </div>
 
-      <div style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', width: '100%' }}>
-        {/* Technology Pill */}
-        <div className="hero-pill">
-          <span className="status-dot-accent" />
-          <span>POWERED BY GNANI AI SPEECH TECHNOLOGY</span>
+      <div className="swiss-grid" style={{ position: 'relative', zIndex: 1 }}>
+        {/* Top Editorial Index Row (Full 12 cols) */}
+        <div className="col-12">
+          <div className="editorial-header-row" style={{ marginBottom: 'clamp(28px, 4vw, 54px)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <span className="editorial-stamp wine">VT / 001</span>
+              <span>SYS.SPEC: INDIC V2.5 // PROVENANCE VERIFIED</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+              <span style={{ display: 'none', md: 'inline' } as any}>VOICE INTELLIGENCE / POWERED BY GNANI AI</span>
+              <span className="editorial-stamp">EST. 2026 // BLR</span>
+            </div>
+          </div>
         </div>
 
-        {/* Main Headline */}
-        <h1 className="hero-headline">
-          Your Conversations Deserve <br />
-          <span className="accent-text">More Than Transcription.</span>
-        </h1>
-
-        {/* Supporting Subhead */}
-        <p className="hero-subhead">
-          Speak naturally. Capture what matters. Turn everyday multilingual conversations into structured information, verifiable evidence, and meaningful business action.
-        </p>
-
-        {/* Action Buttons */}
-        <div className="hero-cta-group">
-          <button onClick={onExplore} className="btn btn-primary" style={{ padding: '14px 32px', fontSize: '15px' }}>
-            <span>Explore VaaniTrace</span>
-            <ArrowRight size={17} />
-          </button>
-          <button onClick={onSeeHowItWorks} className="btn btn-burgundy-outline" style={{ padding: '14px 28px', fontSize: '15px' }}>
-            <span>See How It Works</span>
-            <ChevronRight size={17} />
-          </button>
-        </div>
-
-        {/* Interactive Animated Product Workflow Simulation */}
-        <div style={{
-          maxWidth: '920px',
-          margin: '0 auto',
-          background: 'rgba(14, 14, 14, 0.85)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-lg)',
-          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(74, 16, 27, 0.25)',
-          backdropFilter: 'blur(16px)',
-          overflow: 'hidden',
-          textAlign: 'left',
-        }}>
-          {/* Simulation Header */}
-          <div style={{
-            padding: '16px 24px',
-            borderBottom: '1px solid var(--color-border)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            background: '#0d0d0d',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#303030' }} />
-              <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#303030' }} />
-              <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#303030' }} />
-              <span style={{ fontSize: '12px', color: 'var(--color-muted-grey)', marginLeft: '8px', fontFamily: 'var(--font-mono)' }}>
-                vaanitrace-live-intelligence.session
+        {/* Main Asymmetrical Left Area: 8 Columns */}
+        <div className="col-8" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div>
+            {/* Small Label */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+              <div style={{ width: '12px', height: '12px', background: 'var(--accent-wine)', border: '1px solid #FFFFFF' }} />
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '11px',
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: 'var(--color-muted-grey)',
+              }}>
+                ARCHITECTURAL SPECIFICATION // SPEECH-TO-ACTION
               </span>
             </div>
 
-            {/* Stepper tabs */}
-            <div style={{ display: 'flex', gap: '6px' }}>
-              {['1. Spoken Audio', '2. Prisma STT', '3. Evidence Link', '4. Structured Action'].map((label, i) => (
-                <button
-                  key={label}
-                  onClick={() => setActiveStep(i)}
+            {/* Massive Display Headline */}
+            <h1
+              style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: 'clamp(3.4rem, 7.8vw, 8.4rem)',
+                fontWeight: 900,
+                lineHeight: 0.94,
+                letterSpacing: '-0.045em',
+                textTransform: 'uppercase',
+                color: 'var(--color-white)',
+                margin: 0,
+                marginBottom: '36px',
+              }}
+            >
+              <div className="word-reveal-wrap">
+                <span className="word-reveal-inner" style={{ transitionDelay: '0.05s' }}>YOUR</span>
+              </div>
+              <div className="word-reveal-wrap">
+                <span className="word-reveal-inner" style={{ color: 'var(--color-white)', transitionDelay: '0.12s' }}>
+                  VOICE.
+                </span>
+              </div>
+              <br />
+              <div className="word-reveal-wrap">
+                <span className="word-reveal-inner" style={{ transitionDelay: '0.2s' }}>MORE</span>
+              </div>
+              <div className="word-reveal-wrap">
+                <span className="word-reveal-inner" style={{ transitionDelay: '0.28s' }}>THAN</span>
+              </div>
+              <br />
+              <div className="word-reveal-wrap">
+                <span
+                  className="word-reveal-inner"
                   style={{
-                    background: activeStep === i ? 'var(--accent-burgundy)' : 'transparent',
-                    border: `1px solid ${activeStep === i ? 'var(--accent-wine)' : 'transparent'}`,
-                    color: activeStep === i ? '#fff' : 'var(--color-muted-grey)',
-                    fontSize: '11px',
-                    padding: '4px 10px',
-                    borderRadius: 'var(--radius-sm)',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
+                    color: 'var(--color-white)',
+                    borderBottom: '4px solid var(--accent-wine)',
+                    paddingBottom: '2px',
+                    transitionDelay: '0.36s',
                   }}
                 >
-                  {label}
-                </button>
-              ))}
+                  WORDS.
+                </span>
+              </div>
+            </h1>
+
+            {/* Asymmetrical Supporting Statement */}
+            <div style={{
+              maxWidth: '620px',
+              borderLeft: '2px solid var(--accent-wine)',
+              paddingLeft: '20px',
+              marginBottom: '44px',
+            }}>
+              <p style={{
+                fontSize: 'clamp(16px, 1.3vw, 21px)',
+                lineHeight: 1.5,
+                color: 'var(--color-soft-white)',
+                fontWeight: 500,
+                margin: 0,
+                marginBottom: '8px',
+              }}>
+                From spoken conversations to structured, verifiable action.
+              </p>
+              <p style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '12px',
+                color: 'var(--color-muted-grey)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                margin: 0,
+              }}>
+                — Beyond Transcription. Into Action.
+              </p>
             </div>
           </div>
 
-          {/* Simulation Content Body */}
-          <div style={{ padding: '28px', display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '28px', alignItems: 'center' }}>
-            {/* Left: Spoken Speech & Audio Waveform */}
-            <div style={{
-              background: '#080808',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-md)',
-              padding: '20px',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Volume2 size={16} color="var(--accent-crimson)" />
-                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-white)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    Spoken Telephony Input
-                  </span>
-                </div>
-                <span className="badge badge-spoken">Audio: 8kHz Indic-Auto</span>
-              </div>
+          {/* Neo-Brutalist Tactile CTA Group */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center' }}>
+            <button
+              type="button"
+              onClick={onExplore}
+              className="btn-brutalist-white"
+            >
+              <span>Explore The System</span>
+              <ArrowRight size={16} />
+            </button>
 
-              {/* Dynamic Waveform Visualizer */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '3px', height: '36px', marginBottom: '18px' }}>
-                {[12, 28, 16, 32, 24, 18, 30, 22, 14, 26, 34, 20, 15, 29, 21, 13, 27, 31, 19, 12, 25, 33, 17, 24, 16].map((h, idx) => (
+            <button
+              type="button"
+              onClick={onSeeHowItWorks}
+              className="btn-brutalist-ghost"
+            >
+              <span>See How It Works</span>
+              <CornerDownRight size={15} color="var(--accent-crimson)" />
+            </button>
+          </div>
+        </div>
+
+        {/* Right Information Column: 4 Columns */}
+        <div
+          className="col-4"
+          style={{
+            borderLeft: '1px solid var(--color-border)',
+            paddingLeft: 'clamp(16px, 2.5vw, 32px)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            gap: '32px',
+          }}
+        >
+          {/* Audio Waveform Kinetic Box */}
+          <div style={{
+            background: 'var(--color-rich-black)',
+            border: '1px solid var(--color-border)',
+            padding: '20px',
+            position: 'relative',
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '14px',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '10px',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'var(--color-muted-grey)',
+            }}>
+              <span>SIGNAL INPUT // STREAM</span>
+              <span style={{ color: 'var(--accent-crimson)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ width: '6px', height: '6px', background: 'var(--accent-crimson)', borderRadius: '0' }} />
+                LIVE
+              </span>
+            </div>
+
+            {/* 24-Bar Minimalist Brutalist Waveform */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'flex-end',
+              justifyContent: 'space-between',
+              height: '52px',
+              gap: '2px',
+              paddingBottom: '4px',
+              borderBottom: '1px solid var(--color-border-subtle)',
+            }}>
+              {Array.from({ length: 24 }).map((_, idx) => {
+                const heights = [12, 28, 44, 20, 36, 16, 48, 32, 24, 40, 18, 46, 26, 14, 38, 42, 22, 34, 16, 48, 30, 20, 14, 28];
+                const active = (idx + pulseCount) % 24 < 8;
+                return (
                   <div
                     key={idx}
                     style={{
                       flex: 1,
-                      height: `${h}px`,
-                      background: idx < 16 ? 'var(--accent-wine)' : '#242424',
-                      borderRadius: '1px',
-                      transition: 'all 0.3s ease',
+                      height: `${heights[idx]}px`,
+                      background: active ? 'var(--accent-wine)' : 'var(--color-graphite)',
+                      transition: 'background 0.2s ease, height 0.3s ease',
                     }}
                   />
-                ))}
-              </div>
-
-              {/* Spoken Transcript Bubble */}
-              <div style={{
-                fontSize: '13px',
-                lineHeight: 1.7,
-                color: '#d4d4d4',
-                background: '#121212',
-                padding: '12px 14px',
-                borderRadius: '6px',
-                borderLeft: '3px solid var(--accent-wine)',
-              }}>
-                "Hello Rajesh, please send <strong style={{ color: '#fff', background: activeStep >= 2 ? 'var(--accent-wine)' : 'transparent', padding: '0 4px', borderRadius: '2px' }}>20 boxes of surgical gloves</strong> at <strong style={{ color: '#fff', background: activeStep >= 2 ? 'var(--accent-wine)' : 'transparent', padding: '0 4px', borderRadius: '2px' }}>1200 rupees</strong> each by Friday."
-              </div>
+                );
+              })}
             </div>
 
-            {/* Right: Structured Facts & Evidence Linkage */}
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-muted-grey)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                  Extracted Intelligence
-                </span>
-                <span className="badge badge-calculated">Calculated & Linked</span>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginTop: '12px',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '10px',
+              color: 'var(--color-muted-grey)',
+            }}>
+              <span>FORMAT: 16kHZ PCM</span>
+              <span>LID: INDIC-AUTO</span>
+            </div>
+          </div>
+
+          {/* Technical Index Block */}
+          <div style={{
+            background: 'var(--color-charcoal)',
+            border: '1px solid var(--color-border)',
+            padding: '24px',
+          }}>
+            <div style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              color: 'var(--color-white)',
+              marginBottom: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}>
+              <Terminal size={14} color="var(--accent-crimson)" />
+              <span>CORE CAPABILITY SPECS</span>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '8px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-muted-grey)' }}>STT ENGINE</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 600, color: 'var(--color-white)' }}>Gnani Prisma v2.5</span>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={{
-                  background: '#080808',
-                  border: '1px solid var(--color-border)',
-                  padding: '12px 16px',
-                  borderRadius: 'var(--radius-sm)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                  <div>
-                    <span style={{ fontSize: '11px', color: 'var(--color-muted-grey)', textTransform: 'uppercase' }}>Item & Quantity</span>
-                    <p style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>20 Boxes (Surgical Gloves)</p>
-                  </div>
-                  <span className="badge badge-spoken">Spoken Evidence</span>
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '8px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-muted-grey)' }}>TTS ENGINE</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 600, color: 'var(--color-white)' }}>Gnani Timbre v2.5</span>
+              </div>
 
-                <div style={{
-                  background: activeStep >= 2 ? 'rgba(74, 16, 27, 0.4)' : '#080808',
-                  border: `1px solid ${activeStep >= 2 ? 'var(--accent-wine)' : 'var(--color-border)'}`,
-                  padding: '12px 16px',
-                  borderRadius: 'var(--radius-sm)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  transition: 'all 0.3s ease',
-                }}>
-                  <div>
-                    <span style={{ fontSize: '11px', color: activeStep >= 2 ? '#ff9da9' : 'var(--color-muted-grey)', textTransform: 'uppercase' }}>
-                      Calculated Total Amount
-                    </span>
-                    <p style={{ fontSize: '15px', fontWeight: 700, color: '#fff' }}>₹24,000.00</p>
-                    <span style={{ fontSize: '11px', color: '#d17785', fontFamily: 'var(--font-mono)' }}>20 × ₹1,200.00</span>
-                  </div>
-                  <span className="badge badge-calculated">Calculated</span>
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '8px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-muted-grey)' }}>ALIGNMENT</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 600, color: 'var(--color-white)' }}>Exact Character Span</span>
+              </div>
 
-                <div style={{
-                  background: '#080808',
-                  border: '1px solid var(--color-border)',
-                  padding: '12px 16px',
-                  borderRadius: 'var(--radius-sm)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                  <div>
-                    <span style={{ fontSize: '11px', color: 'var(--color-muted-grey)', textTransform: 'uppercase' }}>Action Item</span>
-                    <p style={{ fontSize: '13px', fontWeight: 500, color: '#fff' }}>Deliver to Central Warehouse by Friday</p>
-                  </div>
-                  <span className="badge badge-verified">Verified</span>
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-muted-grey)' }}>PROVENANCE</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 600, color: 'var(--accent-crimson)' }}>Dual Audit Trail</span>
               </div>
             </div>
+          </div>
+
+          {/* Operational Assurance Stamp */}
+          <div style={{
+            border: '1px dashed var(--color-border)',
+            padding: '14px 18px',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '11px',
+            color: 'var(--color-muted-grey)',
+            lineHeight: 1.5,
+          }}>
+            <strong style={{ color: 'var(--color-white)' }}>DATA ISOLATION:</strong> Audio files are processed in-flight and spooled temporarily with zero client-side credential exposure.
           </div>
         </div>
       </div>

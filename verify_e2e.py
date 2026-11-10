@@ -1,6 +1,7 @@
 """Comprehensive end-to-end integration and verification script for VaaniTrace."""
 
 import sys
+import os
 from fastapi.testclient import TestClient
 from app.main import app
 from app.database import init_db
@@ -24,10 +25,12 @@ def run_full_verification():
         assert '<div id="root"></div>' in res_root.text, "React root element missing"
         print("-> SUCCESS: Production React SPA served at '/' (HTTP 200)")
 
-        # Verify static asset routing
-        res_css = client.get("/assets/index-DNht_swU.css")
+        # Verify static asset routing dynamically
+        css_files = [f for f in os.listdir("static/dist/assets") if f.endswith(".css")]
+        assert len(css_files) > 0, "No CSS bundle found in static/dist/assets"
+        res_css = client.get(f"/assets/{css_files[0]}")
         assert res_css.status_code == 200, f"Expected 200 on CSS asset, got {res_css.status_code}"
-        print(f"-> SUCCESS: Static CSS bundle served ({len(res_css.content)} bytes)")
+        print(f"-> SUCCESS: Static CSS bundle served ({len(res_css.content)} bytes, file: {css_files[0]})")
 
         # Verify SPA catch-all routing (e.g. /workspace, /records)
         res_spa_route = client.get("/workspace")

@@ -166,3 +166,4 @@ export const DifferenceSection: React.FC = () => {
     </section>
   );
 };
+
