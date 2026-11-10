@@ -166,18 +166,28 @@ export const RecordDetails: React.FC<RecordDetailsProps> = ({ recordId, onBack }
 
         <div style={{ display: 'flex', gap: '8px' }}>
           <a
-            href={api.getExportUrl(record.id, 'json')}
+            href={api.getExportUrl(record.id, 'xlsx')}
             download
             className="btn btn-secondary btn-sm"
+            style={{ borderColor: 'var(--accent-wine)', color: 'var(--color-white)' }}
+            title="Download formatted Excel workbook"
           >
-            <Download size={13} /> JSON
+            <Download size={13} /> Excel (.xlsx)
           </a>
           <a
             href={api.getExportUrl(record.id, 'csv')}
             download
             className="btn btn-secondary btn-sm"
+            title="Download UTF-8 CSV"
           >
             <Download size={13} /> CSV
+          </a>
+          <a
+            href={api.getExportUrl(record.id, 'json')}
+            download
+            className="btn btn-secondary btn-sm"
+          >
+            <Download size={13} /> JSON
           </a>
           <button
             onClick={handleSaveUpdates}

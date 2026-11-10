@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   TranscriptSegment,
   ExtractedField,
@@ -22,6 +22,7 @@ import {
   CheckCircle,
   HelpCircle,
   Languages,
+  ArrowDown,
 } from 'lucide-react';
 
 const INDIAN_LANGUAGES = [
@@ -119,6 +120,7 @@ export const Workspace: React.FC = () => {
   const [activeSegmentId, setActiveSegmentId] = useState<number | null>(null);
   const [activeFieldId, setActiveFieldId] = useState<string | null>(null);
   const [activeCharRange, setActiveCharRange] = useState<{ start: number; end: number } | null>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   // Handle Audio Ready
   const handleAudioSelected = (file: File) => {
@@ -225,7 +227,12 @@ export const Workspace: React.FC = () => {
       const typeLabel = RECORD_TYPES.find((r) => r.id === selectedRecordType)?.label.split('(')[0].trim() || 'Session';
       setSessionTitle(`${typeLabel} - ${dateStr}`);
 
-      setSuccessMessage('Speech transcribed and structured intelligence extracted successfully.');
+      setSuccessMessage('Speech transcribed and structured intelligence extracted successfully. Scroll down to review and verify.');
+
+      // Auto-scroll smoothly down to the structured review & verification section
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 250);
     } catch (err: any) {
       console.error('Processing workflow error:', err);
       setErrorMessage(err.message || 'An error occurred during audio processing.');
@@ -484,11 +491,85 @@ export const Workspace: React.FC = () => {
             <span>Transcribe & Extract with Gnani AI</span>
           </button>
         </div>
+
+        {/* High-Visibility Notification Banner after Submission */}
+        {transcript && !isLoading && (
+          <div
+            className="pulse-highlight-box"
+            style={{
+              background: 'var(--color-charcoal)',
+              border: '2px solid var(--accent-wine)',
+              padding: '16px 20px',
+              marginTop: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '14px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '34px',
+                  height: '34px',
+                  borderRadius: '50%',
+                  background: 'var(--accent-wine)',
+                  color: '#FFFFFF',
+                  flexShrink: 0,
+                }}
+              >
+                <CheckCircle size={20} />
+              </span>
+              <div>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '13px',
+                    fontWeight: 800,
+                    color: '#FFFFFF',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  ✓ Audio Transcribed & Intelligence Extracted
+                </div>
+                <div style={{ fontSize: '13px', color: 'var(--color-soft-white)', marginTop: '2px' }}>
+                  Please scroll down to review transcript evidence, edit fields, and verify your structured record.
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() =>
+                resultsRef.current?.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start',
+                })
+              }
+              style={{
+                padding: '8px 18px',
+                fontSize: '13px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
+              <span>Scroll Down to Verify</span>
+              <ArrowDown size={15} />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Main Two-Panel Workspace Grid */}
       {transcript && (
-        <div style={{ marginTop: '28px' }}>
+        <div ref={resultsRef} id="workspace-results" style={{ marginTop: '28px', scrollMarginTop: '80px' }}>
           {/* Session Title Bar */}
           <div style={{
             background: 'var(--color-charcoal)',

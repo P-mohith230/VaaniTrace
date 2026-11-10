@@ -73,20 +73,31 @@ export const RecordCard: React.FC<RecordCardProps> = ({ record, onOpen, onDelete
 
         <div style={{ display: 'flex', gap: '6px' }}>
           <a
-            href={api.getExportUrl(record.id, 'json')}
+            href={api.getExportUrl(record.id, 'xlsx')}
             download
             className="btn btn-secondary btn-sm"
-            title="Export JSON"
+            title="Export Excel (.xlsx)"
+            style={{ fontSize: '11px', padding: '4px 8px' }}
           >
-            <Download size={13} />
+            XLSX
           </a>
           <a
             href={api.getExportUrl(record.id, 'csv')}
             download
             className="btn btn-secondary btn-sm"
             title="Export CSV"
+            style={{ fontSize: '11px', padding: '4px 8px' }}
           >
             CSV
+          </a>
+          <a
+            href={api.getExportUrl(record.id, 'json')}
+            download
+            className="btn btn-secondary btn-sm"
+            title="Export JSON"
+            style={{ fontSize: '11px', padding: '4px 8px' }}
+          >
+            <Download size={13} />
           </a>
           {onDelete && (
             <button

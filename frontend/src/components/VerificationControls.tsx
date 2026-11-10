@@ -143,20 +143,30 @@ export const VerificationControls: React.FC<VerificationControlsProps> = ({
         </button>
 
         {savedRecordId && (
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <a
-              href={api.getExportUrl(savedRecordId, 'json')}
+              href={api.getExportUrl(savedRecordId, 'xlsx')}
               download
               className="btn btn-secondary btn-sm"
+              style={{ borderColor: 'var(--accent-wine)', color: 'var(--color-white)' }}
+              title="Download formatted Excel workbook"
             >
-              <Download size={14} /> Export JSON
+              <Download size={14} /> Excel (.xlsx)
             </a>
             <a
               href={api.getExportUrl(savedRecordId, 'csv')}
               download
               className="btn btn-secondary btn-sm"
+              title="Download UTF-8 CSV"
             >
-              <Download size={14} /> Export CSV
+              <Download size={14} /> CSV
+            </a>
+            <a
+              href={api.getExportUrl(savedRecordId, 'json')}
+              download
+              className="btn btn-secondary btn-sm"
+            >
+              <Download size={14} /> JSON
             </a>
           </div>
         )}

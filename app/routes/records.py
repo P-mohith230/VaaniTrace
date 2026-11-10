@@ -220,10 +220,10 @@ def delete_record(record_id: str, db: Session = Depends(get_db)):
 @router.get("/{record_id}/export")
 def export_record_file(
     record_id: str,
-    format: str = Query("json", description="Export format: 'json' or 'csv'"),
+    format: str = Query("json", description="Export format: 'json', 'csv', or 'xlsx'"),
     db: Session = Depends(get_db),
 ):
-    """Download record in structured JSON or tabular CSV format."""
+    """Download record in structured JSON, UTF-8 CSV, or styled Excel (.xlsx) format."""
     record = db.query(Record).filter(Record.id == record_id).first()
     if not record:
         raise HTTPException(
@@ -231,7 +231,11 @@ def export_record_file(
             detail=f"Record '{record_id}' not found.",
         )
 
-    if format.lower() == "csv":
+    fmt = format.lower()
+    if fmt in ("xlsx", "excel"):
+        content, filename = export_service.export_excel(record)
+        media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    elif fmt == "csv":
         content, filename = export_service.export_csv(record)
         media_type = "text/csv; charset=utf-8"
     else:
