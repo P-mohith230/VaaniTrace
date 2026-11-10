@@ -41,10 +41,50 @@ class InformationExtractor:
     # Helper Extractors (Numbers, Currency, Dates, Entities)
     # -------------------------------------------------------------
 
+    @staticmethod
+    def _words_to_number(phrase: str) -> Optional[float]:
+        """Convert spoken number words (e.g. 'twenty five', 'one thousand two hundred') into numeric values."""
+        word_map = {
+            "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
+            "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14,
+            "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20,
+            "thirty": 30, "forty": 40, "fifty": 50, "sixty": 60, "seventy": 70, "eighty": 80, "ninety": 90,
+        }
+        tokens = phrase.lower().replace("-", " ").strip().split()
+        total = 0
+        current = 0
+        valid = False
+
+        for token in tokens:
+            if token in word_map:
+                current += word_map[token]
+                valid = True
+            elif token == "hundred":
+                current = (current if current else 1) * 100
+                valid = True
+            elif token == "thousand":
+                total += (current if current else 1) * 1000
+                current = 0
+                valid = True
+            elif token == "lakh":
+                total += (current if current else 1) * 100000
+                current = 0
+                valid = True
+            elif token == "crore":
+                total += (current if current else 1) * 10000000
+                current = 0
+                valid = True
+            elif token in ("and", "a", "an"):
+                continue
+            else:
+                return None
+
+        return float(total + current) if valid else None
+
     def _extract_amounts(self, text: str) -> List[Dict[str, Any]]:
-        """Extract currency amounts with spoken phrases."""
+        """Extract currency amounts with spoken phrases (digits or spoken words)."""
         amounts = []
-        # Pattern for ₹ or Rs. or Rupees or INR or numbers followed by currency
+        # 1. Pattern for digit amounts with ₹, Rs, Rupees
         patterns = [
             r'(?:₹|Rs\.?|INR)\s*([\d,]+(?:\.\d{1,2})?)',
             r'([\d,]+(?:\.\d{1,2})?)\s*(?:rupees|rs|INR|dollars|\$)',
@@ -59,14 +99,28 @@ class InformationExtractor:
                     amounts.append({"value": num_val, "raw": val_str, "phrase": supporting})
                 except ValueError:
                     pass
+
+        # 2. Pattern for spoken word amounts: e.g. "one thousand two hundred rupees"
+        word_amount_pat = r'\b((?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|lakh|and|\s|-)+)\s*(?:rupees|rs|INR|dollars|\$)'
+        for match in re.finditer(word_amount_pat, text, re.IGNORECASE):
+            word_str = match.group(1).strip()
+            num = self._words_to_number(word_str)
+            if num is not None and num > 0:
+                supporting = match.group(0).strip()
+                # avoid duplicate if already found
+                if not any(a["phrase"] in supporting or supporting in a["phrase"] for a in amounts):
+                    amounts.append({"value": num, "raw": str(num), "phrase": supporting})
+
         return amounts
 
     def _extract_quantities(self, text: str) -> List[Dict[str, Any]]:
-        """Extract numeric quantities with their units."""
+        """Extract numeric quantities with their units (digits or spoken words)."""
         quantities = []
-        # Matches: 20 boxes, 50 units, 100 packets, 5 meters, 10 pcs
-        pat = r'\b(\d+)\s*(boxes|units|packets|pieces|pcs|cartons|kg|kilos|liters|tonnes|items|sets)\b'
-        for match in re.finditer(pat, text, re.IGNORECASE):
+        units_pat = r'(boxes|units|packets|pieces|pcs|cartons|bags|sacks|kg|kilos|quintal|quintals|liters|tonnes|items|sets)'
+        
+        # 1. Digits pattern: 20 boxes, 50 units
+        pat_digits = rf'\b(\d+)\s*{units_pat}\b'
+        for match in re.finditer(pat_digits, text, re.IGNORECASE):
             qty_str = match.group(1)
             unit = match.group(2)
             supporting = match.group(0)
@@ -78,6 +132,22 @@ class InformationExtractor:
                 })
             except ValueError:
                 pass
+
+        # 2. Words pattern: twenty five boxes, fifty bags, ten quintals
+        pat_words = rf'\b((?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|and|\s|-)+)\s*{units_pat}\b'
+        for match in re.finditer(pat_words, text, re.IGNORECASE):
+            word_str = match.group(1).strip()
+            unit = match.group(2)
+            num = self._words_to_number(word_str)
+            if num is not None and num > 0:
+                supporting = match.group(0).strip()
+                if not any(q["phrase"] in supporting or supporting in q["phrase"] for q in quantities):
+                    quantities.append({
+                        "quantity": int(num),
+                        "unit": unit,
+                        "phrase": supporting,
+                    })
+
         return quantities
 
     def _extract_dates_or_deadlines(self, text: str) -> List[Dict[str, Any]]:
@@ -135,18 +205,29 @@ class InformationExtractor:
         # Item detection (look for noun phrase around quantity or order verbs)
         item_name = None
         item_phrase = None
-        item_match = re.search(
-            r'(?:need|order|send|deliver|want|mangwane|bhejo)\s+(?:about\s+)?(\d+\s+\w+(?:\s+\w+)?(?:\s+of\s+([A-Za-z0-9\s-]+?)(?:\s+at|\s+by|\s+for|\.|$)))',
+        
+        # Check "boxes of <product>" pattern
+        of_match = re.search(
+            r'\b(?:boxes|units|packets|pieces|pcs|cartons|bags|sacks|kg|quintals?)\s+of\s+([A-Za-z0-9\s-]+?)(?:\s+at|\s+by|\s+for|\.|$)',
             text,
             re.IGNORECASE,
         )
-        if item_match:
-            item_phrase = item_match.group(0).strip()
-            item_name = item_match.group(2) if item_match.group(2) else item_match.group(1)
-            item_name = item_name.strip()
-        elif quantities:
-            item_phrase = quantities[0]["phrase"]
-            item_name = f"{quantities[0]['quantity']} {quantities[0]['unit']}"
+        if of_match:
+            item_name = of_match.group(1).strip()
+            item_phrase = of_match.group(0).strip()
+        else:
+            item_match = re.search(
+                r'(?:need|order|send|deliver|want|mangwane|bhejo)\s+(?:about\s+)?((?:\d+|[a-zA-Z-]+)\s+\w+(?:\s+\w+)?(?:\s+of\s+([A-Za-z0-9\s-]+?)(?:\s+at|\s+by|\s+for|\.|$)))',
+                text,
+                re.IGNORECASE,
+            )
+            if item_match:
+                item_phrase = item_match.group(0).strip()
+                item_name = item_match.group(2) if item_match.group(2) else item_match.group(1)
+                item_name = item_name.strip()
+            elif quantities:
+                item_phrase = quantities[0]["phrase"]
+                item_name = f"{quantities[0]['quantity']} {quantities[0]['unit']}"
 
         # 1. Item Field
         if item_name:

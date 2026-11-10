@@ -40,27 +40,65 @@ class GnaniPrismaService:
             "token": key,
         }
 
-    def _extract_transcript(self, result: Any) -> str:
+    def _extract_transcript(self, result: Any, requested_lang: str = "indic-auto") -> str:
         """Resiliently extract transcript text from any Gnani response envelope."""
         if not isinstance(result, dict):
             return str(result or "").strip()
         
-        # Direct key matches
+        # 1. Direct standard keys
         for key in ("transcript", "transcription", "text", "asr_output", "speech_text"):
             val = result.get(key)
             if isinstance(val, str) and val.strip():
                 return val.strip()
 
-        # Check nested structures
-        for container_key in ("data", "result", "payload", "output", "response"):
+        # 2. Gnani Vachana / Prisma 'translations' dictionary
+        # (Maps locale -> transcript string, e.g. {'en-IN': '...', 'hi-IN': '...'})
+        translations = result.get("translations")
+        if isinstance(translations, dict) and translations:
+            # If user explicitly requested a language and it exists in translations
+            if requested_lang and requested_lang in translations:
+                val = translations[requested_lang]
+                if isinstance(val, str) and val.strip():
+                    return val.strip()
+
+            # Prefer en-IN when available (common for mixed/English audio)
+            if "en-IN" in translations and isinstance(translations["en-IN"], str) and translations["en-IN"].strip():
+                return translations["en-IN"].strip()
+
+            # If detected language matches
+            detected = result.get("detected_language_code")
+            if detected and detected in translations and isinstance(translations[detected], str) and translations[detected].strip():
+                return translations[detected].strip()
+
+            # Return first valid string in translations
+            for val in translations.values():
+                if isinstance(val, str) and val.strip():
+                    return val.strip()
+
+        # 3. Gnani 'output' dictionary (e.g. output.literal['en-IN'])
+        output = result.get("output")
+        if isinstance(output, dict):
+            for sub_key in ("literal", "normalized", "verbatim", "transcript"):
+                sub = output.get(sub_key)
+                if isinstance(sub, dict):
+                    if "en-IN" in sub and isinstance(sub["en-IN"], str) and sub["en-IN"].strip():
+                        return sub["en-IN"].strip()
+                    for val in sub.values():
+                        if isinstance(val, str) and val.strip():
+                            return val.strip()
+                elif isinstance(sub, str) and sub.strip():
+                    return sub.strip()
+
+        # 4. Check nested containers
+        for container_key in ("data", "result", "payload", "response"):
             nested = result.get(container_key)
             if isinstance(nested, dict):
-                sub = self._extract_transcript(nested)
+                sub = self._extract_transcript(nested, requested_lang)
                 if sub:
                     return sub
             elif isinstance(nested, list) and len(nested) > 0:
                 if isinstance(nested[0], dict):
-                    sub = self._extract_transcript(nested[0])
+                    sub = self._extract_transcript(nested[0], requested_lang)
                     if sub:
                         return sub
                 elif isinstance(nested[0], str):
@@ -108,10 +146,10 @@ class GnaniPrismaService:
 
             if response.status_code == 200:
                 result = response.json()
-                logger.info(f"Gnani Prisma transcription success (request_id={result.get('request_id')})")
+                logger.info(f"Gnani Prisma transcription success (request_id={result.get('request_id')}, payload={result})")
                 
                 # Robust extraction across different Gnani envelope formats
-                transcript_text = self._extract_transcript(result)
+                transcript_text = self._extract_transcript(result, language_code)
 
                 return {
                     "request_id": str(result.get("request_id") or result.get("id") or "req-direct"),
