@@ -64,6 +64,9 @@ class EvidenceRefSchema(BaseModel):
     end_char: Optional[int] = None
     start_time: Optional[float] = None
     end_time: Optional[float] = None
+    is_anchored: bool = True
+    confidence_score: float = 1.0
+    matched_text: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 

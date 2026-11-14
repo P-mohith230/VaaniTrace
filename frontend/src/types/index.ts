@@ -19,6 +19,9 @@ export interface EvidenceRef {
   end_char?: number | null;
   start_time?: number | null;
   end_time?: number | null;
+  is_anchored?: boolean;
+  confidence_score?: number;
+  matched_text?: string | null;
 }
 
 export type EvidenceType = 'spoken' | 'inferred' | 'calculated' | 'manual';

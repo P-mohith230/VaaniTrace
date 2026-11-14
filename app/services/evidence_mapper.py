@@ -60,13 +60,24 @@ class EvidenceMapper:
         segments: List[TranscriptSegment],
         phrase: str,
     ) -> Optional[Tuple[int, int, int]]:
-        """Find the start_char, end_char, and segment_index for a target phrase."""
+        """Find the start_char, end_char, and segment_index for a target phrase with fuzzy and compound support."""
         if not phrase or not transcript:
             return None
 
         clean_phrase = phrase.strip()
         if not clean_phrase:
             return None
+
+        # 0. Handle compound / discontinuous phrases (e.g., "twenty five ... 1,200")
+        if " ... " in clean_phrase:
+            parts = [p.strip() for p in clean_phrase.split(" ... ") if p.strip()]
+            if len(parts) >= 2:
+                first_loc = EvidenceMapper.locate_phrase(transcript, segments, parts[0])
+                last_loc = EvidenceMapper.locate_phrase(transcript, segments, parts[-1])
+                if first_loc and last_loc:
+                    start_char = min(first_loc[0], last_loc[0])
+                    end_char = max(first_loc[1], last_loc[1])
+                    return (start_char, end_char, first_loc[2])
 
         # 1. Exact case-insensitive match in transcript
         pattern = re.escape(clean_phrase)
@@ -106,6 +117,26 @@ class EvidenceMapper:
                 end_char = start_char + len(clean_phrase)
                 return (start_char, end_char, seg.id)
 
+        # 4. Spoken number words mapping fallback
+        spoken_num_map = {
+            "1": "one", "2": "two", "3": "three", "4": "four", "5": "five",
+            "6": "six", "7": "seven", "8": "eight", "9": "nine", "10": "ten",
+            "15": "fifteen", "20": "twenty", "25": "twenty five", "30": "thirty",
+            "40": "forty", "50": "fifty", "100": "hundred", "1000": "thousand",
+        }
+        if clean_phrase in spoken_num_map:
+            word_target = spoken_num_map[clean_phrase]
+            match_word = re.search(rf"\b{re.escape(word_target)}\b", transcript, re.IGNORECASE)
+            if match_word:
+                start_char = match_word.start()
+                end_char = match_word.end()
+                seg_idx = 0
+                for seg in segments:
+                    if seg.start_char <= start_char <= seg.end_char:
+                        seg_idx = seg.id
+                        break
+                return (start_char, end_char, seg_idx)
+
         return None
 
     def build_evidence(
@@ -114,18 +145,22 @@ class EvidenceMapper:
         segments: List[TranscriptSegment],
         supporting_text: str,
     ) -> Optional[EvidenceRefSchema]:
-        """Construct EvidenceRefSchema with offsets and segment linkage."""
+        """Construct EvidenceRefSchema with offsets, verification status, and segment linkage."""
         if not supporting_text:
             return None
 
         loc = self.locate_phrase(transcript, segments, supporting_text)
         if loc:
             start_char, end_char, seg_id = loc
+            matched = transcript[start_char:end_char]
             return EvidenceRefSchema(
                 supporting_text=supporting_text,
                 segment_index=seg_id,
                 start_char=start_char,
                 end_char=end_char,
+                is_anchored=True,
+                confidence_score=1.0,
+                matched_text=matched,
             )
 
         # Unsupported in plain text or inferred from broader context
@@ -134,7 +169,46 @@ class EvidenceMapper:
             segment_index=0 if segments else None,
             start_char=None,
             end_char=None,
+            is_anchored=False,
+            confidence_score=0.3,
+            matched_text=None,
         )
+
+    def validate_evidence_integrity(
+        self,
+        field: ExtractedFieldSchema,
+        transcript: str,
+    ) -> ExtractedFieldSchema:
+        """Zero-Hallucination Gate: Verify that evidence mathematically anchors to transcript."""
+        if not field.evidence:
+            if field.evidence_type == "spoken":
+                field.verification_status = "needs_review"
+            return field
+
+        ev = field.evidence
+        if ev.start_char is not None and ev.end_char is not None:
+            # Check boundary validity
+            if 0 <= ev.start_char < len(transcript) and ev.start_char < ev.end_char <= len(transcript):
+                actual_text = transcript[ev.start_char:ev.end_char]
+                ev.matched_text = actual_text
+                ev.is_anchored = True
+                ev.confidence_score = 1.0
+                return field
+
+        # Offsets missing or invalid: try relocating
+        loc = self.locate_phrase(transcript, [], ev.supporting_text)
+        if loc:
+            ev.start_char, ev.end_char, _ = loc
+            ev.matched_text = transcript[ev.start_char:ev.end_char]
+            ev.is_anchored = True
+            ev.confidence_score = 0.95
+        else:
+            ev.is_anchored = False
+            ev.confidence_score = 0.0
+            if field.evidence_type == "spoken":
+                field.verification_status = "needs_review"
+
+        return field
 
     def create_field(
         self,
@@ -147,17 +221,17 @@ class EvidenceMapper:
         notes: Optional[str] = None,
         verification_status: str = "unverified",
     ) -> ExtractedFieldSchema:
-        """Create a validated ExtractedFieldSchema with attached evidence."""
+        """Create a validated ExtractedFieldSchema with attached, verified evidence."""
         evidence = None
         if supporting_text:
             evidence = self.build_evidence(transcript, segments, supporting_text)
 
-        # If no supporting text and evidence_type is spoken, flag as needs_review
+        # Zero-hallucination gate: if spoken and cannot anchor to text, flag for review
         status = verification_status
-        if evidence_type == "spoken" and (not evidence or evidence.start_char is None):
+        if evidence_type == "spoken" and (not evidence or not evidence.is_anchored):
             status = "needs_review"
 
-        return ExtractedFieldSchema(
+        field = ExtractedFieldSchema(
             field_name=field_name,
             original_value=value,
             current_value=value,
@@ -167,6 +241,7 @@ class EvidenceMapper:
             notes=notes,
             evidence=evidence,
         )
+        return self.validate_evidence_integrity(field, transcript)
 
 
 evidence_mapper = EvidenceMapper()

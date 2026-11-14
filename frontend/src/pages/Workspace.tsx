@@ -11,6 +11,7 @@ import { AudioUploader } from '../components/AudioUploader';
 import { AudioRecorder } from '../components/AudioRecorder';
 import { TranscriptViewer } from '../components/TranscriptViewer';
 import { ExtractionPanel } from '../components/ExtractionPanel';
+import { VoicePOView } from '../components/VoicePOView';
 import { VerificationControls } from '../components/VerificationControls';
 import { ErrorAlert } from '../components/ErrorAlert';
 import { LoadingOverlay } from '../components/LoadingOverlay';
@@ -115,12 +116,41 @@ export const Workspace: React.FC = () => {
   const [savedRecordId, setSavedRecordId] = useState<string | null>(null);
   const [audioSummaryBase64, setAudioSummaryBase64] = useState<string | null>(null);
   const [overallVerification, setOverallVerification] = useState<VerificationStatus>('unverified');
+  const [intelligenceTab, setIntelligenceTab] = useState<'po' | 'fields'>('po');
 
   // Interactive Cross-Highlighting State
   const [activeSegmentId, setActiveSegmentId] = useState<number | null>(null);
   const [activeFieldId, setActiveFieldId] = useState<string | null>(null);
   const [activeCharRange, setActiveCharRange] = useState<{ start: number; end: number } | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+
+  // Direct ERP Exports
+  const handleExportCsv = async () => {
+    let id = savedRecordId;
+    if (!id) {
+      await handleSaveRecord();
+      return;
+    }
+    window.open(api.getExportUrl(id, 'csv'), '_blank');
+  };
+
+  const handleExportXlsx = async () => {
+    let id = savedRecordId;
+    if (!id) {
+      await handleSaveRecord();
+      return;
+    }
+    window.open(api.getExportUrl(id, 'xlsx'), '_blank');
+  };
+
+  const handleExportTally = async () => {
+    let id = savedRecordId;
+    if (!id) {
+      await handleSaveRecord();
+      return;
+    }
+    window.open(api.getExportUrl(id, 'tally'), '_blank');
+  };
 
   // Handle Audio Ready
   const handleAudioSelected = (file: File) => {
@@ -611,31 +641,126 @@ export const Workspace: React.FC = () => {
             </div>
           </div>
 
+          {/* Mode Switcher: Voice-PO Voucher (Rank 1) vs Standard Fact Cards */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            background: 'var(--color-rich-black)',
+            border: '1px solid var(--color-border)',
+            padding: '10px 16px',
+            borderRadius: 'var(--radius-sm)',
+            marginBottom: '20px',
+            flexWrap: 'wrap',
+            gap: '10px',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '11px',
+                color: 'var(--accent-crimson)',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+              }}>
+                [ VIEW ENGINE ]
+              </span>
+              <span style={{ fontSize: '13px', color: 'var(--color-white)', fontWeight: 600 }}>
+                Structured Provenance Output:
+              </span>
+            </div>
+
+            <div style={{
+              display: 'inline-flex',
+              background: 'var(--color-charcoal)',
+              border: '1px solid var(--color-border)',
+              padding: '2px',
+            }}>
+              <button
+                type="button"
+                onClick={() => setIntelligenceTab('po')}
+                style={{
+                  background: intelligenceTab === 'po' ? 'var(--accent-wine)' : 'transparent',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  padding: '5px 14px',
+                  fontSize: '12px',
+                  fontFamily: 'var(--font-mono)',
+                  cursor: 'pointer',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                <span>📄 Voice-PO Voucher (Rank 1)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIntelligenceTab('fields')}
+                style={{
+                  background: intelligenceTab === 'fields' ? 'var(--accent-wine)' : 'transparent',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  padding: '5px 14px',
+                  fontSize: '12px',
+                  fontFamily: 'var(--font-mono)',
+                  cursor: 'pointer',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                <span>🗂️ Fact Inspection Cards</span>
+              </button>
+            </div>
+          </div>
+
           <div className="workspace-grid">
-            {/* Left Panel: Transcript & Evidence Alignment */}
+            {/* Left Panel: Transcript & Precision Evidence Alignment */}
             <div className="card">
               <TranscriptViewer
                 transcript={transcript}
                 segments={segments}
+                fields={fields}
                 detectedLanguage={detectedLanguage}
                 activeSegmentId={activeSegmentId}
                 activeCharRange={activeCharRange}
+                activeFieldId={activeFieldId}
                 onSegmentClick={handleSegmentClick}
+                onFieldSelect={handleFieldSelect}
               />
             </div>
 
-            {/* Right Panel: Structured Extraction & Verification */}
+            {/* Right Panel: Structured Extraction (Voice-PO or Cards) & Verification */}
             <div className="card">
-              <ExtractionPanel
-                summary={summary}
-                fields={fields}
-                actionItems={actionItems}
-                uncertainFields={uncertainFields}
-                activeFieldId={activeFieldId}
-                onFieldSelect={handleFieldSelect}
-                onFieldUpdate={handleFieldUpdate}
-                onFieldVerify={handleFieldVerify}
-              />
+              {intelligenceTab === 'po' ? (
+                <VoicePOView
+                  recordId={savedRecordId}
+                  sessionTitle={sessionTitle}
+                  fields={fields}
+                  actionItems={actionItems}
+                  overallVerification={overallVerification}
+                  activeFieldId={activeFieldId}
+                  onFieldSelect={handleFieldSelect}
+                  onFieldVerify={handleFieldVerify}
+                  onExportCsv={handleExportCsv}
+                  onExportXlsx={handleExportXlsx}
+                  onExportTally={handleExportTally}
+                  detectedLanguage={detectedLanguage}
+                />
+              ) : (
+                <ExtractionPanel
+                  summary={summary}
+                  fields={fields}
+                  actionItems={actionItems}
+                  uncertainFields={uncertainFields}
+                  activeFieldId={activeFieldId}
+                  onFieldSelect={handleFieldSelect}
+                  onFieldUpdate={handleFieldUpdate}
+                  onFieldVerify={handleFieldVerify}
+                />
+              )}
 
               <VerificationControls
                 summaryText={summary}
