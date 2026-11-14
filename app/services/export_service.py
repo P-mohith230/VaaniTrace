@@ -3,6 +3,7 @@
 import io
 import csv
 import json
+import re
 from typing import Tuple
 from app.models import Record
 
@@ -284,13 +285,17 @@ class ExportService:
 
     @staticmethod
     def export_tally_xml(record: Record) -> Tuple[str, str]:
-        """Serialize Record into a valid TallyPrime / Tally ERP 9 XML Sales Order / Purchase Order voucher."""
-        from datetime import datetime
+        """Serialize Record into a valid TallyPrime / Tally ERP 9 XML Sales Order / Purchase Order voucher.
+        
+        Leverages Rank 2 Colloquial Indic Packaging Normalizer to emit standardized
+        statutory units (BAGS, KGS, LTR) and HSN codes instead of informal mandi units.
+        """
+        from datetime import datetime, timezone
 
         date_str = (
             record.created_at.strftime("%Y%m%d")
             if record.created_at
-            else datetime.utcnow().strftime("%Y%m%d")
+            else datetime.now(timezone.utc).strftime("%Y%m%d")
         )
 
         qty = "1"
@@ -299,15 +304,24 @@ class ExportService:
         total = "0.00"
         item_name = "Voice Order Goods"
         party_name = "Customer Ledger"
+        standardized_packaging = None
+        hsn_code = None
 
         for f in record.fields:
             fn = f.field_name.lower()
             if "item" in fn or "product" in fn or "crop" in fn:
                 item_name = f.current_value.title()
+            elif "standardized_packaging" in fn:
+                standardized_packaging = f.current_value
+            elif "hsn_code" in fn or "hsn" in fn:
+                hsn_code = f.current_value
             elif "quantity" in fn or "qty" in fn:
                 qty = f.current_value
                 if f.notes and "unit:" in f.notes.lower():
                     unit = f.notes.split(":")[-1].strip().title()
+                elif f.notes and "colloquial:" in f.notes.lower():
+                    # Preserve colloquial note in unit fallback
+                    pass
             elif "price" in fn or "rate" in fn:
                 rate = f.current_value.replace("₹", "").replace(",", "").strip()
             elif "total" in fn or "amount" in fn:
@@ -323,6 +337,30 @@ class ExportService:
 
         vch_type = "Sales Order" if record.record_type == "business_order" else "Journal"
         summary_clean = (record.cleaned_summary or record.original_transcript or "")[:120].replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+        # Tally Statutory Units & HSN Handling (Rank 2 Normalizer)
+        tally_actual_qty = f"{qty} {unit}"
+        tally_billed_qty = f"{qty} {unit}"
+        hsn_element = ""
+
+        if standardized_packaging:
+            # e.g., "50 Bags (2,500 kg)" -> "50 BAGS"
+            base_pack = standardized_packaging.split("(")[0].strip().upper()
+            if base_pack:
+                tally_actual_qty = base_pack
+                tally_billed_qty = base_pack
+
+        if hsn_code:
+            hsn_match = re.search(r'\bHSN\s*(\d{4,8})\b', hsn_code, re.I) or re.search(r'\b(\d{4,8})\b', hsn_code)
+            if hsn_match:
+                hsn_digits = hsn_match.group(1)
+                hsn_element = f"\n              <HSNCODE>{hsn_digits}</HSNCODE>"
+
+        norm_narration = ""
+        if standardized_packaging:
+            norm_narration += f" Spoken packaging standardized: {standardized_packaging}."
+        if hsn_code:
+            norm_narration += f" {hsn_code}."
 
         tally_xml = f"""<ENVELOPE>
   <HEADER>
@@ -343,12 +381,12 @@ class ExportService:
             <VOUCHERTYPENAME>{vch_type}</VOUCHERTYPENAME>
             <PARTYLEDGERNAME>{party_name}</PARTYLEDGERNAME>
             <PERSISTEDVIEW>Invoice View</PERSISTEDVIEW>
-            <NARRATION>VaaniTrace Voice-PO via Gnani AI Speech Recognition. Evidence: '{summary_clean}'. Record ID: {record.id}</NARRATION>
+            <NARRATION>VaaniTrace Voice-PO via Gnani AI Speech Recognition.{norm_narration} Evidence: '{summary_clean}'. Record ID: {record.id}</NARRATION>
             <ALLINVENTORYENTRIES.LIST>
-              <STOCKITEMNAME>{item_name}</STOCKITEMNAME>
+              <STOCKITEMNAME>{item_name}</STOCKITEMNAME>{hsn_element}
               <RATE>{rate}/{unit}</RATE>
-              <ACTUALQTY>{qty} {unit}</ACTUALQTY>
-              <BILLEDQTY>{qty} {unit}</BILLEDQTY>
+              <ACTUALQTY>{tally_actual_qty}</ACTUALQTY>
+              <BILLEDQTY>{tally_billed_qty}</BILLEDQTY>
               <AMOUNT>-{total}</AMOUNT>
             </ALLINVENTORYENTRIES.LIST>
           </VOUCHER>

@@ -10,6 +10,7 @@ from app.schemas import (
     UncertainFieldSchema,
 )
 from app.services.evidence_mapper import evidence_mapper
+from app.services.indic_normalizer import indic_normalizer
 
 
 class InformationExtractor:
@@ -114,24 +115,40 @@ class InformationExtractor:
         return amounts
 
     def _extract_quantities(self, text: str) -> List[Dict[str, Any]]:
-        """Extract numeric quantities with their units (digits or spoken words)."""
+        """Extract numeric quantities with their units (digits, spoken words, or colloquial Indic units)."""
         quantities = []
-        units_pat = r'(boxes|units|packets|pieces|pcs|cartons|bags|sacks|kg|kilos|quintal|quintals|liters|tonnes|items|sets)'
+
+        # 0. First check vernacular trade phrase parser (e.g., '50 bori', '20 peti', 'don chhota hathi')
+        vernacular_parsed = indic_normalizer.parse_vernacular_phrase(text)
+        if vernacular_parsed:
+            qty_val, unit_val, phrase_val = vernacular_parsed
+            quantities.append({
+                "quantity": int(round(qty_val)),
+                "unit": unit_val,
+                "phrase": phrase_val,
+            })
+
+        units_pat = (
+            r'(boxes|units|packets|pieces|pcs|cartons|bags|sacks|kg|kilos|quintal|quintals|'
+            r'liters|tonnes|items|sets|peti|petiyan|bori|boriyan|katta|katte|dabba|dibba|'
+            r'cane|canes|nag|naug|chhota hathi|chota hathi|बोरी|बोरियां|पेटी|पेटियां|कट्टा|कट्टे|क्विंटल|डब्बा|डिब्बा)'
+        )
         
-        # 1. Digits pattern: 20 boxes, 50 units
+        # 1. Digits pattern: 20 boxes, 50 units, 40 bori
         pat_digits = rf'\b(\d+)\s*{units_pat}\b'
         for match in re.finditer(pat_digits, text, re.IGNORECASE):
             qty_str = match.group(1)
             unit = match.group(2)
             supporting = match.group(0)
-            try:
-                quantities.append({
-                    "quantity": int(qty_str),
-                    "unit": unit,
-                    "phrase": supporting,
-                })
-            except ValueError:
-                pass
+            if not any(supporting.lower() in q["phrase"].lower() or q["phrase"].lower() in supporting.lower() for q in quantities):
+                try:
+                    quantities.append({
+                        "quantity": int(qty_str),
+                        "unit": unit,
+                        "phrase": supporting,
+                    })
+                except ValueError:
+                    pass
 
         # 2. Words pattern: twenty five boxes, fifty bags, ten quintals
         pat_words = rf'\b((?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|and|\s|-)+)\s*{units_pat}\b'
@@ -141,7 +158,7 @@ class InformationExtractor:
             num = self._words_to_number(word_str)
             if num is not None and num > 0:
                 supporting = match.group(0).strip()
-                if not any(q["phrase"] in supporting or supporting in q["phrase"] for q in quantities):
+                if not any(supporting.lower() in q["phrase"].lower() or q["phrase"].lower() in supporting.lower() for q in quantities):
                     quantities.append({
                         "quantity": int(num),
                         "unit": unit,
@@ -226,8 +243,18 @@ class InformationExtractor:
                 item_name = item_match.group(2) if item_match.group(2) else item_match.group(1)
                 item_name = item_name.strip()
             elif quantities:
-                item_phrase = quantities[0]["phrase"]
-                item_name = f"{quantities[0]['quantity']} {quantities[0]['unit']}"
+                # Check if known trade commodity is present in transcript
+                found_comm = None
+                for c_key in indic_normalizer.COMMODITY_STANDARDS:
+                    if re.search(rf'\b{re.escape(c_key)}\b', text, re.IGNORECASE):
+                        found_comm = c_key
+                        break
+                if found_comm:
+                    item_name = found_comm.title()
+                    item_phrase = found_comm
+                else:
+                    item_phrase = quantities[0]["phrase"]
+                    item_name = f"{quantities[0]['quantity']} {quantities[0]['unit']}"
 
         # 1. Item Field
         if item_name:
@@ -250,11 +277,24 @@ class InformationExtractor:
                 )
             )
 
-        # 2. Quantity Field
+        # 2. Quantity Field & Colloquial Indic Packaging Normalization (Rank 2)
         qty_val = None
+        norm_pack = None
         if quantities:
             qty = quantities[0]
             qty_val = qty["quantity"]
+            norm_pack = indic_normalizer.normalize(
+                commodity_name=item_name or text,
+                raw_phrase=qty["phrase"],
+                qty=float(qty_val),
+                unit=qty["unit"],
+                context_text=text,
+            )
+            qty_notes = (
+                f"Colloquial: {norm_pack.colloquial_quantity:g} {norm_pack.colloquial_unit} • "
+                f"Standard SI: {norm_pack.standardized_display} • "
+                f"HSN {norm_pack.hsn_code} • Formula: {norm_pack.conversion_formula}"
+            )
             fields.append(
                 evidence_mapper.create_field(
                     field_name="quantity",
@@ -263,9 +303,35 @@ class InformationExtractor:
                     evidence_type="spoken",
                     transcript=text,
                     segments=segments,
-                    notes=f"Unit: {qty['unit']}",
+                    notes=qty_notes,
                 )
             )
+            # Add Standardized Packaging Metric Field
+            if norm_pack.package_type in ("GUNNY_BAG", "BOX_CRATE", "COMMERCIAL_TIN", "VEHICLE_LOAD", "METRIC_BULK"):
+                fields.append(
+                    evidence_mapper.create_field(
+                        field_name="standardized_packaging",
+                        value=norm_pack.standardized_display,
+                        supporting_text=qty["phrase"],
+                        evidence_type="calculated",
+                        transcript=text,
+                        segments=segments,
+                        notes=f"Converted via Indic Packaging Normalizer ({norm_pack.conversion_formula})",
+                    )
+                )
+            # Add GST HSN Billing Code Field
+            if norm_pack.hsn_code and norm_pack.hsn_code != "9999":
+                fields.append(
+                    evidence_mapper.create_field(
+                        field_name="hsn_code",
+                        value=f"HSN {norm_pack.hsn_code} ({norm_pack.gst_rate_percent}% GST)",
+                        supporting_text=item_phrase or qty["phrase"],
+                        evidence_type="inferred",
+                        transcript=text,
+                        segments=segments,
+                        notes=f"Tax classification for {item_name or 'Commodity'}",
+                    )
+                )
         else:
             # Fallback: check bare numbers near order
             bare_num_match = re.search(r'\b(\d+)\b', text)

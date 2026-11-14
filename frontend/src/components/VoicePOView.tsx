@@ -46,6 +46,11 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
   const deadlineField = fields.find((f) => f.field_name === 'delivery_deadline');
   const consigneeField = fields.find((f) => f.field_name === 'consignee' || f.field_name === 'customer_name');
 
+  // Identify Rank 2 Indic Normalization presence
+  const hasIndicNormalization = fields.some(
+    (f) => f.field_name === 'standardized_packaging' || f.notes?.includes('Standard SI:')
+  );
+
   // Identify all fields with character evidence anchors
   const anchoredFields = fields.filter(
     (f) => f.evidence && f.evidence.start_char != null && f.evidence.end_char != null
@@ -105,6 +110,21 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
             }}>
               RANK 1 INNOVATION // VERIFIABLE PROVENANCE
             </span>
+            {hasIndicNormalization && (
+              <span style={{
+                background: 'rgba(92, 219, 149, 0.15)',
+                color: '#5cdb95',
+                border: '1px solid #5cdb95',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '10px',
+                fontWeight: 800,
+                padding: '2px 7px',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+              }}>
+                RANK 2 // INDIC PACKAGING NORMALIZED
+              </span>
+            )}
             <span style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '11px',
@@ -279,8 +299,38 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
                   </td>
 
                   <td style={{ padding: '10px 10px' }}>
-                    <div style={{ fontWeight: 600, color: '#FFFFFF', wordBreak: 'break-word' }}>
-                      {field.field_name.replace(/_/g, ' ').toUpperCase()}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                      <span style={{ fontWeight: 600, color: '#FFFFFF', wordBreak: 'break-word' }}>
+                        {field.field_name.replace(/_/g, ' ').toUpperCase()}
+                      </span>
+                      {field.field_name === 'standardized_packaging' && (
+                        <span style={{
+                          fontSize: '9px',
+                          color: '#5cdb95',
+                          background: 'rgba(92, 219, 149, 0.15)',
+                          border: '1px solid #5cdb95',
+                          padding: '1px 5px',
+                          fontFamily: 'var(--font-mono)',
+                          fontWeight: 700,
+                          borderRadius: '2px',
+                        }}>
+                          RANK 2 NORMALIZED
+                        </span>
+                      )}
+                      {field.field_name === 'hsn_code' && (
+                        <span style={{
+                          fontSize: '9px',
+                          color: '#70a5ff',
+                          background: 'rgba(112, 165, 255, 0.15)',
+                          border: '1px solid #70a5ff',
+                          padding: '1px 5px',
+                          fontFamily: 'var(--font-mono)',
+                          fontWeight: 700,
+                          borderRadius: '2px',
+                        }}>
+                          GST STATUTORY
+                        </span>
+                      )}
                     </div>
                     {field.notes && (
                       <div style={{
@@ -297,7 +347,33 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
 
                   <td style={{ padding: '10px 8px', fontFamily: 'var(--font-mono)', textAlign: 'right' }}>
                     {field.field_name === 'quantity' ? (
-                      <strong style={{ color: 'var(--color-white)', fontSize: '13px' }}>{field.current_value}</strong>
+                      <div>
+                        <strong style={{ color: 'var(--color-white)', fontSize: '13px' }}>{field.current_value}</strong>
+                        {field.notes?.includes('Standard SI:') && (
+                          <div
+                            style={{
+                              marginTop: '3px',
+                              fontSize: '10px',
+                              color: '#5cdb95',
+                              fontFamily: 'var(--font-mono)',
+                              background: 'rgba(92, 219, 149, 0.1)',
+                              border: '1px solid rgba(92, 219, 149, 0.3)',
+                              padding: '2px 5px',
+                              borderRadius: '2px',
+                              display: 'inline-block',
+                              textAlign: 'right',
+                              whiteSpace: 'nowrap',
+                            }}
+                            title={field.notes}
+                          >
+                            ⚡ {field.notes.split('•')[1]?.replace('Standard SI:', '').trim() || 'Normalized SI'}
+                          </div>
+                        )}
+                      </div>
+                    ) : field.field_name === 'standardized_packaging' ? (
+                      <span style={{ color: '#5cdb95', fontWeight: 700, fontSize: '11px' }}>
+                        ⚡ {field.current_value}
+                      </span>
                     ) : (
                       '—'
                     )}
