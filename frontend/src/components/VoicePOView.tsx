@@ -42,9 +42,6 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
   detectedLanguage = 'indic-auto',
 }) => {
   // Extract key order properties from fields
-  const itemField = fields.find((f) => f.field_name === 'order_item' || f.field_name === 'item_name');
-  const qtyField = fields.find((f) => f.field_name === 'quantity');
-  const priceField = fields.find((f) => f.field_name === 'unit_price');
   const totalField = fields.find((f) => f.field_name === 'total_amount');
   const deadlineField = fields.find((f) => f.field_name === 'delivery_deadline');
   const consigneeField = fields.find((f) => f.field_name === 'consignee' || f.field_name === 'customer_name');
@@ -72,11 +69,15 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
     <div style={{
       background: 'var(--color-rich-black)',
       border: '2px solid var(--color-white)',
-      padding: 'clamp(20px, 3vw, 36px)',
+      padding: 'clamp(14px, 2.5vw, 24px)',
       position: 'relative',
       fontFamily: 'var(--font-sans)',
-      boxShadow: '6px 6px 0px var(--accent-wine)',
-      marginBottom: '32px',
+      boxShadow: '4px 4px 0px var(--accent-wine)',
+      marginBottom: '24px',
+      width: '100%',
+      maxWidth: '100%',
+      boxSizing: 'border-box',
+      overflow: 'hidden',
     }}>
       {/* Editorial Header Row */}
       <div style={{
@@ -85,19 +86,20 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
         justifyContent: 'space-between',
         alignItems: 'flex-start',
         borderBottom: '2px solid var(--color-border)',
-        paddingBottom: '20px',
-        marginBottom: '24px',
-        gap: '16px',
+        paddingBottom: '16px',
+        marginBottom: '18px',
+        gap: '12px',
+        width: '100%',
       }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+        <div style={{ flex: '1 1 260px', minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
             <span style={{
               background: 'var(--accent-wine)',
               color: '#FFFFFF',
               fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
+              fontSize: '10px',
               fontWeight: 800,
-              padding: '3px 8px',
+              padding: '2px 7px',
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
             }}>
@@ -112,47 +114,61 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
             </span>
           </div>
           <h2 style={{
-            fontSize: 'clamp(1.6rem, 2.5vw, 2.4rem)',
+            fontSize: 'clamp(1.2rem, 2vw, 1.7rem)',
             fontWeight: 800,
             textTransform: 'uppercase',
             letterSpacing: '-0.02em',
             margin: 0,
             color: '#FFFFFF',
+            lineHeight: 1.25,
+            wordBreak: 'break-word',
           }}>
             Voice Purchase Order (Voice-PO)
           </h2>
-          <p style={{ fontSize: '13px', color: 'var(--color-muted-grey)', marginTop: '4px', margin: 0 }}>
-            {sessionTitle} • Source Modality: Vernacular Speech ({detectedLanguage})
+          <p style={{
+            fontSize: '12px',
+            color: 'var(--color-muted-grey)',
+            marginTop: '4px',
+            margin: 0,
+            wordBreak: 'break-word',
+          }}>
+            {sessionTitle} • Source: Vernacular ({detectedLanguage})
           </p>
         </div>
 
         {/* Verification Status Badge & Zero-Hallucination Guarantee */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          gap: '6px',
+          flexShrink: 0,
+        }}>
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '8px',
-            background: anchorPercentage === 100 ? 'rgba(114, 47, 55, 0.4)' : 'rgba(255, 179, 189, 0.1)',
+            gap: '6px',
+            background: anchorPercentage === 100 ? 'rgba(114, 47, 55, 0.45)' : 'rgba(255, 179, 189, 0.1)',
             border: `1px solid ${anchorPercentage === 100 ? 'var(--accent-crimson)' : 'var(--color-border)'}`,
-            padding: '6px 14px',
+            padding: '5px 10px',
           }}>
-            <ShieldCheck size={16} color="var(--accent-crimson)" />
+            <ShieldCheck size={14} color="var(--accent-crimson)" />
             <span style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: '12px',
+              fontSize: '11px',
               fontWeight: 700,
               color: '#FFFFFF',
-              letterSpacing: '0.05em',
+              letterSpacing: '0.04em',
             }}>
               {anchorPercentage}% EVIDENCE ANCHORED
             </span>
           </div>
           <span style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '11px',
+            fontSize: '10px',
             color: 'var(--color-muted-grey)',
           }}>
-            Date: {currentDate} • Ledger Port: Tally 9000
+            Date: {currentDate} • Port: Tally 9000
           </span>
         </div>
       </div>
@@ -160,35 +176,37 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
       {/* PO Metadata Strip */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '16px',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+        gap: '10px',
         background: 'var(--color-black)',
         border: '1px solid var(--color-border)',
-        padding: '16px 20px',
-        marginBottom: '28px',
+        padding: '12px 14px',
+        marginBottom: '20px',
         fontFamily: 'var(--font-mono)',
-        fontSize: '12px',
+        fontSize: '11px',
+        width: '100%',
+        boxSizing: 'border-box',
       }}>
         <div>
-          <span style={{ color: 'var(--color-muted-grey)', display: 'block', marginBottom: '4px' }}>CONSIGNEE / VENDOR</span>
-          <strong style={{ color: '#FFFFFF', fontSize: '14px' }}>
+          <span style={{ color: 'var(--color-muted-grey)', display: 'block', marginBottom: '2px', fontSize: '10px' }}>CONSIGNEE / VENDOR</span>
+          <strong style={{ color: '#FFFFFF', fontSize: '13px', wordBreak: 'break-word' }}>
             {consigneeField?.current_value || 'Direct B2B Customer'}
           </strong>
         </div>
         <div>
-          <span style={{ color: 'var(--color-muted-grey)', display: 'block', marginBottom: '4px' }}>DELIVERY DUE</span>
-          <strong style={{ color: '#FFFFFF', fontSize: '14px' }}>
+          <span style={{ color: 'var(--color-muted-grey)', display: 'block', marginBottom: '2px', fontSize: '10px' }}>DELIVERY DUE</span>
+          <strong style={{ color: '#FFFFFF', fontSize: '13px', wordBreak: 'break-word' }}>
             {deadlineField?.current_value || 'Immediate Dispatch'}
           </strong>
         </div>
         <div>
-          <span style={{ color: 'var(--color-muted-grey)', display: 'block', marginBottom: '4px' }}>ZERO-HALLUCINATION AUDIT</span>
+          <span style={{ color: 'var(--color-muted-grey)', display: 'block', marginBottom: '2px', fontSize: '10px' }}>ZERO-HALLUCINATION AUDIT</span>
           <span style={{ color: 'var(--accent-crimson)', fontWeight: 700 }}>
             {anchorCount} of {totalFieldCount} fields verified
           </span>
         </div>
         <div>
-          <span style={{ color: 'var(--color-muted-grey)', display: 'block', marginBottom: '4px' }}>PROVENANCE STATUS</span>
+          <span style={{ color: 'var(--color-muted-grey)', display: 'block', marginBottom: '2px', fontSize: '10px' }}>PROVENANCE STATUS</span>
           <span style={{
             color: overallVerification === 'verified' ? '#5cdb95' : 'var(--accent-crimson)',
             fontWeight: 700,
@@ -199,30 +217,39 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
         </div>
       </div>
 
-      {/* Structured Line Items Table */}
-      <div style={{ overflowX: 'auto', marginBottom: '28px' }}>
+      {/* Structured Line Items Table Container (Overflow-Safe) */}
+      <div style={{
+        width: '100%',
+        maxWidth: '100%',
+        overflowX: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        marginBottom: '20px',
+        border: '1px solid var(--color-border)',
+      }}>
         <table style={{
           width: '100%',
+          minWidth: '580px',
           borderCollapse: 'collapse',
-          fontSize: '13px',
+          fontSize: '12px',
           textAlign: 'left',
         }}>
           <thead>
             <tr style={{
+              background: 'var(--color-black)',
               borderBottom: '2px solid var(--color-white)',
               fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
+              fontSize: '10px',
               textTransform: 'uppercase',
-              letterSpacing: '0.08em',
+              letterSpacing: '0.06em',
               color: 'var(--color-muted-grey)',
             }}>
-              <th style={{ padding: '12px 10px', width: '40px' }}>#</th>
-              <th style={{ padding: '12px 14px' }}>Item Description / SKU</th>
-              <th style={{ padding: '12px 14px' }}>Quantity</th>
-              <th style={{ padding: '12px 14px' }}>Unit Rate</th>
-              <th style={{ padding: '12px 14px' }}>Amount</th>
-              <th style={{ padding: '12px 14px' }}>Evidentiary Anchor (Chars)</th>
-              <th style={{ padding: '12px 14px', textAlign: 'right' }}>Action</th>
+              <th style={{ padding: '10px 8px', width: '32px', textAlign: 'center' }}>#</th>
+              <th style={{ padding: '10px 10px', minWidth: '120px' }}>Item Description / SKU</th>
+              <th style={{ padding: '10px 8px', width: '60px', textAlign: 'right' }}>Qty</th>
+              <th style={{ padding: '10px 8px', width: '75px', textAlign: 'right' }}>Unit Rate</th>
+              <th style={{ padding: '10px 8px', width: '85px', textAlign: 'right' }}>Amount</th>
+              <th style={{ padding: '10px 10px', minWidth: '150px' }}>Evidentiary Anchor</th>
+              <th style={{ padding: '10px 8px', width: '75px', textAlign: 'center' }}>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -236,45 +263,47 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
                   onClick={() => onFieldSelect && onFieldSelect(field)}
                   style={{
                     borderBottom: '1px solid var(--color-border)',
-                    background: isSelected ? 'rgba(114, 47, 55, 0.35)' : 'transparent',
+                    background: isSelected ? 'rgba(114, 47, 55, 0.4)' : 'transparent',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
                   }}
                   title="Click to highlight exact spoken phrase in transcript"
                 >
                   <td style={{
-                    padding: '14px 10px',
+                    padding: '10px 8px',
                     fontFamily: 'var(--font-mono)',
                     color: 'var(--color-muted-grey)',
+                    textAlign: 'center',
                   }}>
                     {String(idx + 1).padStart(2, '0')}
                   </td>
 
-                  <td style={{ padding: '14px 14px' }}>
-                    <div style={{ fontWeight: 600, color: '#FFFFFF' }}>
+                  <td style={{ padding: '10px 10px' }}>
+                    <div style={{ fontWeight: 600, color: '#FFFFFF', wordBreak: 'break-word' }}>
                       {field.field_name.replace(/_/g, ' ').toUpperCase()}
                     </div>
                     {field.notes && (
                       <div style={{
-                        fontSize: '11px',
+                        fontSize: '10px',
                         color: 'var(--color-muted-grey)',
                         fontFamily: 'var(--font-mono)',
                         marginTop: '2px',
+                        wordBreak: 'break-word',
                       }}>
                         {field.notes}
                       </div>
                     )}
                   </td>
 
-                  <td style={{ padding: '14px 14px', fontFamily: 'var(--font-mono)' }}>
+                  <td style={{ padding: '10px 8px', fontFamily: 'var(--font-mono)', textAlign: 'right' }}>
                     {field.field_name === 'quantity' ? (
-                      <strong style={{ color: 'var(--color-white)', fontSize: '14px' }}>{field.current_value}</strong>
+                      <strong style={{ color: 'var(--color-white)', fontSize: '13px' }}>{field.current_value}</strong>
                     ) : (
                       '—'
                     )}
                   </td>
 
-                  <td style={{ padding: '14px 14px', fontFamily: 'var(--font-mono)' }}>
+                  <td style={{ padding: '10px 8px', fontFamily: 'var(--font-mono)', textAlign: 'right' }}>
                     {field.field_name === 'unit_price' ? (
                       <span style={{ color: '#FFFFFF' }}>{field.current_value}</span>
                     ) : (
@@ -282,17 +311,17 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
                     )}
                   </td>
 
-                  <td style={{ padding: '14px 14px', fontFamily: 'var(--font-mono)' }}>
+                  <td style={{ padding: '10px 8px', fontFamily: 'var(--font-mono)', textAlign: 'right' }}>
                     <strong style={{
                       color: field.evidence_type === 'calculated' ? 'var(--accent-crimson)' : '#FFFFFF',
-                      fontSize: '14px',
+                      fontSize: '13px',
                     }}>
                       {field.current_value}
                     </strong>
                   </td>
 
                   {/* The Evidence Anchor Chip */}
-                  <td style={{ padding: '14px 14px' }}>
+                  <td style={{ padding: '10px 10px' }}>
                     {hasAnchor ? (
                       <button
                         type="button"
@@ -303,23 +332,23 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
                         style={{
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: '6px',
+                          gap: '5px',
                           background: isSelected ? 'var(--accent-wine)' : 'var(--color-charcoal)',
                           border: `1px solid ${isSelected ? '#FFFFFF' : 'var(--color-border)'}`,
                           color: '#FFFFFF',
                           fontFamily: 'var(--font-mono)',
-                          fontSize: '11px',
-                          padding: '4px 10px',
+                          fontSize: '10px',
+                          padding: '3px 8px',
                           cursor: 'pointer',
                           transition: 'all 0.15s ease',
                           borderRadius: '2px',
+                          maxWidth: '180px',
                         }}
                         title={`Click to trace verbatim: "${field.evidence?.supporting_text}"`}
                       >
-                        <Lock size={11} color={isSelected ? '#FFFFFF' : 'var(--accent-crimson)'} />
+                        <Lock size={10} color={isSelected ? '#FFFFFF' : 'var(--accent-crimson)'} />
                         <span>[{field.evidence?.start_char}–{field.evidence?.end_char}]</span>
                         <span style={{
-                          maxWidth: '120px',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap',
@@ -334,25 +363,25 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
                         alignItems: 'center',
                         gap: '4px',
                         fontFamily: 'var(--font-mono)',
-                        fontSize: '11px',
+                        fontSize: '10px',
                         color: 'var(--color-muted-grey)',
                       }}>
                         {field.evidence_type === 'calculated' ? (
                           <>
-                            <Calculator size={11} color="var(--accent-crimson)" />
+                            <Calculator size={10} color="var(--accent-crimson)" />
                             <span>Derived Math</span>
                           </>
                         ) : (
                           <>
-                            <AlertTriangle size={11} color="var(--accent-crimson)" />
-                            <span>Inferred (Unanchored)</span>
+                            <AlertTriangle size={10} color="var(--accent-crimson)" />
+                            <span>Inferred</span>
                           </>
                         )}
                       </span>
                     )}
                   </td>
 
-                  <td style={{ padding: '14px 14px', textAlign: 'right' }}>
+                  <td style={{ padding: '10px 8px', textAlign: 'center' }}>
                     {field.verification_status !== 'verified' && onFieldVerify ? (
                       <button
                         type="button"
@@ -364,22 +393,23 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
                           background: 'transparent',
                           border: '1px solid var(--color-border)',
                           color: '#FFFFFF',
-                          padding: '4px 8px',
-                          fontSize: '11px',
+                          padding: '3px 6px',
+                          fontSize: '10px',
                           cursor: 'pointer',
                           fontFamily: 'var(--font-mono)',
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: '4px',
+                          gap: '3px',
                         }}
                       >
-                        <Check size={12} color="var(--accent-crimson)" /> Verify
+                        <Check size={11} color="var(--accent-crimson)" /> Verify
                       </button>
                     ) : (
                       <span style={{
                         fontFamily: 'var(--font-mono)',
-                        fontSize: '11px',
+                        fontSize: '10px',
                         color: '#5cdb95',
+                        fontWeight: 700,
                       }}>
                         ✓ VERIFIED
                       </span>
@@ -392,82 +422,83 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
         </table>
       </div>
 
-      {/* PO Totals Summary Block */}
+      {/* PO Totals & Audit Block (Responsive Grid with Zero Cutoffs) */}
       <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+        gap: '14px',
         borderTop: '2px solid var(--color-white)',
-        paddingTop: '20px',
-        marginBottom: '28px',
-        gap: '20px',
+        paddingTop: '16px',
+        marginBottom: '20px',
+        width: '100%',
+        boxSizing: 'border-box',
       }}>
         {/* Zero-Hallucination Audit Stamp */}
         <div style={{
           background: 'var(--color-charcoal)',
           border: '1px solid var(--color-border)',
-          padding: '16px 20px',
-          maxWidth: '540px',
-          flex: 1,
+          padding: '14px 16px',
+          boxSizing: 'border-box',
         }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
-            marginBottom: '8px',
+            gap: '6px',
+            marginBottom: '6px',
             fontFamily: 'var(--font-mono)',
             fontSize: '11px',
             color: 'var(--accent-crimson)',
             fontWeight: 800,
           }}>
-            <Sparkles size={14} />
+            <Sparkles size={13} />
             <span>ZERO-HALLUCINATION AUDIT STAMP</span>
           </div>
           <p style={{
-            fontSize: '12px',
+            fontSize: '11px',
             color: 'var(--color-muted-grey)',
-            lineHeight: 1.6,
+            lineHeight: 1.5,
             margin: 0,
           }}>
-            Every line item in this Voice-PO has been verified against the acoustic waveform decoded by Gnani Prisma. Offsets are cryptographically bound to transcript character indices. No hallucinated records can pass this gate without human override.
+            Every line item in this Voice-PO has been verified against the acoustic waveform decoded by Gnani Prisma. Offsets are cryptographically bound to transcript character indices.
           </p>
         </div>
 
         {/* Financial Summary Calculation */}
         <div style={{
+          background: 'var(--color-black)',
+          border: '1px solid var(--color-border)',
+          padding: '14px 16px',
           fontFamily: 'var(--font-mono)',
-          textAlign: 'right',
-          minWidth: '240px',
+          boxSizing: 'border-box',
         }}>
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
-            fontSize: '13px',
+            fontSize: '12px',
             color: 'var(--color-muted-grey)',
             marginBottom: '6px',
           }}>
             <span>SUBTOTAL:</span>
-            <span>{totalField?.current_value || '₹0.00'}</span>
+            <span style={{ color: '#FFFFFF' }}>{totalField?.current_value || '₹0.00'}</span>
           </div>
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
-            fontSize: '13px',
+            fontSize: '12px',
             color: 'var(--color-muted-grey)',
-            marginBottom: '10px',
+            marginBottom: '8px',
           }}>
             <span>GST / TAX (0% EXEMPT):</span>
-            <span>₹0.00</span>
+            <span style={{ color: '#FFFFFF' }}>₹0.00</span>
           </div>
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
-            fontSize: '18px',
+            fontSize: '15px',
             fontWeight: 800,
             color: '#FFFFFF',
             borderTop: '1px solid var(--color-border)',
-            paddingTop: '10px',
+            paddingTop: '8px',
           }}>
             <span>NET TOTAL:</span>
             <span style={{ color: 'var(--accent-crimson)' }}>
@@ -484,26 +515,29 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
         alignItems: 'center',
         justifyContent: 'space-between',
         borderTop: '1px solid var(--color-border)',
-        paddingTop: '20px',
-        gap: '12px',
+        paddingTop: '14px',
+        gap: '10px',
+        width: '100%',
       }}>
         <div style={{
           fontFamily: 'var(--font-mono)',
-          fontSize: '11px',
+          fontSize: '10px',
           color: 'var(--color-muted-grey)',
+          flex: '1 1 200px',
         }}>
-          CLICK ANY EVIDENCE ANCHOR ABOVE TO TRACE SPOKEN CITATION IN TRANSCRIPT BUFFER
+          CLICK ANY EVIDENCE ANCHOR ABOVE TO TRACE CITATION IN BUFFER
         </div>
 
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {onExportTally && (
             <button
               type="button"
               className="btn btn-primary btn-sm"
               onClick={onExportTally}
+              style={{ fontSize: '11px', padding: '5px 10px' }}
               title="Download TallyPrime XML Voucher"
             >
-              <FileCode size={13} /> Export Tally XML
+              <FileCode size={12} /> Tally XML
             </button>
           )}
 
@@ -512,9 +546,10 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
               type="button"
               className="btn btn-secondary btn-sm"
               onClick={onExportXlsx}
+              style={{ fontSize: '11px', padding: '5px 10px' }}
               title="Download Structured Excel Workbook"
             >
-              <FileSpreadsheet size={13} /> Export .XLSX
+              <FileSpreadsheet size={12} /> Excel (.xlsx)
             </button>
           )}
 
@@ -523,9 +558,10 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
               type="button"
               className="btn btn-secondary btn-sm"
               onClick={onExportCsv}
+              style={{ fontSize: '11px', padding: '5px 10px' }}
               title="Download UTF-8 BOM CSV"
             >
-              <ExternalLink size={13} /> Export CSV
+              <ExternalLink size={12} /> CSV
             </button>
           )}
         </div>

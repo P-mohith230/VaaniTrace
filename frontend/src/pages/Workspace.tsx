@@ -117,6 +117,7 @@ export const Workspace: React.FC = () => {
   const [audioSummaryBase64, setAudioSummaryBase64] = useState<string | null>(null);
   const [overallVerification, setOverallVerification] = useState<VerificationStatus>('unverified');
   const [intelligenceTab, setIntelligenceTab] = useState<'po' | 'fields'>('po');
+  const [layoutMode, setLayoutMode] = useState<'split' | 'full'>('split');
 
   // Interactive Cross-Highlighting State
   const [activeSegmentId, setActiveSegmentId] = useState<number | null>(null);
@@ -652,7 +653,7 @@ export const Workspace: React.FC = () => {
             borderRadius: 'var(--radius-sm)',
             marginBottom: '20px',
             flexWrap: 'wrap',
-            gap: '10px',
+            gap: '12px',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{
@@ -669,56 +670,102 @@ export const Workspace: React.FC = () => {
               </span>
             </div>
 
-            <div style={{
-              display: 'inline-flex',
-              background: 'var(--color-charcoal)',
-              border: '1px solid var(--color-border)',
-              padding: '2px',
-            }}>
-              <button
-                type="button"
-                onClick={() => setIntelligenceTab('po')}
-                style={{
-                  background: intelligenceTab === 'po' ? 'var(--accent-wine)' : 'transparent',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  padding: '5px 14px',
-                  fontSize: '12px',
-                  fontFamily: 'var(--font-mono)',
-                  cursor: 'pointer',
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-              >
-                <span>📄 Voice-PO Voucher (Rank 1)</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setIntelligenceTab('fields')}
-                style={{
-                  background: intelligenceTab === 'fields' ? 'var(--accent-wine)' : 'transparent',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  padding: '5px 14px',
-                  fontSize: '12px',
-                  fontFamily: 'var(--font-mono)',
-                  cursor: 'pointer',
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-              >
-                <span>🗂️ Fact Inspection Cards</span>
-              </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              {/* Output Tab Toggle */}
+              <div style={{
+                display: 'inline-flex',
+                background: 'var(--color-charcoal)',
+                border: '1px solid var(--color-border)',
+                padding: '2px',
+              }}>
+                <button
+                  type="button"
+                  onClick={() => setIntelligenceTab('po')}
+                  style={{
+                    background: intelligenceTab === 'po' ? 'var(--accent-wine)' : 'transparent',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    padding: '5px 14px',
+                    fontSize: '12px',
+                    fontFamily: 'var(--font-mono)',
+                    cursor: 'pointer',
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <span>📄 Voice-PO Voucher (Rank 1)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIntelligenceTab('fields')}
+                  style={{
+                    background: intelligenceTab === 'fields' ? 'var(--accent-wine)' : 'transparent',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    padding: '5px 14px',
+                    fontSize: '12px',
+                    fontFamily: 'var(--font-mono)',
+                    cursor: 'pointer',
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <span>🗂️ Fact Inspection Cards</span>
+                </button>
+              </div>
+
+              {/* Layout Mode Toggle */}
+              <div style={{
+                display: 'inline-flex',
+                background: 'var(--color-charcoal)',
+                border: '1px solid var(--color-border)',
+                padding: '2px',
+              }}>
+                <button
+                  type="button"
+                  onClick={() => setLayoutMode('split')}
+                  style={{
+                    background: layoutMode === 'split' ? 'var(--accent-wine)' : 'transparent',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    padding: '5px 10px',
+                    fontSize: '11px',
+                    fontFamily: 'var(--font-mono)',
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                  }}
+                  title="Side-by-side columns"
+                >
+                  ↔ Split
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLayoutMode('full')}
+                  style={{
+                    background: layoutMode === 'full' ? 'var(--accent-wine)' : 'transparent',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    padding: '5px 10px',
+                    fontSize: '11px',
+                    fontFamily: 'var(--font-mono)',
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                  }}
+                  title="Full-width ledger view"
+                >
+                  ⛶ Full Ledger
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="workspace-grid">
+          <div className={`workspace-grid ${layoutMode === 'full' ? 'full-width-po' : ''}`}>
             {/* Left Panel: Transcript & Precision Evidence Alignment */}
-            <div className="card">
+            <div className="card" style={{ overflow: 'hidden' }}>
               <TranscriptViewer
                 transcript={transcript}
                 segments={segments}
@@ -733,43 +780,57 @@ export const Workspace: React.FC = () => {
             </div>
 
             {/* Right Panel: Structured Extraction (Voice-PO or Cards) & Verification */}
-            <div className="card">
+            <div className="workspace-panel">
               {intelligenceTab === 'po' ? (
-                <VoicePOView
-                  recordId={savedRecordId}
-                  sessionTitle={sessionTitle}
-                  fields={fields}
-                  actionItems={actionItems}
-                  overallVerification={overallVerification}
-                  activeFieldId={activeFieldId}
-                  onFieldSelect={handleFieldSelect}
-                  onFieldVerify={handleFieldVerify}
-                  onExportCsv={handleExportCsv}
-                  onExportXlsx={handleExportXlsx}
-                  onExportTally={handleExportTally}
-                  detectedLanguage={detectedLanguage}
-                />
+                <>
+                  <VoicePOView
+                    recordId={savedRecordId}
+                    sessionTitle={sessionTitle}
+                    fields={fields}
+                    actionItems={actionItems}
+                    overallVerification={overallVerification}
+                    activeFieldId={activeFieldId}
+                    onFieldSelect={handleFieldSelect}
+                    onFieldVerify={handleFieldVerify}
+                    onExportCsv={handleExportCsv}
+                    onExportXlsx={handleExportXlsx}
+                    onExportTally={handleExportTally}
+                    detectedLanguage={detectedLanguage}
+                  />
+                  <div className="card">
+                    <VerificationControls
+                      summaryText={summary}
+                      onSaveRecord={handleSaveRecord}
+                      isSaving={isLoading}
+                      savedRecordId={savedRecordId}
+                      onAudioSummaryGenerated={(b64) => setAudioSummaryBase64(b64)}
+                      existingAudioSummary={audioSummaryBase64}
+                    />
+                  </div>
+                </>
               ) : (
-                <ExtractionPanel
-                  summary={summary}
-                  fields={fields}
-                  actionItems={actionItems}
-                  uncertainFields={uncertainFields}
-                  activeFieldId={activeFieldId}
-                  onFieldSelect={handleFieldSelect}
-                  onFieldUpdate={handleFieldUpdate}
-                  onFieldVerify={handleFieldVerify}
-                />
-              )}
+                <div className="card">
+                  <ExtractionPanel
+                    summary={summary}
+                    fields={fields}
+                    actionItems={actionItems}
+                    uncertainFields={uncertainFields}
+                    activeFieldId={activeFieldId}
+                    onFieldSelect={handleFieldSelect}
+                    onFieldUpdate={handleFieldUpdate}
+                    onFieldVerify={handleFieldVerify}
+                  />
 
-              <VerificationControls
-                summaryText={summary}
-                onSaveRecord={handleSaveRecord}
-                isSaving={isLoading}
-                savedRecordId={savedRecordId}
-                onAudioSummaryGenerated={(b64) => setAudioSummaryBase64(b64)}
-                existingAudioSummary={audioSummaryBase64}
-              />
+                  <VerificationControls
+                    summaryText={summary}
+                    onSaveRecord={handleSaveRecord}
+                    isSaving={isLoading}
+                    savedRecordId={savedRecordId}
+                    onAudioSummaryGenerated={(b64) => setAudioSummaryBase64(b64)}
+                    existingAudioSummary={audioSummaryBase64}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

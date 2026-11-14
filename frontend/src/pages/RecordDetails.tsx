@@ -23,6 +23,7 @@ export const RecordDetails: React.FC<RecordDetailsProps> = ({ recordId, onBack }
 
   // Highlighting State
   const [intelligenceTab, setIntelligenceTab] = useState<'po' | 'fields'>('po');
+  const [layoutMode, setLayoutMode] = useState<'split' | 'full'>('split');
   const [activeSegmentId, setActiveSegmentId] = useState<number | null>(null);
   const [activeFieldId, setActiveFieldId] = useState<string | null>(null);
   const [activeCharRange, setActiveCharRange] = useState<{ start: number; end: number } | null>(null);
@@ -278,56 +279,101 @@ export const RecordDetails: React.FC<RecordDetailsProps> = ({ recordId, onBack }
           </span>
         </div>
 
-        <div style={{
-          display: 'inline-flex',
-          background: 'var(--color-charcoal)',
-          border: '1px solid var(--color-border)',
-          padding: '2px',
-        }}>
-          <button
-            type="button"
-            onClick={() => setIntelligenceTab('po')}
-            style={{
-              background: intelligenceTab === 'po' ? 'var(--accent-wine)' : 'transparent',
-              color: '#FFFFFF',
-              border: 'none',
-              padding: '5px 14px',
-              fontSize: '12px',
-              fontFamily: 'var(--font-mono)',
-              cursor: 'pointer',
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            <span>📄 Voice-PO Voucher (Rank 1)</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setIntelligenceTab('fields')}
-            style={{
-              background: intelligenceTab === 'fields' ? 'var(--accent-wine)' : 'transparent',
-              color: '#FFFFFF',
-              border: 'none',
-              padding: '5px 14px',
-              fontSize: '12px',
-              fontFamily: 'var(--font-mono)',
-              cursor: 'pointer',
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            <span>🗂️ Fact Inspection Cards</span>
-          </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <div style={{
+            display: 'inline-flex',
+            background: 'var(--color-charcoal)',
+            border: '1px solid var(--color-border)',
+            padding: '2px',
+          }}>
+            <button
+              type="button"
+              onClick={() => setIntelligenceTab('po')}
+              style={{
+                background: intelligenceTab === 'po' ? 'var(--accent-wine)' : 'transparent',
+                color: '#FFFFFF',
+                border: 'none',
+                padding: '5px 14px',
+                fontSize: '12px',
+                fontFamily: 'var(--font-mono)',
+                cursor: 'pointer',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <span>📄 Voice-PO Voucher (Rank 1)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIntelligenceTab('fields')}
+              style={{
+                background: intelligenceTab === 'fields' ? 'var(--accent-wine)' : 'transparent',
+                color: '#FFFFFF',
+                border: 'none',
+                padding: '5px 14px',
+                fontSize: '12px',
+                fontFamily: 'var(--font-mono)',
+                cursor: 'pointer',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <span>🗂️ Fact Inspection Cards</span>
+            </button>
+          </div>
+
+          {/* Layout Mode Toggle */}
+          <div style={{
+            display: 'inline-flex',
+            background: 'var(--color-charcoal)',
+            border: '1px solid var(--color-border)',
+            padding: '2px',
+          }}>
+            <button
+              type="button"
+              onClick={() => setLayoutMode('split')}
+              style={{
+                background: layoutMode === 'split' ? 'var(--accent-wine)' : 'transparent',
+                color: '#FFFFFF',
+                border: 'none',
+                padding: '5px 10px',
+                fontSize: '11px',
+                fontFamily: 'var(--font-mono)',
+                cursor: 'pointer',
+                fontWeight: 600,
+              }}
+              title="Side-by-side columns"
+            >
+              ↔ Split
+            </button>
+            <button
+              type="button"
+              onClick={() => setLayoutMode('full')}
+              style={{
+                background: layoutMode === 'full' ? 'var(--accent-wine)' : 'transparent',
+                color: '#FFFFFF',
+                border: 'none',
+                padding: '5px 10px',
+                fontSize: '11px',
+                fontFamily: 'var(--font-mono)',
+                cursor: 'pointer',
+                fontWeight: 600,
+              }}
+              title="Full-width ledger view"
+            >
+              ⛶ Full Ledger
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Two-Panel Workspace */}
-      <div className="workspace-grid">
-        <div className="card">
+      <div className={`workspace-grid ${layoutMode === 'full' ? 'full-width-po' : ''}`}>
+        <div className="card" style={{ overflow: 'hidden' }}>
           <TranscriptViewer
             transcript={record.original_transcript}
             segments={segments}
@@ -341,43 +387,57 @@ export const RecordDetails: React.FC<RecordDetailsProps> = ({ recordId, onBack }
           />
         </div>
 
-        <div className="card">
+        <div className="workspace-panel">
           {intelligenceTab === 'po' ? (
-            <VoicePOView
-              recordId={record.id}
-              sessionTitle={record.title}
-              fields={record.fields}
-              actionItems={record.action_items}
-              overallVerification={record.verification_status}
-              activeFieldId={activeFieldId}
-              onFieldSelect={handleFieldSelect}
-              onFieldVerify={handleFieldVerify}
-              onExportCsv={() => window.open(api.getExportUrl(record.id, 'csv'), '_blank')}
-              onExportXlsx={() => window.open(api.getExportUrl(record.id, 'xlsx'), '_blank')}
-              onExportTally={() => window.open(api.getExportUrl(record.id, 'tally'), '_blank')}
-              detectedLanguage={record.language_code || 'indic-auto'}
-            />
+            <>
+              <VoicePOView
+                recordId={record.id}
+                sessionTitle={record.title}
+                fields={record.fields}
+                actionItems={record.action_items}
+                overallVerification={record.verification_status}
+                activeFieldId={activeFieldId}
+                onFieldSelect={handleFieldSelect}
+                onFieldVerify={handleFieldVerify}
+                onExportCsv={() => window.open(api.getExportUrl(record.id, 'csv'), '_blank')}
+                onExportXlsx={() => window.open(api.getExportUrl(record.id, 'xlsx'), '_blank')}
+                onExportTally={() => window.open(api.getExportUrl(record.id, 'tally'), '_blank')}
+                detectedLanguage={record.language_code || 'indic-auto'}
+              />
+              <div className="card">
+                <VerificationControls
+                  summaryText={record.cleaned_summary || ''}
+                  onSaveRecord={handleSaveUpdates}
+                  isSaving={isSaving}
+                  savedRecordId={record.id}
+                  onAudioSummaryGenerated={(b64) => setRecord({ ...record, audio_summary_base64: b64 })}
+                  existingAudioSummary={record.audio_summary_base64}
+                />
+              </div>
+            </>
           ) : (
-            <ExtractionPanel
-              summary={record.cleaned_summary || ''}
-              fields={record.fields}
-              actionItems={record.action_items}
-              uncertainFields={[]}
-              activeFieldId={activeFieldId}
-              onFieldSelect={handleFieldSelect}
-              onFieldUpdate={handleFieldUpdate}
-              onFieldVerify={handleFieldVerify}
-            />
-          )}
+            <div className="card">
+              <ExtractionPanel
+                summary={record.cleaned_summary || ''}
+                fields={record.fields}
+                actionItems={record.action_items}
+                uncertainFields={[]}
+                activeFieldId={activeFieldId}
+                onFieldSelect={handleFieldSelect}
+                onFieldUpdate={handleFieldUpdate}
+                onFieldVerify={handleFieldVerify}
+              />
 
-          <VerificationControls
-            summaryText={record.cleaned_summary || ''}
-            onSaveRecord={handleSaveUpdates}
-            isSaving={isSaving}
-            savedRecordId={record.id}
-            onAudioSummaryGenerated={(b64) => setRecord({ ...record, audio_summary_base64: b64 })}
-            existingAudioSummary={record.audio_summary_base64}
-          />
+              <VerificationControls
+                summaryText={record.cleaned_summary || ''}
+                onSaveRecord={handleSaveUpdates}
+                isSaving={isSaving}
+                savedRecordId={record.id}
+                onAudioSummaryGenerated={(b64) => setRecord({ ...record, audio_summary_base64: b64 })}
+                existingAudioSummary={record.audio_summary_base64}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
