@@ -272,3 +272,68 @@ class VoiceIntentEvaluateResponse(BaseModel):
     intent: str  # CONFIRM, REJECT, or CORRECT
 
 
+# ---------------------------------------------------------
+# Multi-Party Commitment Knowledge Graph Schemas (Rank 4)
+# ---------------------------------------------------------
+
+class CommitmentNodeSchema(BaseModel):
+    """Node in the conversation-to-commitment DAG."""
+    id: str
+    node_type: str  # ACTOR or COMMITMENT
+    label: str
+    actor: str
+    role: Optional[str] = "Participant"
+    description: Optional[str] = None
+    deadline: Optional[str] = None
+    status: str = "READY"  # READY, BLOCKED, COMPLETED, IN_PROGRESS
+    layer: int = 0
+    is_conditional: bool = False
+    condition_prerequisite: Optional[str] = None
+    evidence_text: Optional[str] = None
+    amount: Optional[str] = None
+
+
+class CommitmentEdgeSchema(BaseModel):
+    """Directed edge representing causal dependency or assignment."""
+    id: str
+    source: str
+    target: str
+    relationship: str  # COMMITS_TO, DEPENDS_ON, TRIGGERS, DELIVERS_BY
+    condition_label: Optional[str] = None
+
+
+class CommitmentGraphExtractRequest(BaseModel):
+    """Request payload to construct a commitment DAG."""
+    transcript: str = Field(..., min_length=1)
+    record_type: str = "business_order"
+    fields: Optional[List[Dict[str, Any]]] = None
+    action_items: Optional[List[Dict[str, Any]]] = None
+
+
+class CommitmentGraphResponse(BaseModel):
+    """Full DAG representation with cycle/deadlock audits."""
+    nodes: List[CommitmentNodeSchema]
+    edges: List[CommitmentEdgeSchema]
+    is_dag: bool
+    topological_order: List[str]
+    cycles: List[List[str]] = Field(default_factory=list)
+    deadlocks_detected: bool = False
+    summary: str
+
+
+class CommitmentSimulateRequest(BaseModel):
+    """Simulate fulfillment of a milestone to cascade DAG state updates."""
+    nodes: List[CommitmentNodeSchema]
+    edges: List[CommitmentEdgeSchema]
+    target_node_id: str
+
+
+class CommitmentSimulateResponse(BaseModel):
+    """Updated DAG state post causal simulation."""
+    nodes: List[CommitmentNodeSchema]
+    edges: List[CommitmentEdgeSchema]
+    toggled_node_id: str
+    message: str
+
+
+

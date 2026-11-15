@@ -119,3 +119,41 @@ export interface GnaniHealth {
   message: string;
   details?: Record<string, any>;
 }
+
+// ---------------------------------------------------------
+// Multi-Party Commitment Knowledge Graph Types (Rank 4)
+// ---------------------------------------------------------
+
+export interface CommitmentNode {
+  id: string;
+  node_type: 'ACTOR' | 'COMMITMENT';
+  label: string;
+  actor: string;
+  role?: string;
+  description?: string;
+  deadline?: string | null;
+  status: 'READY' | 'BLOCKED' | 'COMPLETED' | 'IN_PROGRESS';
+  layer: number;
+  is_conditional?: boolean;
+  condition_prerequisite?: string | null;
+  evidence_text?: string | null;
+  amount?: string | null;
+}
+
+export interface CommitmentEdge {
+  id: string;
+  source: string;
+  target: string;
+  relationship: 'COMMITS_TO' | 'DEPENDS_ON' | 'TRIGGERS' | 'DELIVERS_BY';
+  condition_label?: string | null;
+}
+
+export interface CommitmentGraphData {
+  nodes: CommitmentNode[];
+  edges: CommitmentEdge[];
+  is_dag: boolean;
+  topological_order: string[];
+  cycles: string[][];
+  deadlocks_detected: boolean;
+  summary: string;
+}

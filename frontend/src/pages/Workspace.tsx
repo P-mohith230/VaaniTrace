@@ -13,6 +13,7 @@ import { TranscriptViewer } from '../components/TranscriptViewer';
 import { ExtractionPanel } from '../components/ExtractionPanel';
 import { VoicePOView } from '../components/VoicePOView';
 import { VerificationControls } from '../components/VerificationControls';
+import { CommitmentGraphView } from '../components/CommitmentGraphView';
 import { ErrorAlert } from '../components/ErrorAlert';
 import { LoadingOverlay } from '../components/LoadingOverlay';
 import {
@@ -89,6 +90,14 @@ const DEMO_SAMPLES = [
     label: 'Demo 5: आम का थोक व्यापार (Hindi)',
     transcript: 'नमस्ते रमेश भाई। मुझे 50 कार्टन आम चाहिए। 600 रुपये प्रति कार्टन का भाव तय हुआ था। कल शाम तक दुकान पर भेज देना।',
   },
+  {
+    id: 'sample_dag_conditional',
+    title: 'Multi-Party Conditional Garment Contract (Tirupur)',
+    record_type: 'business_order',
+    language: 'en-IN',
+    label: 'Demo 6: Conditional DAG (Tirupur)',
+    transcript: 'Hello Murugan, this is Suresh speaking. I need 200 cotton shirts by Friday. I will transfer 50% advance payment tomorrow by 2 PM. Murugan says: Understood Suresh, we will dispatch the 200 shirts on Thursday morning once the advance is received. Delivery will reach your warehouse by Friday afternoon.',
+  },
 ];
 
 export const Workspace: React.FC = () => {
@@ -116,7 +125,7 @@ export const Workspace: React.FC = () => {
   const [savedRecordId, setSavedRecordId] = useState<string | null>(null);
   const [audioSummaryBase64, setAudioSummaryBase64] = useState<string | null>(null);
   const [overallVerification, setOverallVerification] = useState<VerificationStatus>('unverified');
-  const [intelligenceTab, setIntelligenceTab] = useState<'po' | 'fields'>('po');
+  const [intelligenceTab, setIntelligenceTab] = useState<'po' | 'fields' | 'graph'>('po');
   const [layoutMode, setLayoutMode] = useState<'split' | 'full'>('split');
 
   // Interactive Cross-Highlighting State
@@ -441,6 +450,7 @@ export const Workspace: React.FC = () => {
                 {demo.id === 'sample_field' && 'Demo 3: Site Inspection'}
                 {demo.id === 'sample_complaint' && 'Demo 4: Customer Grievance'}
                 {demo.id === 'sample_hindi' && 'Demo 5: हिंदी व्यापार आदेश'}
+                {demo.id === 'sample_dag_conditional' && 'Demo 6: Multi-Party DAG (Tirupur)'}
               </button>
             ))}
           </div>
@@ -725,6 +735,25 @@ export const Workspace: React.FC = () => {
                 >
                   <span>🗂️ Fact Inspection Cards</span>
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setIntelligenceTab('graph')}
+                  style={{
+                    background: intelligenceTab === 'graph' ? 'var(--accent-wine)' : 'transparent',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    padding: '5px 14px',
+                    fontSize: '12px',
+                    fontFamily: 'var(--font-mono)',
+                    cursor: 'pointer',
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <span>🕸️ Commitment DAG (Rank 4)</span>
+                </button>
               </div>
 
               {/* Layout Mode Toggle */}
@@ -804,6 +833,32 @@ export const Workspace: React.FC = () => {
                     onExportCsv={handleExportCsv}
                     onExportXlsx={handleExportXlsx}
                     onExportTally={handleExportTally}
+                    detectedLanguage={detectedLanguage}
+                  />
+                  <VerificationControls
+                    summaryText={summary}
+                    onSaveRecord={handleSaveRecord}
+                    isSaving={isLoading}
+                    savedRecordId={savedRecordId}
+                    onAudioSummaryGenerated={(b64) => setAudioSummaryBase64(b64)}
+                    existingAudioSummary={audioSummaryBase64}
+                    recordType={selectedRecordType}
+                    fields={fields}
+                    uncertainFields={uncertainFields}
+                    onFieldsUpdate={(newFields) => setFields(newFields)}
+                    onSummaryUpdate={(newSummary) => setSummary(newSummary)}
+                    verificationStatus={overallVerification}
+                    onStatusUpdate={(newStatus) => setOverallVerification(newStatus)}
+                    detectedLanguage={detectedLanguage}
+                  />
+                </>
+              ) : intelligenceTab === 'graph' ? (
+                <>
+                  <CommitmentGraphView
+                    transcript={transcript}
+                    recordType={selectedRecordType}
+                    fields={fields}
+                    actionItems={actionItems}
                     detectedLanguage={detectedLanguage}
                   />
                   <VerificationControls

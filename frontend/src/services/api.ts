@@ -209,6 +209,39 @@ class ApiClient {
     });
   }
 
+  // Multi-Party Commitment Knowledge Graph (Rank 4)
+  async extractCommitmentGraph(
+    transcript: string,
+    recordType: string = 'business_order',
+    fields: any[] = [],
+    actionItems: any[] = []
+  ): Promise<any> {
+    return this.request('/graph/extract', {
+      method: 'POST',
+      body: JSON.stringify({
+        transcript,
+        record_type: recordType,
+        fields,
+        action_items: actionItems,
+      }),
+    });
+  }
+
+  async simulateCommitmentNode(
+    nodes: any[],
+    edges: any[],
+    targetNodeId: string
+  ): Promise<{ nodes: any[]; edges: any[]; toggled_node_id: string; message: string }> {
+    return this.request('/graph/simulate', {
+      method: 'POST',
+      body: JSON.stringify({
+        nodes,
+        edges,
+        target_node_id: targetNodeId,
+      }),
+    });
+  }
+
   getExportUrl(recordId: string, format: 'json' | 'csv' | 'xlsx' | 'tally' = 'json'): string {
     return `${API_BASE}/records/${encodeURIComponent(recordId)}/export?format=${format}`;
   }

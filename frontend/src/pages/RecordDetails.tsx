@@ -5,6 +5,7 @@ import { TranscriptViewer } from '../components/TranscriptViewer';
 import { ExtractionPanel } from '../components/ExtractionPanel';
 import { VoicePOView } from '../components/VoicePOView';
 import { VerificationControls } from '../components/VerificationControls';
+import { CommitmentGraphView } from '../components/CommitmentGraphView';
 import { ErrorAlert } from '../components/ErrorAlert';
 import { LoadingOverlay } from '../components/LoadingOverlay';
 import { ArrowLeft, Save, Download, CheckCircle2, Clock } from 'lucide-react';
@@ -22,7 +23,7 @@ export const RecordDetails: React.FC<RecordDetailsProps> = ({ recordId, onBack }
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Highlighting State
-  const [intelligenceTab, setIntelligenceTab] = useState<'po' | 'fields'>('po');
+  const [intelligenceTab, setIntelligenceTab] = useState<'po' | 'fields' | 'graph'>('po');
   const [layoutMode, setLayoutMode] = useState<'split' | 'full'>('split');
   const [activeSegmentId, setActiveSegmentId] = useState<number | null>(null);
   const [activeFieldId, setActiveFieldId] = useState<string | null>(null);
@@ -324,6 +325,25 @@ export const RecordDetails: React.FC<RecordDetailsProps> = ({ recordId, onBack }
             >
               <span>🗂️ Fact Inspection Cards</span>
             </button>
+            <button
+              type="button"
+              onClick={() => setIntelligenceTab('graph')}
+              style={{
+                background: intelligenceTab === 'graph' ? 'var(--accent-wine)' : 'transparent',
+                color: '#FFFFFF',
+                border: 'none',
+                padding: '5px 14px',
+                fontSize: '12px',
+                fontFamily: 'var(--font-mono)',
+                cursor: 'pointer',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <span>🕸️ Commitment DAG (Rank 4)</span>
+            </button>
           </div>
 
           {/* Layout Mode Toggle */}
@@ -402,6 +422,34 @@ export const RecordDetails: React.FC<RecordDetailsProps> = ({ recordId, onBack }
                 onExportCsv={() => window.open(api.getExportUrl(record.id, 'csv'), '_blank')}
                 onExportXlsx={() => window.open(api.getExportUrl(record.id, 'xlsx'), '_blank')}
                 onExportTally={() => window.open(api.getExportUrl(record.id, 'tally'), '_blank')}
+                detectedLanguage={record.language_code || 'indic-auto'}
+              />
+              <div className="card">
+                <VerificationControls
+                  summaryText={record.cleaned_summary || ''}
+                  onSaveRecord={handleSaveUpdates}
+                  isSaving={isSaving}
+                  savedRecordId={record.id}
+                  onAudioSummaryGenerated={(b64) => setRecord({ ...record, audio_summary_base64: b64 })}
+                  existingAudioSummary={record.audio_summary_base64}
+                  recordType={record.record_type}
+                  fields={record.fields}
+                  uncertainFields={[]}
+                  onFieldsUpdate={(newFields) => setRecord({ ...record, fields: newFields })}
+                  onSummaryUpdate={(newSummary) => setRecord({ ...record, cleaned_summary: newSummary })}
+                  verificationStatus={record.verification_status}
+                  onStatusUpdate={(newStatus) => setRecord({ ...record, verification_status: newStatus })}
+                  detectedLanguage={record.language_code || 'indic-auto'}
+                />
+              </div>
+            </>
+          ) : intelligenceTab === 'graph' ? (
+            <>
+              <CommitmentGraphView
+                transcript={record.original_transcript}
+                recordType={record.record_type}
+                fields={record.fields}
+                actionItems={record.action_items}
                 detectedLanguage={record.language_code || 'indic-auto'}
               />
               <div className="card">
