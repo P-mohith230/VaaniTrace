@@ -303,6 +303,20 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
                       <span style={{ fontWeight: 600, color: '#FFFFFF', wordBreak: 'break-word' }}>
                         {field.field_name.replace(/_/g, ' ').toUpperCase()}
                       </span>
+                      {field.is_edited && (
+                        <span style={{
+                          fontSize: '9px',
+                          color: '#ffb300',
+                          background: 'rgba(255, 179, 0, 0.15)',
+                          border: '1px solid #ffb300',
+                          padding: '1px 5px',
+                          fontFamily: 'var(--font-mono)',
+                          fontWeight: 700,
+                          borderRadius: '2px',
+                        }}>
+                          AMENDED (RANK 3)
+                        </span>
+                      )}
                       {field.field_name === 'standardized_packaging' && (
                         <span style={{
                           fontSize: '9px',
@@ -348,7 +362,20 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
                   <td style={{ padding: '10px 8px', fontFamily: 'var(--font-mono)', textAlign: 'right' }}>
                     {field.field_name === 'quantity' ? (
                       <div>
-                        <strong style={{ color: 'var(--color-white)', fontSize: '13px' }}>{field.current_value}</strong>
+                        <strong style={{ color: field.is_edited ? '#5cdb95' : 'var(--color-white)', fontSize: '13px' }}>
+                          {field.current_value}
+                        </strong>
+                        {field.is_edited && (
+                          <div style={{
+                            marginTop: '2px',
+                            fontSize: '9px',
+                            color: '#ffb300',
+                            fontFamily: 'var(--font-mono)',
+                            fontWeight: 700,
+                          }}>
+                            ⚡ AMENDED
+                          </div>
+                        )}
                         {field.notes?.includes('Standard SI:') && (
                           <div
                             style={{
@@ -381,7 +408,7 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
 
                   <td style={{ padding: '10px 8px', fontFamily: 'var(--font-mono)', textAlign: 'right' }}>
                     {field.field_name === 'unit_price' ? (
-                      <span style={{ color: '#FFFFFF' }}>{field.current_value}</span>
+                      <span style={{ color: field.is_edited ? '#5cdb95' : '#FFFFFF' }}>{field.current_value}</span>
                     ) : (
                       '—'
                     )}
@@ -389,11 +416,26 @@ export const VoicePOView: React.FC<VoicePOViewProps> = ({
 
                   <td style={{ padding: '10px 8px', fontFamily: 'var(--font-mono)', textAlign: 'right' }}>
                     <strong style={{
-                      color: field.evidence_type === 'calculated' ? 'var(--accent-crimson)' : '#FFFFFF',
+                      color: field.is_edited
+                        ? '#5cdb95'
+                        : field.evidence_type === 'calculated'
+                        ? 'var(--accent-crimson)'
+                        : '#FFFFFF',
                       fontSize: '13px',
                     }}>
                       {field.current_value}
                     </strong>
+                    {field.is_edited && field.field_name === 'total_amount' && (
+                      <div style={{
+                        marginTop: '2px',
+                        fontSize: '9px',
+                        color: '#5cdb95',
+                        fontFamily: 'var(--font-mono)',
+                        fontWeight: 700,
+                      }}>
+                        RECALCULATED
+                      </div>
+                    )}
                   </td>
 
                   {/* The Evidence Anchor Chip */}

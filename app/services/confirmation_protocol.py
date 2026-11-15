@@ -333,10 +333,24 @@ class ConfirmationProtocolService:
         # Generate updated confirmation script
         new_script_data = cls.generate_confirmation_script(record_type, updated_fields)
 
+        # Construct updated human-readable summary reflecting amended business facts
+        item_val = item_field.get("current_value", "items") if item_field else "items"
+        qty_val = qty_field.get("current_value", "") if qty_field else ""
+        price_val = price_field.get("current_value", "") if price_field else ""
+        total_val = total_field.get("current_value", "") if total_field else ""
+        dl_field = next((f for f in updated_fields if f.get("field_name") == "delivery_deadline"), None)
+        dl_val = dl_field.get("current_value", "") if dl_field else ""
+
+        updated_summary = (
+            f"Amended Order: {qty_val} {new_unit or 'units'} of {item_val} at {price_val} each "
+            f"(Net Total: {total_val}){f', delivery requested by {dl_val}' if dl_val else ''}."
+        )
+
         return {
             "updated_fields": updated_fields,
             "changes_applied": changes_applied,
             "new_confirmation_script": new_script_data["script_text"],
+            "updated_summary": updated_summary,
         }
 
 

@@ -259,6 +259,7 @@ class VoiceCorrectionResponse(BaseModel):
     updated_fields: List[Dict[str, Any]]
     changes_applied: List[str]
     new_confirmation_script: str
+    updated_summary: Optional[str] = None
 
 
 class VoiceIntentEvaluateRequest(BaseModel):

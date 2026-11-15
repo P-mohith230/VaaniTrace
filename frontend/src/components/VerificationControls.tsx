@@ -30,6 +30,7 @@ interface VerificationControlsProps {
   fields?: ExtractedField[];
   uncertainFields?: UncertainField[];
   onFieldsUpdate?: (updatedFields: ExtractedField[]) => void;
+  onSummaryUpdate?: (summary: string) => void;
   verificationStatus?: VerificationStatus;
   onStatusUpdate?: (status: VerificationStatus) => void;
   detectedLanguage?: string;
@@ -48,6 +49,7 @@ export const VerificationControls: React.FC<VerificationControlsProps> = ({
   fields = [],
   uncertainFields = [],
   onFieldsUpdate,
+  onSummaryUpdate,
   verificationStatus = 'unverified',
   onStatusUpdate,
   detectedLanguage = 'en-IN',
@@ -72,6 +74,7 @@ export const VerificationControls: React.FC<VerificationControlsProps> = ({
   const [isApplyingCorrection, setIsApplyingCorrection] = useState(false);
   const [correctionFeedback, setCorrectionFeedback] = useState<string[]>([]);
   const [isListeningMic, setIsListeningMic] = useState(false);
+  const isCorrectingRef = React.useRef(false);
 
   // Sync protocol state if external status changes
   useEffect(() => {
@@ -82,6 +85,13 @@ export const VerificationControls: React.FC<VerificationControlsProps> = ({
   // Fetch or regenerate the auditable confirmation script when fields change
   useEffect(() => {
     let isCancelled = false;
+
+    // Skip redundant fetch if we just set the new confirmation script directly from the amendment endpoint
+    if (isCorrectingRef.current) {
+      isCorrectingRef.current = false;
+      return;
+    }
+
     const fetchScript = async () => {
       if (fields.length === 0) {
         setConfirmationScript(summaryText || '');
@@ -168,21 +178,25 @@ export const VerificationControls: React.FC<VerificationControlsProps> = ({
 
     setIsApplyingCorrection(true);
     setSynthError(null);
+    isCorrectingRef.current = true;
 
     try {
       const res = await api.applyVoiceCorrection(query, fields, recordType);
       if (onFieldsUpdate && res.updated_fields) {
         onFieldsUpdate(res.updated_fields);
       }
+      if (onSummaryUpdate && res.updated_summary) {
+        onSummaryUpdate(res.updated_summary);
+      }
       if (res.new_confirmation_script) {
         setConfirmationScript(res.new_confirmation_script);
       }
       setCorrectionFeedback(res.changes_applied || ['Amendment applied successfully.']);
       setCorrectionText('');
-      setShowCorrectionInput(false);
       setProtocolState('PENDING_READBACK');
       setAudioUrl(null); // Reset audio so new readout can be generated
     } catch (err: any) {
+      isCorrectingRef.current = false;
       setSynthError(err.message || 'Failed to apply correction amendment.');
     } finally {
       setIsApplyingCorrection(false);
@@ -390,9 +404,24 @@ export const VerificationControls: React.FC<VerificationControlsProps> = ({
         </div>
 
         {/* Readback Script Text Display */}
+        {correctionFeedback.length > 0 && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            marginBottom: '8px',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '11px',
+            color: '#5cdb95',
+            fontWeight: 700,
+          }}>
+            <Sparkles size={12} color="#5cdb95" />
+            <span>UPDATED READBACK SCRIPT (AMENDED IN REAL-TIME):</span>
+          </div>
+        )}
         <div style={{
           background: 'var(--color-black)',
-          border: '1px solid var(--color-border)',
+          border: `1px solid ${correctionFeedback.length > 0 ? '#5cdb95' : 'var(--color-border)'}`,
           padding: '12px',
           fontSize: '13px',
           lineHeight: 1.6,

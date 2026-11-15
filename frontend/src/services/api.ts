@@ -149,6 +149,7 @@ class ApiClient {
     updated_fields: any[];
     changes_applied: string[];
     new_confirmation_script: string;
+    updated_summary?: string;
   }> {
     return this.request('/confirmation/correct', {
       method: 'POST',

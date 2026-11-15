@@ -416,6 +416,7 @@ export const RecordDetails: React.FC<RecordDetailsProps> = ({ recordId, onBack }
                   fields={record.fields}
                   uncertainFields={[]}
                   onFieldsUpdate={(newFields) => setRecord({ ...record, fields: newFields })}
+                  onSummaryUpdate={(newSummary) => setRecord({ ...record, cleaned_summary: newSummary })}
                   verificationStatus={record.verification_status}
                   onStatusUpdate={(newStatus) => setRecord({ ...record, verification_status: newStatus })}
                   detectedLanguage={record.language_code || 'indic-auto'}
@@ -446,6 +447,7 @@ export const RecordDetails: React.FC<RecordDetailsProps> = ({ recordId, onBack }
                 fields={record.fields}
                 uncertainFields={[]}
                 onFieldsUpdate={(newFields) => setRecord({ ...record, fields: newFields })}
+                onSummaryUpdate={(newSummary) => setRecord({ ...record, cleaned_summary: newSummary })}
                 verificationStatus={record.verification_status}
                 onStatusUpdate={(newStatus) => setRecord({ ...record, verification_status: newStatus })}
                 detectedLanguage={record.language_code || 'indic-auto'}

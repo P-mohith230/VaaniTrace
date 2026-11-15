@@ -268,7 +268,7 @@ export const TranscriptViewer: React.FC<TranscriptViewerProps> = ({
           alignItems: 'center',
           borderBottom: '1px solid var(--color-border)',
           paddingBottom: '14px',
-          marginBottom: '24px',
+          marginBottom: '16px',
           fontFamily: 'var(--font-mono)',
           fontSize: '11px',
           color: 'var(--color-muted-grey)',
@@ -280,6 +280,23 @@ export const TranscriptViewer: React.FC<TranscriptViewerProps> = ({
           <span style={{ color: 'var(--accent-crimson)', fontWeight: 700 }}>
             TAP FRAGMENTS TO TRACE DATA
           </span>
+        </div>
+
+        {/* Evidentiary Immutability Strip */}
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid var(--color-border)',
+          padding: '6px 10px',
+          marginBottom: '20px',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '10px',
+          color: 'var(--color-muted-grey)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+        }}>
+          <ShieldCheck size={12} color="var(--accent-crimson)" />
+          <span>ACOUSTIC TRACE: Immutable record of original spoken speech. Voice/text amendments update the PO voucher & confirmation script while preserving acoustic evidence citations.</span>
         </div>
 
         {/* The Spoken Sentence Display */}

@@ -135,6 +135,9 @@ def test_chage_50_gloves_into_20():
     # Recalculated total: 20 * 1200 = ₹24,000.00
     assert "24,000" in field_map["total_amount"]["current_value"]
     assert any("Quantity updated: 50 → 20" in c for c in res["changes_applied"])
+    assert "updated_summary" in res
+    assert "20 gloves" in res["updated_summary"]
+    assert "24,000" in res["updated_summary"]
 
 
 def test_evaluate_voice_intent():

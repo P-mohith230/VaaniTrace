@@ -817,6 +817,7 @@ export const Workspace: React.FC = () => {
                     fields={fields}
                     uncertainFields={uncertainFields}
                     onFieldsUpdate={(newFields) => setFields(newFields)}
+                    onSummaryUpdate={(newSummary) => setSummary(newSummary)}
                     verificationStatus={overallVerification}
                     onStatusUpdate={(newStatus) => setOverallVerification(newStatus)}
                     detectedLanguage={detectedLanguage}
@@ -846,6 +847,7 @@ export const Workspace: React.FC = () => {
                     fields={fields}
                     uncertainFields={uncertainFields}
                     onFieldsUpdate={(newFields) => setFields(newFields)}
+                    onSummaryUpdate={(newSummary) => setSummary(newSummary)}
                     verificationStatus={overallVerification}
                     onStatusUpdate={(newStatus) => setOverallVerification(newStatus)}
                     detectedLanguage={detectedLanguage}
