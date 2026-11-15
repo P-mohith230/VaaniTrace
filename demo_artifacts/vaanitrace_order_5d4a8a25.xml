@@ -1,0 +1,33 @@
+<ENVELOPE>
+  <HEADER>
+    <TALLYREQUEST>Import Data</TALLYREQUEST>
+  </HEADER>
+  <BODY>
+    <IMPORTDATA>
+      <REQUESTDESC>
+        <REPORTNAME>Vouchers</REPORTNAME>
+        <STATICVARIABLES>
+          <SVCURRENTCOMPANY>VaaniTrace Commerce</SVCURRENTCOMPANY>
+        </STATICVARIABLES>
+      </REQUESTDESC>
+      <REQUESTDATA>
+        <TALLYMESSAGE xmlns:UDF="TallyUDF">
+          <VOUCHER VCHTYPE="Sales Order" ACTION="Create" OBJVIEW="Invoice Voucher View">
+            <DATE>20261115</DATE>
+            <VOUCHERTYPENAME>Sales Order</VOUCHERTYPENAME>
+            <PARTYLEDGERNAME>Customer Ledger</PARTYLEDGERNAME>
+            <PERSISTEDVIEW>Invoice View</PERSISTEDVIEW>
+            <NARRATION>VaaniTrace Voice-PO via Gnani AI Speech Recognition. Spoken packaging standardized: 25 Boxes (300 kg). Evidence: 'Customer placed an order for surgical gloves (Quantity: 25) at ₹1,200.00 each, required by friday.'. Record ID: 5d4a8a25-86da-481b-b705-458ae7d83662</NARRATION>
+            <ALLINVENTORYENTRIES.LIST>
+              <STOCKITEMNAME>Surgical Gloves</STOCKITEMNAME>
+              <RATE>1200.00/Boxes</RATE>
+              <ACTUALQTY>25 BOXES</ACTUALQTY>
+              <BILLEDQTY>25 BOXES</BILLEDQTY>
+              <AMOUNT>-30000.00</AMOUNT>
+            </ALLINVENTORYENTRIES.LIST>
+          </VOUCHER>
+        </TALLYMESSAGE>
+      </REQUESTDATA>
+    </IMPORTDATA>
+  </BODY>
+</ENVELOPE>

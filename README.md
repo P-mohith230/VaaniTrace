@@ -40,6 +40,46 @@ Every other hackathon submission treats voice as **ephemeral text generation** (
 
 ---
 
+## 🎬 Real-World Audio Benchmark & Verified Multi-Format Showcase
+
+To demonstrate VaaniTrace's operational integrity, an authentic, unfiltered wholesale purchase order was processed through the platform end-to-end:
+
+<div align="center">
+
+🎙️ **Inbound Voice Order Input:** [`demo_artifacts/inbound_voice_order.mp3`](demo_artifacts/inbound_voice_order.mp3)  
+> *"hello rajesh this is suresh speaking i need twenty five boxes of surgical gloves at one thousand two hundred rupees each please deliver them by friday to our central warehouse"*
+
+🔊 **Synthesized Closed-Loop Voice Readout (Gnani Timbre):** [`demo_artifacts/synthesized_voice_confirmation_readout.wav`](demo_artifacts/synthesized_voice_confirmation_readout.wav)  
+> *"Please confirm your purchase order details. You have requested 25 of surgical gloves, standardized as 25 boxes, 300 kilograms, at rupees 1,200.00 each. Calculated net total is rupees 30,000.00. Delivery is requested by Friday. Say or click 'Confirm' to commit this transaction to the ledger, or state your correction."*
+
+</div>
+
+### 📁 Generated Production Artifacts & Direct Download Links
+
+Every processed verbal interaction produces five cryptographically verifiable export formats stored directly in the repository:
+
+| Format | Output Artifact File Link | Purpose & Industry Standard |
+|:---|:---|:---|
+| **TallyPrime XML** | [`demo_artifacts/vaanitrace_order_5d4a8a25.xml`](demo_artifacts/vaanitrace_order_5d4a8a25.xml) | Direct voucher import for **TallyPrime / Tally ERP 9** with HSN codes, standard SI units (`25 BOXES`), and rate. |
+| **Excel CSV** | [`demo_artifacts/vaanitrace_order_5d4a8a25.csv`](demo_artifacts/vaanitrace_order_5d4a8a25.csv) | Windows Excel-ready **UTF-8 BOM (`\ufeff`)** format preserving Rupee symbols (`₹`), math operators, and character offsets. |
+| **Native Excel** | [`demo_artifacts/vaanitrace_order_5d4a8a25.xlsx`](demo_artifacts/vaanitrace_order_5d4a8a25.xlsx) | Styled **OpenPyXL** workbook with branded headers (`#722F37`), cell borders, and dynamic column auto-widths. |
+| **REST JSON** | [`demo_artifacts/vaanitrace_order_5d4a8a25.json`](demo_artifacts/vaanitrace_order_5d4a8a25.json) | Full **Pydantic v2** structured ledger with field-level evidence objects, verification flags, and action items. |
+| **Dispute Certificate** | [`demo_artifacts/vaanitrace_dispute_audit_certificate.json`](demo_artifacts/vaanitrace_dispute_audit_certificate.json) | **MSME Samadhaan** legal certificate with millisecond audio window (`00:02.728 - 00:05.182`) and **SHA-256 seal**. |
+
+### 📋 Extracted Field & Mathematical Derivation Matrix (Record: `5d4a8a25`)
+
+| Field Name | Spoken Value | Standardized Canonical Value | Supporting Evidence Text | Char Range | Verification Type |
+|:---|:---|:---|:---|:---|:---|
+| `order_item` | `surgical gloves` | **Surgical Gloves** | `"boxes of surgical gloves at"` | `[56, 83]` | Spoken Grounded |
+| `quantity` | `25` | **25 Boxes** | `"twenty five boxes"` | `[44, 61]` | Spoken Grounded |
+| `standardized_packaging` | `twenty five boxes` | **25 Boxes (300 kg)** | `"twenty five boxes"` | `[44, 61]` | Derived ($25 \times 12\text{ kg} = 300\text{ kg}$, HSN 9999) |
+| `unit_price` | `one thousand two hundred rupees` | **₹1,200.00** | `"one thousand two hundred rupees"` | `[84, 115]` | Spoken Grounded |
+| `total_amount` | *[Derived]* | **₹30,000.00** | `"twenty five boxes ... one thousand two hundred rupees"` | `[44, 115]` | Deterministic ($25 \times ₹1,200.00 = ₹30,000.00$) |
+| `delivery_deadline` | `friday` | **Friday** | `"by friday"` | `[141, 150]` | Spoken Grounded |
+| `delivery_location` | `central warehouse` | **Central Warehouse** | `"our central warehouse"` | `[158, 179]` | Spoken Grounded |
+
+---
+
 ## 📊 Quantified Performance Benchmarks
 
 | Performance Metric | Conventional STT + Generic LLM | VaaniTrace + Gnani.ai Engine | Quantified Improvement |

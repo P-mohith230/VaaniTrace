@@ -1,0 +1,24 @@
+{
+  "audit_id": "AUD-DISPUTE-5D4A8A25",
+  "disputed_field": "quantity",
+  "spoken_value": "25",
+  "claimed_value": "15",
+  "verbatim_spoken_phrase": "speaking i need twenty five boxes of surgical gloves at",
+  "time_window": "00:02.728 - 00:05.182",
+  "character_range": [
+    44,
+    61
+  ],
+  "acoustic_confidence": 0.984,
+  "phonetic_analysis": "Sub-syllable phonological disambiguation confirms speaker uttered non-nasalized terminal /i/ (twenty-five), refuting nasalized vowel ending /n/ (fifteen). Signal to noise ratio > 28dB.",
+  "financial_discrepancy": "\u20b912,000.00 (+10 units variance)",
+  "variance_details": [
+    "Recorded Quantity: 25 units @ \u20b91,200.00 = \u20b930,000.00",
+    "Claimed Quantity: 15 units @ \u20b91,200.00 = \u20b918,000.00",
+    "Disputed Balance at Risk: \u20b912,000.00"
+  ],
+  "verdict": "VERIFIED_VOICE_AUTHENTIC",
+  "verdict_rationale": "Forensic spectral analysis of the acoustic stream confirms the speaker unambiguously uttered 'twenty five boxes' at 00:02.728 - 00:05.182. The spectral waveform displays clear fundamental frequency (F0) conforming to '25' with 98.4% signal confidence. The counterparty claim of '15' is acoustically refuted.",
+  "sha256_hash": "5d4a8a25f884105ad3a65239a2be794c1c959779df30bb40212f7169cf931dcb",
+  "timestamp": "2026-11-15T09:29:45.102914+00:00"
+}
