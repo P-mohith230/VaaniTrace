@@ -148,32 +148,88 @@ class ConfirmationProtocolService:
         changes_applied: List[str] = []
         text = correction_text.strip()
 
-        # 1. Check for Quantity amendment (e.g., 'make it 60 bori', 'change to 30', '40 bags')
-        vernacular_parsed = indic_normalizer.parse_vernacular_phrase(text)
-        qty_match = re.search(r'(?:quantity|qty|make it|change to|instead of\s+\d+\s+make it|actually)\s*(\d+(?:\.\d+)?)\s*([a-zA-Z]+)?', text, re.IGNORECASE)
-        
+        # 1. Check for Quantity amendment
         new_qty_num = None
         new_unit = None
         new_phrase = None
 
-        if vernacular_parsed:
-            new_qty_num, new_unit, new_phrase = vernacular_parsed
-        elif qty_match:
-            new_qty_num = float(qty_match.group(1))
-            new_unit = qty_match.group(2) or "units"
-            new_phrase = qty_match.group(0).strip()
-        elif re.search(r'\b(\d+)\s*(?:bori|katta|peti|boxes|bags|quintals|kg|tins|dabba)\b', text, re.I):
-            m = re.search(r'\b(\d+)\s*([a-zA-Z]+)\b', text, re.I)
-            if m:
-                new_qty_num = float(m.group(1))
-                new_unit = m.group(2)
-                new_phrase = m.group(0)
+        # Pattern A: Two-number replacement (e.g., 'chage the 50 gloves into 20', 'change 50 to 20', 'replace 50 with 20 boxes')
+        prep_words = r'(?:into|to|with|as|in|ke\s+badle|ke\s+jagah)'
+        two_num_pat = rf'\b(?:change|chage|chnge|replace|turn|from|instead\s+of|not)?\s*(?:the\s+)?(\d+(?:\.\d+)?)(?:\s+([a-zA-Z]+))?\s+{prep_words}\s+(?:make\s+it\s+)?(\d+(?:\.\d+)?)(?:\s+([a-zA-Z]+))?'
+        two_num_match = re.search(two_num_pat, text, re.IGNORECASE)
+        if two_num_match:
+            new_qty_num = float(two_num_match.group(3))
+            new_unit = two_num_match.group(4) or two_num_match.group(2)
+            new_phrase = f"{two_num_match.group(3)} {new_unit or ''}".strip()
 
-        # 2. Check for Unit Price amendment (e.g., 'price is 2100', 'rate 350', '2100 rupees')
-        price_match = re.search(r'(?:price|rate|rupees|rs\.?|₹|at)\s*(?:is\s*)?(\d+(?:,\d+)*(?:\.\d+)?)\b', text, re.IGNORECASE)
+        # Pattern B: Item-to-quantity (e.g., 'change gloves into 20', 'make gloves 20', 'set cement to 40')
+        if not new_qty_num:
+            item_to_qty = re.search(r'\b(?:change|chage|chnge|make|set|turn)\s+(?:the\s+)?([a-zA-Z]+)\s*(?:into|to|as|at)?\s*(\d+(?:\.\d+)?)\b', text, re.IGNORECASE)
+            if item_to_qty:
+                w_item = item_to_qty.group(1).lower()
+                if w_item not in ("quantity", "qty", "it", "this", "order", "price", "rate", "deadline"):
+                    new_qty_num = float(item_to_qty.group(2))
+                    new_unit = w_item
+                    new_phrase = f"{item_to_qty.group(2)} {new_unit}"
+
+        # Pattern C: Single target with verbs & common typos (e.g., 'make it 20', 'change to 20', 'chage to 20', 'actually 20')
+        if not new_qty_num:
+            qty_match = re.search(r'\b(?:quantity|qty|make\s+it|change\s+to|chage\s+to|chnge\s+to|set\s+to|actually|need|want|order)\s*(?:the\s+)?(\d+(?:\.\d+)?)\s*([a-zA-Z]+)?\b', text, re.IGNORECASE)
+            if qty_match:
+                new_qty_num = float(qty_match.group(1))
+                new_unit = qty_match.group(2)
+                new_phrase = qty_match.group(0).strip()
+
+        # Pattern D: Vernacular trade units (e.g., '50 bori', '20 peti', '2 chhota hathi')
+        if not new_qty_num:
+            vernacular_parsed = indic_normalizer.parse_vernacular_phrase(text)
+            if vernacular_parsed:
+                new_qty_num, new_unit, new_phrase = vernacular_parsed
+
+        # Pattern E: Bare number with unit (e.g., '20 boxes', '20 gloves', '30 bags')
+        if not new_qty_num:
+            bare_with_unit = re.search(r'\b(\d+(?:\.\d+)?)\s*([a-zA-Z]+)\b', text, re.IGNORECASE)
+            if bare_with_unit:
+                unit_word = bare_with_unit.group(2).lower()
+                if unit_word not in ("rupees", "rupee", "rs", "inr", "per", "each", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "today", "tomorrow"):
+                    new_qty_num = float(bare_with_unit.group(1))
+                    new_unit = bare_with_unit.group(2)
+                    new_phrase = bare_with_unit.group(0)
+
+        # Pattern F: Bare single number fallback (e.g., '20')
+        if not new_qty_num:
+            bare_single = re.search(r'^\s*(?:actually|just|only)?\s*(\d+(?:\.\d+)?)\s*$', text, re.IGNORECASE)
+            if bare_single:
+                new_qty_num = float(bare_single.group(1))
+                new_phrase = str(new_qty_num)
+
+        # Inherit existing unit from current fields if not explicitly specified
+        existing_qty_field = next((f for f in updated_fields if f.get("field_name") == "quantity"), None)
+        existing_unit = None
+        if existing_qty_field and existing_qty_field.get("notes"):
+            notes_str = existing_qty_field["notes"]
+            if "Unit:" in notes_str:
+                existing_unit = notes_str.split("Unit:")[-1].split("•")[0].strip()
+            elif "Colloquial:" in notes_str:
+                m_u = re.search(r'\d+\s*([a-zA-Z]+)', notes_str.split("Colloquial:")[-1].split("•")[0])
+                if m_u:
+                    existing_unit = m_u.group(1)
+
+        if not new_unit or new_unit.lower() in ("units", "it", "this"):
+            if existing_unit:
+                new_unit = existing_unit
+
+        # 2. Check for Unit Price amendment (e.g., 'price is 2100', 'rate 350', 'from 1200 to 1000')
+        # Check two-number price replacement first (e.g., 'change price from 1200 to 1000')
+        price_two_match = re.search(r'(?:price|rate|rupees|rs\.?|₹)\s*(?:from\s*)?\d+(?:,\d+)?\s*(?:into|to|with)\s*(\d+(?:,\d+)*(?:\.\d+)?)\b', text, re.IGNORECASE)
+        price_single_match = re.search(r'(?:price|rate|rupees|rs\.?|₹|at)\s*(?:is\s*)?(\d+(?:,\d+)*(?:\.\d+)?)\b', text, re.IGNORECASE)
+        
         new_price_str = None
-        if price_match:
-            new_price_num = float(price_match.group(1).replace(",", ""))
+        if price_two_match:
+            new_price_num = float(price_two_match.group(1).replace(",", ""))
+            new_price_str = f"₹{new_price_num:,.2f}"
+        elif price_single_match:
+            new_price_num = float(price_single_match.group(1).replace(",", ""))
             new_price_str = f"₹{new_price_num:,.2f}"
 
         # 3. Check for Delivery Deadline amendment (e.g., 'deliver by monday', 'tuesday tak')

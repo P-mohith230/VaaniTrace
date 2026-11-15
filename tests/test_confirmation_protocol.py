@@ -115,6 +115,28 @@ def test_apply_verbal_price_and_deadline_correction():
     assert "105,000" in field_map["total_amount"]["current_value"]
 
 
+def test_chage_50_gloves_into_20():
+    """Verify natural human typo and phrasing 'chage the 50 gloves into 20' updates quantity to 20."""
+    fields = [
+        {"field_name": "order_item", "current_value": "Surgical Gloves"},
+        {"field_name": "quantity", "current_value": "50", "notes": "Unit: boxes"},
+        {"field_name": "unit_price", "current_value": "₹1,200.00"},
+        {"field_name": "total_amount", "current_value": "₹60,000.00"},
+    ]
+
+    res = confirmation_service.apply_verbal_correction(
+        current_fields=fields,
+        correction_text="chage the 50 gloves into 20",
+        record_type="business_order",
+    )
+
+    field_map = {f["field_name"]: f for f in res["updated_fields"]}
+    assert field_map["quantity"]["current_value"] == "20"
+    # Recalculated total: 20 * 1200 = ₹24,000.00
+    assert "24,000" in field_map["total_amount"]["current_value"]
+    assert any("Quantity updated: 50 → 20" in c for c in res["changes_applied"])
+
+
 def test_evaluate_voice_intent():
     """Verify spoken intents are classified into CONFIRM, REJECT, or CORRECT."""
     assert confirmation_service.evaluate_voice_intent("haanji confirm kar do") == "CONFIRM"
