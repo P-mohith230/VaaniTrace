@@ -424,14 +424,23 @@ export const Workspace: React.FC = () => {
                 type="button"
                 onClick={() => handleLoadDemo(demo.id)}
                 className="btn btn-secondary btn-sm"
-                style={{ fontSize: '12px', padding: '4px 10px' }}
+                style={{
+                  fontSize: '12px',
+                  padding: '5px 12px',
+                  fontFamily: 'var(--font-mono)',
+                  border: demo.id === 'sample_order' ? '1px solid var(--accent-wine)' : '1px solid var(--color-border)',
+                  background: demo.id === 'sample_order' ? 'rgba(114, 47, 55, 0.3)' : 'var(--color-charcoal)',
+                  color: '#FFFFFF',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
                 disabled={isLoading}
               >
-                {demo.id === 'sample_order' && 'Wholesale Order'}
-                {demo.id === 'sample_meeting' && 'Sprint Sync'}
-                {demo.id === 'sample_field' && 'Site Inspection'}
-                {demo.id === 'sample_complaint' && 'Customer Grievance'}
-                {demo.id === 'sample_hindi' && 'हिंदी आदेश'}
+                {demo.id === 'sample_order' && 'Demo 1: Wholesale Order'}
+                {demo.id === 'sample_meeting' && 'Demo 2: Sprint Sync'}
+                {demo.id === 'sample_field' && 'Demo 3: Site Inspection'}
+                {demo.id === 'sample_complaint' && 'Demo 4: Customer Grievance'}
+                {demo.id === 'sample_hindi' && 'Demo 5: हिंदी व्यापार आदेश'}
               </button>
             ))}
           </div>
