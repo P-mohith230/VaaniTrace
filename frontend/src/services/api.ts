@@ -242,6 +242,22 @@ class ApiClient {
     });
   }
 
+  // Voice Dispute Simulator & Forensic Audit Replay (Candidate A)
+  async simulateDispute(payload: {
+    transcript: string;
+    fields: any[];
+    disputed_field: string;
+    claimed_value: string;
+    record_type?: string;
+    record_id?: string | null;
+    language?: string;
+  }): Promise<any> {
+    return this.request('/dispute/simulate', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  }
+
   getExportUrl(recordId: string, format: 'json' | 'csv' | 'xlsx' | 'tally' = 'json'): string {
     return `${API_BASE}/records/${encodeURIComponent(recordId)}/export?format=${format}`;
   }

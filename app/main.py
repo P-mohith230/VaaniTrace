@@ -20,6 +20,7 @@ from app.routes.speech import router as speech_router
 from app.routes.records import router as records_router
 from app.routes.confirmation import router as confirmation_router
 from app.routes.commitment_graph import router as commitment_graph_router
+from app.routes.dispute import router as dispute_router
 
 # Configure logging
 logging.basicConfig(
@@ -65,6 +66,7 @@ app.include_router(speech_router)
 app.include_router(records_router)
 app.include_router(confirmation_router)
 app.include_router(commitment_graph_router)
+app.include_router(dispute_router)
 
 # Mount Static Assets & SPA Routing for Unified Single Deployment
 static_dir = Path(settings.STATIC_DIR)

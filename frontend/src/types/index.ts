@@ -157,3 +157,26 @@ export interface CommitmentGraphData {
   deadlocks_detected: boolean;
   summary: string;
 }
+
+// ---------------------------------------------------------
+// Voice Dispute Simulator & Forensic Audit Types (Candidate A)
+// ---------------------------------------------------------
+
+export interface DisputeAuditResult {
+  audit_id: string;
+  disputed_field: string;
+  spoken_value: string;
+  claimed_value: string;
+  verbatim_spoken_phrase: string;
+  time_window: string;
+  character_range: [number, number];
+  acoustic_confidence: number;
+  phonetic_analysis: string;
+  financial_discrepancy?: string | null;
+  variance_details: string[];
+  verdict: string;
+  verdict_rationale: string;
+  sha256_hash: string;
+  evidence_audio_base64?: string | null;
+  timestamp: string;
+}

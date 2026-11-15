@@ -336,4 +336,40 @@ class CommitmentSimulateResponse(BaseModel):
     message: str
 
 
+# ---------------------------------------------------------
+# Voice Dispute Simulator & Forensic Audit Schemas
+# ---------------------------------------------------------
+
+class DisputeSimulateRequest(BaseModel):
+    """Request to initiate a forensic dispute audit simulation."""
+    transcript: str = Field(..., min_length=1)
+    fields: List[Dict[str, Any]] = Field(default_factory=list)
+    disputed_field: str = "quantity"
+    claimed_value: str = "15"
+    record_type: str = "business_order"
+    record_id: Optional[str] = None
+    language: Optional[str] = "en-IN"
+
+
+class DisputeSimulateResponse(BaseModel):
+    """Forensic acoustic audit response with evidentiary verdict and cryptographic hash."""
+    audit_id: str
+    disputed_field: str
+    spoken_value: str
+    claimed_value: str
+    verbatim_spoken_phrase: str
+    time_window: str
+    character_range: List[int]
+    acoustic_confidence: float
+    phonetic_analysis: str
+    financial_discrepancy: Optional[str] = None
+    variance_details: List[str] = Field(default_factory=list)
+    verdict: str  # VERIFIED_VOICE_AUTHENTIC, AMBIGUOUS_SIGNAL, CONTRADICTION_FOUND
+    verdict_rationale: str
+    sha256_hash: str
+    evidence_audio_base64: Optional[str] = None
+    timestamp: str
+
+
+
 

@@ -14,6 +14,7 @@ import { ExtractionPanel } from '../components/ExtractionPanel';
 import { VoicePOView } from '../components/VoicePOView';
 import { VerificationControls } from '../components/VerificationControls';
 import { CommitmentGraphView } from '../components/CommitmentGraphView';
+import { DisputeSimulatorView } from '../components/DisputeSimulatorView';
 import { ErrorAlert } from '../components/ErrorAlert';
 import { LoadingOverlay } from '../components/LoadingOverlay';
 import {
@@ -125,7 +126,7 @@ export const Workspace: React.FC = () => {
   const [savedRecordId, setSavedRecordId] = useState<string | null>(null);
   const [audioSummaryBase64, setAudioSummaryBase64] = useState<string | null>(null);
   const [overallVerification, setOverallVerification] = useState<VerificationStatus>('unverified');
-  const [intelligenceTab, setIntelligenceTab] = useState<'po' | 'fields' | 'graph'>('po');
+  const [intelligenceTab, setIntelligenceTab] = useState<'po' | 'fields' | 'graph' | 'dispute'>('po');
   const [layoutMode, setLayoutMode] = useState<'split' | 'full'>('split');
 
   // Interactive Cross-Highlighting State
@@ -754,6 +755,25 @@ export const Workspace: React.FC = () => {
                 >
                   <span>🕸️ Commitment DAG (Rank 4)</span>
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setIntelligenceTab('dispute')}
+                  style={{
+                    background: intelligenceTab === 'dispute' ? 'var(--accent-wine)' : 'transparent',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    padding: '5px 14px',
+                    fontSize: '12px',
+                    fontFamily: 'var(--font-mono)',
+                    cursor: 'pointer',
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <span>🛡️ Dispute Simulator & Replay</span>
+                </button>
               </div>
 
               {/* Layout Mode Toggle */}
@@ -859,6 +879,32 @@ export const Workspace: React.FC = () => {
                     recordType={selectedRecordType}
                     fields={fields}
                     actionItems={actionItems}
+                    detectedLanguage={detectedLanguage}
+                  />
+                  <VerificationControls
+                    summaryText={summary}
+                    onSaveRecord={handleSaveRecord}
+                    isSaving={isLoading}
+                    savedRecordId={savedRecordId}
+                    onAudioSummaryGenerated={(b64) => setAudioSummaryBase64(b64)}
+                    existingAudioSummary={audioSummaryBase64}
+                    recordType={selectedRecordType}
+                    fields={fields}
+                    uncertainFields={uncertainFields}
+                    onFieldsUpdate={(newFields) => setFields(newFields)}
+                    onSummaryUpdate={(newSummary) => setSummary(newSummary)}
+                    verificationStatus={overallVerification}
+                    onStatusUpdate={(newStatus) => setOverallVerification(newStatus)}
+                    detectedLanguage={detectedLanguage}
+                  />
+                </>
+              ) : intelligenceTab === 'dispute' ? (
+                <>
+                  <DisputeSimulatorView
+                    transcript={transcript}
+                    fields={fields}
+                    recordType={selectedRecordType}
+                    recordId={savedRecordId}
                     detectedLanguage={detectedLanguage}
                   />
                   <VerificationControls
