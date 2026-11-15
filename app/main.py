@@ -69,7 +69,7 @@ app.include_router(commitment_graph_router)
 app.include_router(dispute_router)
 
 # Mount Static Assets & SPA Routing for Unified Single Deployment
-static_dir = Path(settings.STATIC_DIR)
+static_dir = Path("./frontend/dist") if Path("./frontend/dist").exists() else Path(settings.STATIC_DIR)
 index_html = static_dir / "index.html"
 assets_dir = static_dir / "assets"
 

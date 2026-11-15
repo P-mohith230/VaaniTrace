@@ -26,8 +26,9 @@ def run_full_verification():
         print("-> SUCCESS: Production React SPA served at '/' (HTTP 200)")
 
         # Verify static asset routing dynamically
-        css_files = [f for f in os.listdir("static/dist/assets") if f.endswith(".css")]
-        assert len(css_files) > 0, "No CSS bundle found in static/dist/assets"
+        assets_path = "frontend/dist/assets" if os.path.exists("frontend/dist/assets") else "static/dist/assets"
+        css_files = [f for f in os.listdir(assets_path) if f.endswith(".css")]
+        assert len(css_files) > 0, f"No CSS bundle found in {assets_path}"
         res_css = client.get(f"/assets/{css_files[0]}")
         assert res_css.status_code == 200, f"Expected 200 on CSS asset, got {res_css.status_code}"
         print(f"-> SUCCESS: Static CSS bundle served ({len(res_css.content)} bytes, file: {css_files[0]})")
