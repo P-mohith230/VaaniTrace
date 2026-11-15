@@ -11,7 +11,7 @@ from app.config import settings
 @contextmanager
 def temporary_audio_file(content: bytes, extension: str = ".wav") -> Generator[Path, None, None]:
     """Context manager that writes bytes to a temp file and reliably deletes it afterwards."""
-    upload_dir = Path(settings.DATA_DIR) / "uploads"
+    upload_dir = Path(settings.effective_data_dir) / "uploads"
     upload_dir.mkdir(parents=True, exist_ok=True)
 
     if not extension.startswith("."):
@@ -31,7 +31,7 @@ def temporary_audio_file(content: bytes, extension: str = ".wav") -> Generator[P
 
 def clean_orphan_uploads():
     """Remove any leftover temporary upload files from previous sessions."""
-    upload_dir = Path(settings.DATA_DIR) / "uploads"
+    upload_dir = Path(settings.effective_data_dir) / "uploads"
     if not upload_dir.exists():
         return
     for f in upload_dir.glob("tmp_*"):

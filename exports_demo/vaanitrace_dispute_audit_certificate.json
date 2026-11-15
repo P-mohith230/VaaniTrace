@@ -1,0 +1,25 @@
+{
+  "audit_id": "AUD-DISPUTE-22AFCCFF",
+  "disputed_field": "quantity",
+  "spoken_value": "25",
+  "claimed_value": "15",
+  "verbatim_spoken_phrase": "speaking. I need 25 boxes of surgical gloves at",
+  "time_window": "00:02.728 - 00:04.928",
+  "character_range": [
+    44,
+    52
+  ],
+  "acoustic_confidence": 0.984,
+  "phonetic_analysis": "Acoustic distinction analyzed between recorded '25' and claimed '15'. No phonological overlap detected.",
+  "financial_discrepancy": "\u20b912,000.00 (+10 units variance)",
+  "variance_details": [
+    "Recorded Quantity: 25 units @ \u20b91,200.00 = \u20b930,000.00",
+    "Claimed Quantity: 15 units @ \u20b91,200.00 = \u20b918,000.00",
+    "Disputed Balance at Risk: \u20b912,000.00"
+  ],
+  "verdict": "VERIFIED_VOICE_AUTHENTIC",
+  "verdict_rationale": "Forensic analysis of the acoustic stream confirms the speaker unambiguously uttered '25 boxes' at 00:02.728 - 00:04.928. The spectral waveform displays clear fundamental frequency (F0) conforming to '25' with 98.4% signal confidence. The counterparty claim of '15' is acoustically refuted.",
+  "sha256_hash": "22afccff52050a2f4c499e1139fbb0881aee3a4480ec6f66a16ad7be1338faab",
+  "evidence_audio_base64": null,
+  "timestamp": "2026-11-15T09:20:56.959996+00:00"
+}

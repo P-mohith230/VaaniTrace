@@ -42,6 +42,23 @@ class Settings(BaseSettings):
     )
 
     @property
+    def effective_data_dir(self) -> str:
+        """Resolve data directory, using temp directory for Vercel serverless functions."""
+        if os.environ.get("VERCEL") == "1":
+            import tempfile
+            return os.path.join(tempfile.gettempdir(), "vaanitrace_data")
+        return self.DATA_DIR
+
+    @property
+    def effective_database_url(self) -> str:
+        """Resolve database URL, using writable temp SQLite on Vercel."""
+        if os.environ.get("VERCEL") == "1":
+            import tempfile
+            db_path = os.path.join(tempfile.gettempdir(), "vaanitrace_data", "vaanitrace.db").replace("\\", "/")
+            return f"sqlite:///{db_path}"
+        return self.DATABASE_URL
+
+    @property
     def cors_origins(self) -> List[str]:
         """Parse ALLOWED_ORIGINS comma-separated string into a list."""
         if not self.ALLOWED_ORIGINS:

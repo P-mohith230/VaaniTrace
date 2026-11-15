@@ -1,0 +1,19 @@
+﻿VAANITRACE STRUCTURED RECORD EXPORT
+Record ID,rec-demo-2026-audit
+Title,Wholesale Surgical Gloves Order - Suresh to Rajesh
+Type,business_order
+Verification Status,verified
+Created At,2026-11-15T09:20:31.574220+00:00
+Summary,"Customer placed an order for surgical gloves (Quantity: 25) at ₹1,200.00 each, required by Friday."
+
+Field Name,Current Value,Original Value,Evidence Type,Verified Status,Edited by User,Supporting Text Evidence,Segment Index,Start Char,End Char,Notes / Formula
+order_item,surgical gloves,surgical gloves,spoken,unverified,No,boxes of surgical gloves at,1,49,76,Primary item requested in the conversation
+quantity,25,25,spoken,unverified,No,25 boxes,1,46,54,Colloquial: 25 boxes • Standard SI: 25 Boxes (300 kg) • HSN 9999 • Formula: 25 boxes × 12 kg/box = 300 kg
+standardized_packaging,25 Boxes (300 kg),25 Boxes (300 kg),calculated,unverified,No,25 boxes,1,46,54,Converted via Indic Packaging Normalizer (25 boxes × 12 kg/box = 300 kg)
+unit_price,"₹1,200.00","₹1,200.00",spoken,unverified,No,1200 rupees,1,77,88,Quoted unit price
+total_amount,"₹30,000.00","₹30,000.00",calculated,unverified,No,25 boxes ... 1200 rupees,1,46,88,"Calculated: 25 (quantity) × ₹1,200.00 (unit price) = ₹30,000.00"
+delivery_deadline,Friday,Friday,spoken,unverified,No,by Friday,2,115,124,
+
+ACTION ITEMS
+Description,Assignee,Deadline,Status
+Fulfill and deliver order (surgical gloves),Unassigned,Friday,pending

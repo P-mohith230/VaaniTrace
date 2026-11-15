@@ -1,0 +1,118 @@
+{
+  "id": "rec-demo-2026-audit",
+  "title": "Wholesale Surgical Gloves Order - Suresh to Rajesh",
+  "record_type": "business_order",
+  "language_code": "en-IN",
+  "verification_status": "verified",
+  "original_transcript": "Hello Rajesh, this is Suresh speaking. I need 25 boxes of surgical gloves at 1200 rupees each. Please deliver them by Friday to our central warehouse.",
+  "cleaned_summary": "Customer placed an order for surgical gloves (Quantity: 25) at ₹1,200.00 each, required by Friday.",
+  "created_at": "2026-11-15T09:20:31.574220+00:00",
+  "updated_at": null,
+  "fields": [
+    {
+      "id": "fld-0",
+      "field_name": "order_item",
+      "original_value": "surgical gloves",
+      "current_value": "surgical gloves",
+      "evidence_type": "spoken",
+      "is_edited": null,
+      "verification_status": "unverified",
+      "notes": "Primary item requested in the conversation",
+      "evidence": {
+        "supporting_text": "boxes of surgical gloves at",
+        "segment_index": 1,
+        "start_char": 49,
+        "end_char": 76
+      }
+    },
+    {
+      "id": "fld-1",
+      "field_name": "quantity",
+      "original_value": "25",
+      "current_value": "25",
+      "evidence_type": "spoken",
+      "is_edited": null,
+      "verification_status": "unverified",
+      "notes": "Colloquial: 25 boxes • Standard SI: 25 Boxes (300 kg) • HSN 9999 • Formula: 25 boxes × 12 kg/box = 300 kg",
+      "evidence": {
+        "supporting_text": "25 boxes",
+        "segment_index": 1,
+        "start_char": 46,
+        "end_char": 54
+      }
+    },
+    {
+      "id": "fld-2",
+      "field_name": "standardized_packaging",
+      "original_value": "25 Boxes (300 kg)",
+      "current_value": "25 Boxes (300 kg)",
+      "evidence_type": "calculated",
+      "is_edited": null,
+      "verification_status": "unverified",
+      "notes": "Converted via Indic Packaging Normalizer (25 boxes × 12 kg/box = 300 kg)",
+      "evidence": {
+        "supporting_text": "25 boxes",
+        "segment_index": 1,
+        "start_char": 46,
+        "end_char": 54
+      }
+    },
+    {
+      "id": "fld-3",
+      "field_name": "unit_price",
+      "original_value": "₹1,200.00",
+      "current_value": "₹1,200.00",
+      "evidence_type": "spoken",
+      "is_edited": null,
+      "verification_status": "unverified",
+      "notes": "Quoted unit price",
+      "evidence": {
+        "supporting_text": "1200 rupees",
+        "segment_index": 1,
+        "start_char": 77,
+        "end_char": 88
+      }
+    },
+    {
+      "id": "fld-4",
+      "field_name": "total_amount",
+      "original_value": "₹30,000.00",
+      "current_value": "₹30,000.00",
+      "evidence_type": "calculated",
+      "is_edited": null,
+      "verification_status": "unverified",
+      "notes": "Calculated: 25 (quantity) × ₹1,200.00 (unit price) = ₹30,000.00",
+      "evidence": {
+        "supporting_text": "25 boxes ... 1200 rupees",
+        "segment_index": 1,
+        "start_char": 46,
+        "end_char": 88
+      }
+    },
+    {
+      "id": "fld-5",
+      "field_name": "delivery_deadline",
+      "original_value": "Friday",
+      "current_value": "Friday",
+      "evidence_type": "spoken",
+      "is_edited": null,
+      "verification_status": "unverified",
+      "notes": null,
+      "evidence": {
+        "supporting_text": "by Friday",
+        "segment_index": 2,
+        "start_char": 115,
+        "end_char": 124
+      }
+    }
+  ],
+  "action_items": [
+    {
+      "id": "act-0",
+      "description": "Fulfill and deliver order (surgical gloves)",
+      "assignee": null,
+      "deadline": "Friday",
+      "status": "pending"
+    }
+  ]
+}
