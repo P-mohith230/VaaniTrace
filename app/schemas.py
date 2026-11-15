@@ -226,3 +226,48 @@ class RecordDetail(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
+# ---------------------------------------------------------
+# Closed-Loop Voice Confirmation Protocol Schemas (Rank 3)
+# ---------------------------------------------------------
+
+class ConfirmationScriptRequest(BaseModel):
+    """Request to synthesize an auditable confirmation readback script."""
+    record_type: str = "business_order"
+    fields: List[Dict[str, Any]] = Field(default_factory=list)
+    uncertain_fields: Optional[List[Dict[str, Any]]] = None
+    language: Optional[str] = "en-IN"
+
+
+class ConfirmationScriptResponse(BaseModel):
+    """Spoken confirmation protocol response."""
+    script_text: str
+    summary_facts: List[str]
+    requires_clarification: bool
+    clarification_questions: List[str]
+
+
+class VoiceCorrectionRequest(BaseModel):
+    """Voice or text amendment request."""
+    correction_text: str
+    current_fields: List[Dict[str, Any]]
+    record_type: str = "business_order"
+
+
+class VoiceCorrectionResponse(BaseModel):
+    """Response after applying delta amendment."""
+    updated_fields: List[Dict[str, Any]]
+    changes_applied: List[str]
+    new_confirmation_script: str
+
+
+class VoiceIntentEvaluateRequest(BaseModel):
+    """Request to classify a spoken audio confirmation reply."""
+    spoken_text: str
+
+
+class VoiceIntentEvaluateResponse(BaseModel):
+    """Classified intent result."""
+    intent: str  # CONFIRM, REJECT, or CORRECT
+
+

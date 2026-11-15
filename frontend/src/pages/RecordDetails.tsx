@@ -412,6 +412,13 @@ export const RecordDetails: React.FC<RecordDetailsProps> = ({ recordId, onBack }
                   savedRecordId={record.id}
                   onAudioSummaryGenerated={(b64) => setRecord({ ...record, audio_summary_base64: b64 })}
                   existingAudioSummary={record.audio_summary_base64}
+                  recordType={record.record_type}
+                  fields={record.fields}
+                  uncertainFields={[]}
+                  onFieldsUpdate={(newFields) => setRecord({ ...record, fields: newFields })}
+                  verificationStatus={record.verification_status}
+                  onStatusUpdate={(newStatus) => setRecord({ ...record, verification_status: newStatus })}
+                  detectedLanguage={record.language_code || 'indic-auto'}
                 />
               </div>
             </>
@@ -435,6 +442,13 @@ export const RecordDetails: React.FC<RecordDetailsProps> = ({ recordId, onBack }
                 savedRecordId={record.id}
                 onAudioSummaryGenerated={(b64) => setRecord({ ...record, audio_summary_base64: b64 })}
                 existingAudioSummary={record.audio_summary_base64}
+                recordType={record.record_type}
+                fields={record.fields}
+                uncertainFields={[]}
+                onFieldsUpdate={(newFields) => setRecord({ ...record, fields: newFields })}
+                verificationStatus={record.verification_status}
+                onStatusUpdate={(newStatus) => setRecord({ ...record, verification_status: newStatus })}
+                detectedLanguage={record.language_code || 'indic-auto'}
               />
             </div>
           )}

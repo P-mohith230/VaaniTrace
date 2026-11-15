@@ -118,6 +118,57 @@ class ApiClient {
     });
   }
 
+  // Closed-Loop Voice Confirmation Protocol (Rank 3)
+  async getConfirmationScript(
+    recordType: string,
+    fields: any[],
+    uncertainFields: any[] = [],
+    language: string = 'en-IN'
+  ): Promise<{
+    script_text: string;
+    summary_facts: string[];
+    requires_clarification: boolean;
+    clarification_questions: string[];
+  }> {
+    return this.request('/confirmation/script', {
+      method: 'POST',
+      body: JSON.stringify({
+        record_type: recordType,
+        fields,
+        uncertain_fields: uncertainFields,
+        language,
+      }),
+    });
+  }
+
+  async applyVoiceCorrection(
+    correctionText: string,
+    currentFields: any[],
+    recordType: string = 'business_order'
+  ): Promise<{
+    updated_fields: any[];
+    changes_applied: string[];
+    new_confirmation_script: string;
+  }> {
+    return this.request('/confirmation/correct', {
+      method: 'POST',
+      body: JSON.stringify({
+        correction_text: correctionText,
+        current_fields: currentFields,
+        record_type: recordType,
+      }),
+    });
+  }
+
+  async evaluateVoiceIntent(spokenText: string): Promise<{ intent: 'CONFIRM' | 'REJECT' | 'CORRECT' }> {
+    return this.request('/confirmation/intent', {
+      method: 'POST',
+      body: JSON.stringify({
+        spoken_text: spokenText,
+      }),
+    });
+  }
+
   // Records CRUD
   async listRecords(params: {
     record_type?: string;

@@ -18,6 +18,7 @@ from app.routes.transcription import router as transcription_router
 from app.routes.extraction import router as extraction_router
 from app.routes.speech import router as speech_router
 from app.routes.records import router as records_router
+from app.routes.confirmation import router as confirmation_router
 
 # Configure logging
 logging.basicConfig(
@@ -61,6 +62,7 @@ app.include_router(transcription_router)
 app.include_router(extraction_router)
 app.include_router(speech_router)
 app.include_router(records_router)
+app.include_router(confirmation_router)
 
 # Mount Static Assets & SPA Routing for Unified Single Deployment
 static_dir = Path(settings.STATIC_DIR)

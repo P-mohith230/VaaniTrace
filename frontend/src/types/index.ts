@@ -25,7 +25,7 @@ export interface EvidenceRef {
 }
 
 export type EvidenceType = 'spoken' | 'inferred' | 'calculated' | 'manual';
-export type VerificationStatus = 'unverified' | 'verified' | 'needs_review';
+export type VerificationStatus = 'unverified' | 'verified' | 'needs_review' | 'rejected';
 
 export interface ExtractedField {
   id?: string;

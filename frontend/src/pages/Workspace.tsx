@@ -797,16 +797,21 @@ export const Workspace: React.FC = () => {
                     onExportTally={handleExportTally}
                     detectedLanguage={detectedLanguage}
                   />
-                  <div className="card">
-                    <VerificationControls
-                      summaryText={summary}
-                      onSaveRecord={handleSaveRecord}
-                      isSaving={isLoading}
-                      savedRecordId={savedRecordId}
-                      onAudioSummaryGenerated={(b64) => setAudioSummaryBase64(b64)}
-                      existingAudioSummary={audioSummaryBase64}
-                    />
-                  </div>
+                  <VerificationControls
+                    summaryText={summary}
+                    onSaveRecord={handleSaveRecord}
+                    isSaving={isLoading}
+                    savedRecordId={savedRecordId}
+                    onAudioSummaryGenerated={(b64) => setAudioSummaryBase64(b64)}
+                    existingAudioSummary={audioSummaryBase64}
+                    recordType={selectedRecordType}
+                    fields={fields}
+                    uncertainFields={uncertainFields}
+                    onFieldsUpdate={(newFields) => setFields(newFields)}
+                    verificationStatus={overallVerification}
+                    onStatusUpdate={(newStatus) => setOverallVerification(newStatus)}
+                    detectedLanguage={detectedLanguage}
+                  />
                 </>
               ) : (
                 <div className="card">
@@ -828,6 +833,13 @@ export const Workspace: React.FC = () => {
                     savedRecordId={savedRecordId}
                     onAudioSummaryGenerated={(b64) => setAudioSummaryBase64(b64)}
                     existingAudioSummary={audioSummaryBase64}
+                    recordType={selectedRecordType}
+                    fields={fields}
+                    uncertainFields={uncertainFields}
+                    onFieldsUpdate={(newFields) => setFields(newFields)}
+                    verificationStatus={overallVerification}
+                    onStatusUpdate={(newStatus) => setOverallVerification(newStatus)}
+                    detectedLanguage={detectedLanguage}
                   />
                 </div>
               )}
